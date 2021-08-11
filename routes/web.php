@@ -17,7 +17,7 @@ Route::get('test', function () {
     return view('admin.layout.index');
 });
 // {SiteURL}
-Route::get('/', 'LandingController@index')->name('/');
+Route::get('/', 'LandingController@login')->name('/');
 Route::get('403', function () {
     return view('403')->render();
 })->name('403');
