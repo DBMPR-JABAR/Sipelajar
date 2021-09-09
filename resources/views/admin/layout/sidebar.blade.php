@@ -185,7 +185,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (hasAccess(Auth::user()->internal_role_id, 'Rumija', 'View'))
+                            {{-- @if (hasAccess(Auth::user()->internal_role_id, 'Rumija', 'View'))
                             <li class="{{ Request::segment(3) == 'rumija' ? 'active' : '' }}">
                                 <a href="{{ url('admin/master-data/rumija') }}" class="waves-effect waves-dark">
                                     <span class="pcoded-mtext">Rumija</span>
@@ -208,7 +208,7 @@
                                                 </a>
                                             </li>
                                         @endif
-                                        {{-- @if (hasAccess(Auth::user()->internal_role_id, 'Metode Pengujian Labkon', 'View'))
+                                        @if (hasAccess(Auth::user()->internal_role_id, 'Metode Pengujian Labkon', 'View'))
                                         <li
                                             class="{{ Request::segment(4) == 'metode_pengujian_labkon' ? 'active' : '' }}">
                                             <a href="{{ url('admin/master-data/labkon/metode_pengujian_labkon') }}"
@@ -216,10 +216,10 @@
                                                 <span class="pcoded-mtext">Metode Pengujian</span>
                                             </a>
                                         </li>
-                                    @endif --}}
+                                    @endif
                                     </ul>
                                 </li>
-                            @endif
+                            @endif --}}
                         </ul>
                     </li>
                 </ul>
