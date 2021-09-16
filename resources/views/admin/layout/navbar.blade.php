@@ -2,8 +2,10 @@
     <div class="navbar-wrapper">
         <div class="navbar-logo">
             <a href="{{ url('admin/home') }}">
-                <img class="img-fluid" width="150" src="{{ asset('assets/images/brand/text_putih.png') }}"
-                    alt="Teman Jabar-Logo" />
+                <h2>
+
+                    SIPELAJAR
+                </h2>
             </a>
             <a class="mobile-menu" id="mobile-collapse" href="#!">
                 <i class="feather icon-menu icon-toggle-right"></i>
