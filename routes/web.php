@@ -91,6 +91,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::resource('/announcement', 'AnnouncementController');
 
     Route::get('profile/{id}', 'DetailUserController@show')->name('editProfile');
+    Route::get('activity/{id}', 'LandingController@getLogUser')->name('log.user.index');
+
     Route::get('edit/profile/{id}', 'DetailUserController@edit')->name('editDetailProfile');
     Route::put('edit/profile/{id}', 'DetailUserController@update');
     Route::post('user/account/{id}', 'DetailUserController@updateaccount');

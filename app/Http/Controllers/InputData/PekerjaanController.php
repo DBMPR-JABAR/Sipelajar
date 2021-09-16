@@ -4,6 +4,7 @@ namespace App\Http\Controllers\InputData;
 
 use App\User;
 use App\Model\Transactional\UPTD;
+use App\Model\Transactional\PekerjaanPemeliharaan as Pemeliharaan;
 use App\Http\Controllers\Controller;
 // use App\Model\DWH\RawanBencana;
 use Illuminate\Http\Request;
@@ -145,7 +146,7 @@ class PekerjaanController extends Controller
             $pekerjaan = $pekerjaan->where('kemandoran.uptd_id', $request->uptd_filter);
             $filter['uptd_filter'] =$request->uptd_filter;
         } 
-        $pekerjaan = $pekerjaan->paginate(700);
+        $pekerjaan = $pekerjaan->paginate(500);
         
         foreach($pekerjaan as $no =>$data){
             // echo "$data->id_pek<br>";
@@ -478,6 +479,7 @@ class PekerjaanController extends Controller
         $pekerjaan['id_pek'] = 'CK-' . str_pad($nomor, 6, "0", STR_PAD_LEFT);
 
         DB::table('kemandoran')->insert($pekerjaan);
+        storeLogActivity(declarLog(1, 'Pemeliharaan Pekerjaan', $pekerjaan['id_pek'], 1 ));
 
         $color = "success";
         $msg = "Berhasil Menambah Data Pekerjaan";
@@ -581,6 +583,8 @@ class PekerjaanController extends Controller
 
         $color = "success";
         $msg = "Berhasil Mengubah Data";
+        storeLogActivity(declarLog(2, 'Pemeliharaan Pekerjaan', $req->id_pek, 1 ));
+
         return redirect(route('getDataPekerjaan'))->with(compact('color', 'msg'));
     }
     public function materialData($id)
@@ -742,6 +746,7 @@ class PekerjaanController extends Controller
     
             $insert = $detail_adjustment->insert($data);
         }
+        storeLogActivity(declarLog(1, 'Detail Pemeliharaan Pekerjaan', $req->id_pek, 1 ));
 
         $color = "success";
         $msg = "Berhasil Menambah Data Bahan Material";
@@ -884,6 +889,8 @@ class PekerjaanController extends Controller
 
         $color = "success";
         $msg = "Berhasil Mengubah Data Material";
+        storeLogActivity(declarLog(2, 'Detail Pemeliharaan Pekerjaan', $req->id_pek, 1 ));
+
         return redirect(route('getDataPekerjaan'))->with(compact('color', 'msg'));
     }
     public function show($id)
@@ -976,7 +983,7 @@ class PekerjaanController extends Controller
             $jum_bahan = "jum_bahan$i";
             $nama_bahan = "nama_bahan$i";
             $satuan = "satuan$i";
-            if($material->$jum_bahan != null){
+            if(isset($material->$jum_bahan)){
                 $pekerjaan->nama_bahan[] = $material->$nama_bahan;
                 $pekerjaan->jum_bahan[] = $material->$jum_bahan;
                 $pekerjaan->satuan[] = $material->$satuan;
@@ -1143,11 +1150,15 @@ class PekerjaanController extends Controller
                 }
                 $color = "success";
                 $msg = "Data Berhasil Diupdate!";
+                storeLogActivity(declarLog(5, 'Pemeliharaan Pekerjaan', $id, 1 ));
+
                 return redirect(route('jugmentDataPekerjaan', $id))->with(compact('color','msg'));
             }else{
                 //redirect dengan pesan error
                 $color = "danger";
                 $msg = "Data Tidak ada yang Diupdate!";
+                storeLogActivity(declarLog(5, 'Pemeliharaan Pekerjaan', $id ));
+
                 return redirect(route('jugmentDataPekerjaan', $id))->with(compact('color', 'msg'));
             }
 
@@ -1157,15 +1168,38 @@ class PekerjaanController extends Controller
     public function deleteData($id)
     {
         // $temp = DB::table('kemandoran')->where('id',$id)->first();
-        $temp = DB::table('bahan_material')->where('id_pek', $id)->delete();
-        $param['is_deleted'] = 1;
-        $old = DB::table('kemandoran')->where('id_pek', $id)->update($param);
+      
+        $old = Pemeliharaan::firstOrNew(['id_pek'=> $id]);
+        // dd($old);
+        $old->is_deleted = 1;
+        $old->save();
+        storeLogActivity(declarLog(3, 'Pemeliharaan Pekerjaan', $old->id_pek, 1 ));
+        // dd($old->id_pek);
 
         $color = "success";
         $msg = "Berhasil Menghapus Data Pekerjaan";
         return redirect(route('getDataPekerjaan'))->with(compact('color', 'msg'));
     }
+    public function getPekerjaanTrash()
+    {
+        $pekerjaan = Pemeliharaan::where('is_deleted',1)->latest('tglreal')->paginate(700);
+        // dd($pekerjaan);
+        return view('admin.input.pekerjaan.trash', compact('pekerjaan'));
 
+    }
+    public function restoreData($id)
+    {
+        
+        $old = Pemeliharaan::firstOrNew(['id_pek'=> $id]);
+    //    dd($old);
+        $old->is_deleted = 0;
+        $old->save();
+        storeLogActivity(declarLog(4, 'Pemeliharaan Pekerjaan', $old->id_pek, 1 ));
+        
+        $color = "success";
+        $msg = "Berhasil Mengembalikan Data Pekerjaan";
+        return redirect(route('getPekerjaanTrash'))->with(compact('color', 'msg'));
+    }
     public function submitData($id)
     {
         // $temp = DB::table('kemandoran')->where('id',$id)->first();
@@ -1201,6 +1235,8 @@ class PekerjaanController extends Controller
             'tanggal_akhir' => $request->tanggal_akhir
         ];
         // dd($filter);
+        storeLogActivity(declarLog(6, 'Rekap Entry Pemeliharaan', $request->tanggal_awal.' s/d '.$request->tanggal_akhir , 1 ));
+
         return view('pdf.laporan_summary_pekerjaan',compact('data','filter'));
     }
     public function arrOne($var1,$var2,$var3){
@@ -1231,9 +1267,12 @@ class PekerjaanController extends Controller
         $kemandoran = DB::table('kemandoran')->where('ruas_jalan_id',$request->ruas_jalan);
         if($kemandoran->exists()){
             $kemandoran = $kemandoran->whereBetween('tanggal',[$request->start_date,$request->end_date])->get()->toArray();
-            if(count($kemandoran) == 0)
+            if(count($kemandoran) == 0){
+                storeLogActivity(declarLog(6, 'Pemeliharaan (BHS)', '' ));
                 return back()->with(compact('color', 'msg'));
+            }
         }else{
+            storeLogActivity(declarLog(6, 'Pemeliharaan (BHS)', '' ));
             return back()->with(compact('color', 'msg'));
         }
         $x = 0;
@@ -1533,11 +1572,13 @@ class PekerjaanController extends Controller
 
 
         }
-        // dd($temporari);
+        
         // dd($laporan);
 
         // dd(count($laporan));
         // dd($ruas);
+        storeLogActivity(declarLog(6, 'Pemeliharaan (BHS)',  $sup.'/'.$kemandoran[0]->ruas_jalan, 1 ));
+
         return view('pdf.laporan_pekerjaan', compact('temporari'));
     }
     public function sqlreportrekap($id){
@@ -1565,7 +1606,7 @@ class PekerjaanController extends Controller
             'uptd6'=>$getuptd6
         ];
 
-        dd($report);
+        // dd($report);
     }
 
     public function json(Request $request)
