@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+// ufSjz8hjzvtyKr_zBXsM
 Route::get('test', function () {
     return view('admin.layout.index');
 });
