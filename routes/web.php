@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // ufSjz8hjzvtyKr_zBXsM
+
 Route::get('test', function () {
     return view('admin.layout.index');
 });
