@@ -27,6 +27,10 @@ class PekerjaanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public static function cekMaterial($id) {
+        $cek = DB::table('bahan_material')->where('id_pek',$id)->exists();
+        return $cek;
+    }
     public function index()
     {
         try {
@@ -34,7 +38,8 @@ class PekerjaanController extends Controller
                 // ->rightJoin('utils_pekerjaan', 'utils_pekerjaan.id_pek', '=', 'kemandoran.id_pek')
                 ->where('is_deleted', 0)
                 ->where('user_id', $this->user->id)
-                ->get();
+                ->get()
+                ->reverse()->values();
 
                 foreach($pekerjaan as $no =>$data){
                     // echo "$data->id_pek<br>";
