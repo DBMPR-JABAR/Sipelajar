@@ -38,7 +38,7 @@ class PekerjaanController extends Controller
                 ->reverse()->values();
 
             $this->response['status'] = 'success';
-            $this->response['data']['pekerjaan'] = $pekerjaan;
+            $this->response['data']['pekerjaan'] = "ok";
 
             return response()->json($this->response, 200);
         } catch (\Exception $th) {
