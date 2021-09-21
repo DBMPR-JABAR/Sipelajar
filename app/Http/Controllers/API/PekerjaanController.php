@@ -34,10 +34,14 @@ class PekerjaanController extends Controller
     public function index()
     {
         try {
+            $filter['tanggal_awal']= Carbon::now()->subDays(21)->format('Y-m-d');
+            $filter['tanggal_akhir']= Carbon::now()->format('Y-m-d');
+
             $pekerjaan = DB::table('kemandoran')
                 // ->rightJoin('utils_pekerjaan', 'utils_pekerjaan.id_pek', '=', 'kemandoran.id_pek')
                 ->where('is_deleted', 0)
                 ->where('user_id', $this->user->id)
+                ->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])
                 ->get()
                 ->reverse()->values();
 
