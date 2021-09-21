@@ -34,8 +34,7 @@ class PekerjaanController extends Controller
                 // ->rightJoin('utils_pekerjaan', 'utils_pekerjaan.id_pek', '=', 'kemandoran.id_pek')
                 ->where('is_deleted', 0)
                 ->where('user_id', $this->user->id)
-                ->get()
-                ->reverse()->values();
+                ->get();
 
                 foreach($pekerjaan as $no =>$data){
                     // echo "$data->id_pek<br>";
