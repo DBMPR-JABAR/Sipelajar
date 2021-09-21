@@ -37,6 +37,49 @@ class PekerjaanController extends Controller
                 ->get()
                 ->reverse()->values();
 
+                foreach($pekerjaan as $no =>$data){
+                    // echo "$data->id_pek<br>";
+        
+                    $data->status = "";
+                    $data->jenis_pekerjaan = DB::table('utils_jenis_laporan')->where('id',$data->jenis_pekerjaan)->pluck('name')->first();
+                    $detail_adjustment=DB::table('kemandoran_detail_status')->where('id_pek',$data->id_pek);
+                    $input_material= $this->cekMaterial($data->id_pek);
+                    if($input_material){
+                        $tempuser= DB::table('users')
+                        ->leftJoin('user_role','users.internal_role_id','=','user_role.id')->where('users.id',$data->user_id);
+                        if($tempuser->exists()){
+                            $tempuser=$tempuser->first();
+                            $data->status = $tempuser;
+                            $data->status->status="";
+                        }
+                    }
+                    $data->input_material = $input_material;
+                    $data->keterangan_status_lap= $detail_adjustment->exists();
+                    if($detail_adjustment->exists()){
+                        $detail_adjustment=$detail_adjustment
+                        ->leftJoin('users','users.id','=','kemandoran_detail_status.adjustment_user_id')
+                        ->leftJoin('user_role','users.internal_role_id','=','user_role.id');
+        
+                        if($detail_adjustment->count() > 1){
+                            $detail_adjustment=$detail_adjustment->get();
+                            foreach($detail_adjustment as $num => $data1){
+                                $temp = $data1;
+                            }
+                            $data->status=$temp;
+                            // dd($data);
+                        }else{
+                            $detail_adjustment=$detail_adjustment->first();
+                            $data->status=$detail_adjustment;
+                        }
+                        $temp=explode(" - ",$data->status->role);
+                        $data->status->jabatan=$temp[0];
+                    }
+        
+                    // echo "$data->id_pek<br>";
+        
+        
+                }
+
             $this->response['status'] = 'success';
             $this->response['data']['pekerjaan'] = $pekerjaan;
 

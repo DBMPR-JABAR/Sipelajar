@@ -147,6 +147,7 @@ class PekerjaanController extends Controller
             $filter['uptd_filter'] =$request->uptd_filter;
         } 
         $pekerjaan = $pekerjaan->paginate(500);
+        // dd($pekerjaan);
         
         foreach($pekerjaan as $no =>$data){
             // echo "$data->id_pek<br>";
