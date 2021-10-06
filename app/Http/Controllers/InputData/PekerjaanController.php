@@ -287,6 +287,7 @@ class PekerjaanController extends Controller
         $not_complete = 0;
 
         $rekaps = DB::table('kemandoran')
+        ->where('kemandoran.is_deleted',0)
         ->leftJoin('kemandoran_detail_status','kemandoran_detail_status.id_pek','=','kemandoran.id_pek')
         ->select('kemandoran.*','kemandoran_detail_status.status',DB::raw('max(kemandoran_detail_status.id ) as status_s'), DB::raw('max(kemandoran_detail_status.id ) as status_s'))
         ->groupBy('kemandoran.id_pek');
@@ -302,6 +303,7 @@ class PekerjaanController extends Controller
         }
 
         $rekaps=$rekaps->get();
+        
         foreach($rekaps as $it){
                     // echo $it->status.' | '.$it->id_pek.'<br>';
 
