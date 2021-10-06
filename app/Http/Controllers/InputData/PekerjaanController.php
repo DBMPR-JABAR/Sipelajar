@@ -420,6 +420,8 @@ class PekerjaanController extends Controller
         
         $pekerjaan = $req->except(['_token','tanggal_awal','tanggal_akhir','uptd_filter']);
         // dd($pekerjaan);
+        if(strpos($req->lat, '-') == false) $pekerjaan['lat'] = '-'.$req->lat;
+
         $pekerjaan['uptd_id'] = $req->uptd_id == '' ? 0 : $req->uptd_id;
         if($pekerjaan['uptd_id'])
             $pekerjaan['uptd_id'] = str_replace('uptd', '', $pekerjaan['uptd_id']);
