@@ -126,7 +126,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label class="col-md-12 col-form-label text-center">Foto Dokumentasi (0%)</label>
-                            <img style="max-height: 400px;" class="img-thumbnail rounded mx-auto d-block" src="{{ url('storage/pekerjaan/'.$pekerjaan->foto_awal) }}" alt="">
+                            <img style="max-height: 400px;" class="img-thumbnail rounded mx-auto d-block" src="https://tj.temanjabar.net/storage/pekerjaan/{{ $pekerjaan->foto_awal }}" alt="">
 
                         </div>
                         <div class="col-md-6">
