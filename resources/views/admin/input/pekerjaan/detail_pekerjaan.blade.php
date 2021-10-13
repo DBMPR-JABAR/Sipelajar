@@ -130,21 +130,21 @@
                         </div>
                         <div class="col-md-6">
                             <label class="col-md-12 col-form-label text-center">Foto Dokumentasi (50%)</label>
-                            <img style="max-height: 400px;" class="img-thumbnail rounded mx-auto d-block" src="{{ url('storage/pekerjaan/'.$pekerjaan->foto_sedang) }}" alt="">
+                            <img style="max-height: 400px;" class="img-thumbnail rounded mx-auto d-block" src="https://tj.temanjabar.net/storage/pekerjaan/{{ $pekerjaan->foto_sedang }}" alt="">
 
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label class="col-md-12 col-form-label text-center">Foto Dokumentasi (100%)</label>
-                            <img style="max-height: 400px;" class="img-thumbnail rounded mx-auto d-block" src="{{ url('storage/pekerjaan/'.$pekerjaan->foto_akhir) }}" alt="">
+                            <img style="max-height: 400px;" class="img-thumbnail rounded mx-auto d-block" src="https://tj.temanjabar.net/storage/pekerjaan/{{ $pekerjaan->foto_akhir }}" alt="">
 
 
                     </div>
                     <div class="form-group row">
                         <label class="col-md-12 col-form-label text-center">Video Dokumentasi</label>
                             <video  style="max-height: 400px;" controls class="img-thumbnail rounded mx-auto d-block">
-                                <source src="{{ url('storage/pekerjaan/'.$pekerjaan->video) }}" type="video/mp4" />
+                                <source src="https://tj.temanjabar.net/storage/pekerjaan/{{ $pekerjaan->video }}" type="video/mp4" />
                             </video>
                     </div>
 
