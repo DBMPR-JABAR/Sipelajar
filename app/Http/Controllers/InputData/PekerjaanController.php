@@ -1400,7 +1400,7 @@ class PekerjaanController extends Controller
 
                 //gabungkan penghambat
                 if($laporan[$item][$item1]->penghambat){
-                    for($v = 0 ; $v < count($laporan[$item][$item1]->tenaga_kerja); $v++){
+                    for($v = 0 ; $v < count($laporan[$item][$item1]->penghambat); $v++){
                         $temppenghambat[$item]->jenis_gangguan[] =  $laporan[$item][$item1]->penghambat[$v]->jenis_gangguan;
                         $temppenghambat[$item]->start_time[] =  $laporan[$item][$item1]->penghambat[$v]->start_time;
                         $temppenghambat[$item]->end_time[] =  $laporan[$item][$item1]->penghambat[$v]->end_time;
