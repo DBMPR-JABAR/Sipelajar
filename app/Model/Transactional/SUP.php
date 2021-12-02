@@ -15,4 +15,8 @@ class SUP extends Model
     {
         return $this->hasMany('App\Model\Transactional\PekerjaanPemeliharaan', 'sup_id')->where('is_deleted', '!=', 1);
     }
+    public function library_ruas()
+    {
+        return $this->hasMany('App\Model\Transactional\RuasJalan', 'kd_sppjj','kd_sup');
+    }
 }
