@@ -1362,6 +1362,7 @@ class PekerjaanController extends Controller
         
         $fileName = $tanggal_awal.'-'.$tanggal_akhir;
         $phpWord->save($fileName.'.docx');
+
         return response()->download($fileName.'.docx')->deleteFileAfterSend(true);
 
     }
