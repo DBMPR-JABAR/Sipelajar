@@ -408,6 +408,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
 
             Route::get('laporan', 'InputData\PekerjaanController@laporanPekerjaan')->name('LaporanPekerjaan');
             Route::post('laporan/entry', 'InputData\PekerjaanController@laporanEntry')->name('LaporanRekapEntry');
+            Route::get('laporan/entry/detail-uptd/{uptd}/{tanggal_awal}/{tanggal_akhir}', 'InputData\PekerjaanController@laporanDetailEntry')->name('LaporanRekapEntryDetail');
             
             Route::post('laporan', 'InputData\PekerjaanController@generateLaporanPekerjaan')->name('generateLapPekerjaan');
 

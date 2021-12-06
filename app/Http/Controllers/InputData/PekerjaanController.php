@@ -1229,23 +1229,141 @@ class PekerjaanController extends Controller
     }
     public function laporanEntry(Request $request){
         $data = UPTD::whereBetween('id',[1,6]);
+        $filter=[
+            'tanggal_awal' => $request->tanggal_awal,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'uptd_filter' => 'all'
+
+        ];
         if($request->uptd_filter != null || Auth::user()->internalRole->uptd != null){
             if(Auth::user()->internalRole->uptd != null){
                 $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
                 $data= $data->where('id', $uptd_id);
-            }else
+                $filter['uptd_filter']= $uptd_id;
+
+            }else{
                 $data= $data->where('id', $request->uptd_filter);
+                $filter['uptd_filter']= $request->uptd_filter;
+
+            }
         }
         $data = $data->get();
         // dd($data->library_sup->toArray());
-        $filter=[
-            'tanggal_awal' => $request->tanggal_awal,
-            'tanggal_akhir' => $request->tanggal_akhir
-        ];
+        
         // dd($filter);
         storeLogActivity(declarLog(6, 'Rekap Entry Pemeliharaan', $request->tanggal_awal.' s/d '.$request->tanggal_akhir , 1 ));
 
         return view('pdf.laporan_summary_pekerjaan',compact('data','filter'));
+    }
+    public function laporanDetailEntry($filter_uptd,$tanggal_awal,$tanggal_akhir){
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $header = array('size' => 12, 'bold' => true);
+        $th = array('size' => 10, 'bold' => true, 'align' => 'center', 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $centered = array('valign' => 'center', 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $cols = 5;
+        $rows = 10;
+
+        if($filter_uptd == 'all'){
+            $data = UPTD::whereBetween('id',[1,6])->get();
+        }else{
+            $data = UPTD::find($filter_uptd);
+        }
+        // dd($data);
+        $pointer = 0;
+        // $section->addText('Basic table', $header);
+        $fancyTableStyle = array('borderSize' => 6, 'borderColor' => '999999');
+        
+
+
+        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center', 'bgColor' => 'FFFF00');
+        $cellRowContinue = array('vMerge' => 'continue');
+        $cellColSpan = array('gridSpan' => 2, 'valign' => 'center');
+        $cellHCentered = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $cellVCentered = array('valign' => 'center');
+
+        foreach($data as $uptd){
+            if($uptd->id == 1){
+                $role = 'Mandor - UPTD 1';
+                $role_id = 52;
+            }else if($uptd->id == 2){
+                $role = 'Mandor - UPTD 2';
+                $role_id = 91;
+            }else if($uptd->id == 3){
+                $role = 'Mandor - UPTD 3';
+                $role_id = 61;
+            }else if($uptd->id == 4){
+                $role = 'Mandor - UPTD 4';
+                $role_id = 70;
+            }else if($uptd->id == 5){
+                $role = 'Mandor - UPTD 5';
+                $role_id = 77;
+            }else if($uptd->id == 6){
+                $role = 'Mandor - UPTD 6';
+                $role_id = 84;
+            }
+            $temp[$pointer]['uptd'] = $uptd->id;
+            $pointer1 = 0;
+            $section->addText('');
+            
+            $section->addText('Detail UPTD '. $uptd->id, $header);
+            $spanTableStyleName = 'Detail UPTD'. $uptd->id;
+
+           
+
+            $phpWord->addTableStyle($spanTableStyleName, $fancyTableStyle);
+            $table = $section->addTable($spanTableStyleName);
+            $table->addRow();
+            $table->addCell(2400)->addTextRun($centered)->addText("SPPJJ",$th);
+            $table->addCell(null)->addTextRun($centered)->addText("MANDOR",$th);
+            $table->addCell(5000)->addTextRun($centered)->addText("RUAS",$th);
+            $table->addCell(null)->addTextRun($centered)->addText("ENTRY",$th);
+            $table->addCell(null)->addTextRun($centered)->addText("TOTAL",$th);
+            foreach($uptd->library_sup as $sup){
+                $table->addRow();
+               
+                $cell1 = $table->addCell(2400, $cellRowSpan);
+                $textrun1 = $cell1->addTextRun($cellHCentered);
+                $textrun1->addText($sup->name);
+
+                $cell5 = $table->addCell(null, $cellRowSpan);
+                $textrun5 = $cell5->addTextRun($cellHCentered);
+                $textrun5->addText(count($sup->library_user->where('internal_role_id',$role_id)));
+
+                $cell2 = $table->addCell(5000);
+                $textrun2 = $cell2->addTextRun();
+                $textrun2->addText( $sup->library_ruas[0]->nama_ruas_jalan );
+
+                $cell3 = $table->addCell(null);
+                $textrun3 = $cell3->addTextRun($cellHCentered);
+                $textrun3->addText( count($sup->library_ruas[0]->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ])) );
+                
+                $table->addCell(null, $cellRowSpan)->addText(count($sup->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ])), null, $cellHCentered);
+
+                
+                for ($m=1 ; $m < count($sup->library_ruas) ;$m++){
+                    $table->addRow();
+                    $table->addCell(null, $cellRowContinue);
+                    $table->addCell(null, $cellRowContinue);
+                    $table->addCell(null)->addText($sup->library_ruas[$m]->nama_ruas_jalan, null);
+                    $table->addCell(null, $cellVCentered)->addText(count($sup->library_ruas[$m]->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ])), null, $cellHCentered);
+                    $table->addCell(null, $cellRowContinue);
+                    
+                }
+                $temp[$pointer][$pointer1]['sppjj'] = $sup->name;
+                $temp[$pointer][$pointer1]['mandor'] = count($sup->library_user->where('internal_role_id',$role_id));
+                $temp[$pointer][$pointer1]['total'] = count($sup->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ]));
+
+                $pointer1++;
+            }
+            $pointer++;
+        }
+        
+        $fileName = $tanggal_awal.'-'.$tanggal_akhir;
+        $phpWord->save($fileName.'.docx');
+        return response()->download($fileName.'.docx')->deleteFileAfterSend(true);
+
     }
     public function arrOne($var1,$var2,$var3){
         $arrOne = (object)[

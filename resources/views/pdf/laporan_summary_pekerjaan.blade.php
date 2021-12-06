@@ -17,6 +17,10 @@ Rekap Data Entry
             <p>PROVINSI JAWA BARAT</p> --}}
             <h5 class=" font-weight-bold" style="font-size: 12px">REKAP DATA ENTRY PEKERJAAN PEMELIHARAAN RUTIN</h5>
             <button id="cetak" style="float: right; z-index:-1" type="button" >CETAK</button>
+            <a href="{{ route('LaporanRekapEntryDetail',[$filter['uptd_filter'],$filter['tanggal_awal'],$filter['tanggal_akhir']]) }}">
+                <button id="cetak" style="float: right; z-index:-1" type="button" >CETAK DETAIL UPTD</button>
+
+            </a>
         
         </div>            
         
