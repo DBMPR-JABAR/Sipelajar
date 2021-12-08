@@ -1288,29 +1288,32 @@ class PekerjaanController extends Controller
                 $role = 'Mandor - UPTD 1';
                 $role_id = 52;
             }else if($uptd->id == 2){
+                $section->addPageBreak();
                 $role = 'Mandor - UPTD 2';
                 $role_id = 91;
             }else if($uptd->id == 3){
+                $section->addPageBreak();
                 $role = 'Mandor - UPTD 3';
                 $role_id = 61;
             }else if($uptd->id == 4){
+                $section->addPageBreak();
                 $role = 'Mandor - UPTD 4';
                 $role_id = 70;
             }else if($uptd->id == 5){
+                $section->addPageBreak();
                 $role = 'Mandor - UPTD 5';
                 $role_id = 77;
             }else if($uptd->id == 6){
+                $section->addPageBreak();
                 $role = 'Mandor - UPTD 6';
                 $role_id = 84;
             }
             $temp[$pointer]['uptd'] = $uptd->id;
             $pointer1 = 0;
-            $section->addText('');
+            // $section->addText('');
             
             $section->addText('Detail UPTD '. $uptd->id, $header);
             $spanTableStyleName = 'Detail UPTD'. $uptd->id;
-
-           
 
             $phpWord->addTableStyle($spanTableStyleName, $fancyTableStyle);
             $table = $section->addTable($spanTableStyleName);
