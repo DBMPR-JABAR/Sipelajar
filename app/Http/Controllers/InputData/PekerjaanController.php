@@ -1260,7 +1260,7 @@ class PekerjaanController extends Controller
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
         $header = array('size' => 12, 'bold' => true);
-        $th = array('size' => 10, 'bold' => true, 'align' => 'center', 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $th = array('size' => 12, 'bold' => true, 'align' => 'center', 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
         $centered = array('valign' => 'center', 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
         $cols = 5;
         $rows = 10;
