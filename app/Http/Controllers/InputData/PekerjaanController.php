@@ -1260,7 +1260,7 @@ class PekerjaanController extends Controller
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
         $header = array('size' => 12, 'bold' => true);
-        $th = array('size' => 12, 'bold' => true, 'align' => 'center', 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $th = array('size' => 10, 'bold' => true, 'align' => 'center', 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'bgColor' => 'FFFF00');
         $centered = array('valign' => 'center', 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
         $cols = 5;
         $rows = 10;
@@ -1277,7 +1277,7 @@ class PekerjaanController extends Controller
         
 
 
-        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center', 'bgColor' => 'FFFF00');
+        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
         $cellRowContinue = array('vMerge' => 'continue');
         $cellColSpan = array('gridSpan' => 2, 'valign' => 'center');
         $cellHCentered = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
@@ -1287,32 +1287,38 @@ class PekerjaanController extends Controller
             if($uptd->id == 1){
                 $role = 'Mandor - UPTD 1';
                 $role_id = 52;
+                $text = "I";
             }else if($uptd->id == 2){
                 $section->addPageBreak();
                 $role = 'Mandor - UPTD 2';
                 $role_id = 91;
+                $text = "II";
             }else if($uptd->id == 3){
                 $section->addPageBreak();
                 $role = 'Mandor - UPTD 3';
                 $role_id = 61;
+                $text = "III";
             }else if($uptd->id == 4){
                 $section->addPageBreak();
                 $role = 'Mandor - UPTD 4';
                 $role_id = 70;
+                $text = "IV";
             }else if($uptd->id == 5){
                 $section->addPageBreak();
                 $role = 'Mandor - UPTD 5';
                 $role_id = 77;
+                $text = "V";
             }else if($uptd->id == 6){
                 $section->addPageBreak();
                 $role = 'Mandor - UPTD 6';
                 $role_id = 84;
+                $text = "VI";
             }
             $temp[$pointer]['uptd'] = $uptd->id;
             $pointer1 = 0;
             // $section->addText('');
             
-            $section->addText('Detail UPTD '. $uptd->id, $header);
+            $section->addText('Detail UPTD Pengelolaan Jalan dan Jembatan Wilayah Pelayanan - '. $text, $header);
             $spanTableStyleName = 'Detail UPTD'. $uptd->id;
 
             $phpWord->addTableStyle($spanTableStyleName, $fancyTableStyle);
