@@ -912,7 +912,6 @@ class PekerjaanController extends Controller
 
         $pekerjaan = $pekerjaan->leftJoin('master_ruas_jalan', 'master_ruas_jalan.id_ruas_jalan', '=', 'kemandoran.ruas_jalan_id')->select('kemandoran.*', 'master_ruas_jalan.nama_ruas_jalan');
         // $pekerjaan = $pekerjaan->leftJoin('kemandoran_detail_status', 'kemandoran.id_pek', '=','kemandoran_detail_status.id_pek')->select('kemandoran.*', 'master_ruas_jalan.nama_ruas_jalan','kemandoran_detail_status.*');
-        dd($pekerjaan->exists());
         
         if (Auth::user() && Auth::user()->internalRole->uptd) {
             $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
@@ -923,8 +922,9 @@ class PekerjaanController extends Controller
                 $pekerjaan = $pekerjaan->where('kemandoran.sup_id',Auth::user()->sup_id);
         }
 
-        $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2021");
+        $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2022");
         $pekerjaan = $pekerjaan->where('is_deleted', 0)->latest('tglreal')->get();
+        dd($pekerjaan);
 
         foreach($pekerjaan as $no =>$data){
             // echo "$data->id_pek<br>";
