@@ -970,7 +970,7 @@ class PekerjaanController extends Controller
 
 
         $pekerjaan = $pekerjaan->first();
-        // dd($pekerjaan);
+        dd($pekerjaan);
         // if($pekerjaan->keterangan_status_lap && $pekerjaan->status->adjustment_user_id != Auth::user()->id){
         //     return back()->with(compact('color', 'msg'));
         // }
