@@ -924,7 +924,7 @@ class PekerjaanController extends Controller
 
         $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2022");
         $pekerjaan = $pekerjaan->where('is_deleted', 0)->latest('tglreal')->get();
-        dd($pekerjaan);
+        // dd($pekerjaan);
 
         foreach($pekerjaan as $no =>$data){
             // echo "$data->id_pek<br>";
