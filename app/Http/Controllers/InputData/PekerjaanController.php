@@ -923,6 +923,8 @@ class PekerjaanController extends Controller
 
         $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2021");
         $pekerjaan = $pekerjaan->where('is_deleted', 0)->latest('tglreal')->get();
+        dd($pekerjaan);
+
         foreach($pekerjaan as $no =>$data){
             // echo "$data->id_pek<br>";
             $data->status = "";
@@ -970,7 +972,6 @@ class PekerjaanController extends Controller
 
 
         $pekerjaan = $pekerjaan->first();
-        dd($pekerjaan);
         // if($pekerjaan->keterangan_status_lap && $pekerjaan->status->adjustment_user_id != Auth::user()->id){
         //     return back()->with(compact('color', 'msg'));
         // }
