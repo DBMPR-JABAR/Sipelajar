@@ -15,6 +15,7 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "maatwebsite/excel": "^3.1",
+        "phpoffice/phpword": "^0.18.2",
         "tymon/jwt-auth": "^1.0",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
@@ -42,7 +43,10 @@
         "classmap": [
             "database/seeds",
             "database/factories"
-        ]
+        ],
+        "files": [
+            "app/Helpers/logActivity.php"
+         ]
     },
     "autoload-dev": {
         "psr-4": {

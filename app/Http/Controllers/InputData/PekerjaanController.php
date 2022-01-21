@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\InputData;
 
 use App\User;
+use App\Model\Transactional\UPTD;
+use App\Model\Transactional\PekerjaanPemeliharaan as Pemeliharaan;
 use App\Http\Controllers\Controller;
 // use App\Model\DWH\RawanBencana;
 use Illuminate\Http\Request;
@@ -90,8 +92,20 @@ class PekerjaanController extends Controller
             }
 
     }
-    public function getData()
+    public function getData(Request $request)
     {
+       
+        $filter['tanggal_awal']= Carbon::now()->subDays(14)->format('Y-m-d');
+        $filter['tanggal_akhir']= Carbon::now()->format('Y-m-d');
+        // dd($tanggal_awal);
+
+        if($request->tanggal_awal != null){
+            $filter['tanggal_awal']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_awal)->format('Y-m-d');
+        }
+        if($request->tanggal_akhir != null){
+            $filter['tanggal_akhir']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->format('Y-m-d');
+        }
+        // dd($filter);
         if( Auth::user()->internalRole->role != null && str_contains(Auth::user()->internalRole->role,'Mandor')||str_contains(Auth::user()->internalRole->role,'Pengamat') || str_contains(Auth::user()->internalRole->role,'Kepala Satuan Unit Pemeliharaan') ){
             if(!Auth::user()->sup_id || !Auth::user()->internalRole->uptd ){
                 // dd(Auth::user()->sup_id);
@@ -106,7 +120,7 @@ class PekerjaanController extends Controller
         }
         $nama_kegiatan_pekerjaan = DB::table('utils_nama_kegiatan_pekerjaan')->get();
         $pekerjaan = DB::table('kemandoran');
-
+        
         $pekerjaan = $pekerjaan->leftJoin('master_ruas_jalan', 'master_ruas_jalan.id', '=', 'kemandoran.ruas_jalan')->select('kemandoran.*', 'master_ruas_jalan.nama_ruas_jalan');
         // $pekerjaan = $pekerjaan->leftJoin('kemandoran_detail_status', 'kemandoran.id_pek', '=','kemandoran_detail_status.id_pek')->select('kemandoran.*', 'master_ruas_jalan.nama_ruas_jalan','kemandoran_detail_status.*');
 
@@ -115,14 +129,26 @@ class PekerjaanController extends Controller
             $pekerjaan = $pekerjaan->where('kemandoran.uptd_id', $uptd_id);
             if(str_contains(Auth::user()->internalRole->role,'Mandor')){
                 $pekerjaan = $pekerjaan->where('kemandoran.user_id',Auth::user()->id);
-            }else if(Auth::user()->sup_id)
+            }else if(Auth::user()->sup_id){
                 $pekerjaan = $pekerjaan->where('kemandoran.sup_id',Auth::user()->sup_id);
+                if(count(Auth::user()->ruas)>0){
+                    $pekerjaan = $pekerjaan->whereIn('ruas_jalan_id',Auth::user()->ruas->pluck('id_ruas_jalan')->toArray());
+                }
+                
+            }
         }
+        // $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2021");
+        
+        $pekerjaan = $pekerjaan->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ]);
+        $pekerjaan = $pekerjaan->where('is_deleted', 0)->latest('tglreal');
+        // dd($request->uptd_filter);
+        if($request->uptd_filter !=null){
+            $pekerjaan = $pekerjaan->where('kemandoran.uptd_id', $request->uptd_filter);
+            $filter['uptd_filter'] =$request->uptd_filter;
+        } 
+        $pekerjaan = $pekerjaan->paginate(500);
         // dd($pekerjaan);
-        $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2021");
-        $pekerjaan = $pekerjaan->where('is_deleted', 0)->latest('tglreal')->get();
-        // dd($pekerjaan);
-
+        
         foreach($pekerjaan as $no =>$data){
             // echo "$data->id_pek<br>";
 
@@ -261,6 +287,7 @@ class PekerjaanController extends Controller
         $not_complete = 0;
 
         $rekaps = DB::table('kemandoran')
+        ->where('kemandoran.is_deleted',0)
         ->leftJoin('kemandoran_detail_status','kemandoran_detail_status.id_pek','=','kemandoran.id_pek')
         ->select('kemandoran.*','kemandoran_detail_status.status',DB::raw('max(kemandoran_detail_status.id ) as status_s'), DB::raw('max(kemandoran_detail_status.id ) as status_s'))
         ->groupBy('kemandoran.id_pek');
@@ -276,6 +303,7 @@ class PekerjaanController extends Controller
         }
 
         $rekaps=$rekaps->get();
+        
         foreach($rekaps as $it){
                     // echo $it->status.' | '.$it->id_pek.'<br>';
 
@@ -308,8 +336,9 @@ class PekerjaanController extends Controller
 
         ];
         $jenis_laporan_pekerjaan =DB::table('utils_jenis_laporan')->get();
-        return view('admin.input.pekerjaan.index', compact('pekerjaan', 'ruas_jalan', 'sup', 'mandor',  'sum_report', 'nama_kegiatan_pekerjaan','jenis_laporan_pekerjaan'));
+        return view('admin.input.pekerjaan.index', compact('pekerjaan', 'ruas_jalan', 'sup', 'mandor',  'sum_report', 'nama_kegiatan_pekerjaan','jenis_laporan_pekerjaan','filter'));
     }
+
     public function statusData($id){
         $adjustment=DB::table('kemandoran_detail_status')
         ->Join('kemandoran','kemandoran.id_pek','=','kemandoran_detail_status.id_pek')->where('kemandoran_detail_status.id_pek',$id)
@@ -389,8 +418,13 @@ class PekerjaanController extends Controller
     public function createData(Request $req)
     {
         
-        $pekerjaan = $req->except(['_token']);
+        $pekerjaan = $req->except(['_token','tanggal_awal','tanggal_akhir','uptd_filter']);
         // dd($pekerjaan);
+        if (strpos($req->lat, "-") !== 0) {
+            $pekerjaan['lat'] = '-' . $req->lat;
+        } else $pekerjaan['lat'] = $req->lat;
+        // dd($pekerjaan);
+      
         $pekerjaan['uptd_id'] = $req->uptd_id == '' ? 0 : $req->uptd_id;
         if($pekerjaan['uptd_id'])
             $pekerjaan['uptd_id'] = str_replace('uptd', '', $pekerjaan['uptd_id']);
@@ -453,6 +487,7 @@ class PekerjaanController extends Controller
         $pekerjaan['id_pek'] = 'CK-' . str_pad($nomor, 6, "0", STR_PAD_LEFT);
 
         DB::table('kemandoran')->insert($pekerjaan);
+        storeLogActivity(declarLog(1, 'Pemeliharaan Pekerjaan', $pekerjaan['id_pek'], 1 ));
 
         $color = "success";
         $msg = "Berhasil Menambah Data Pekerjaan";
@@ -556,6 +591,8 @@ class PekerjaanController extends Controller
 
         $color = "success";
         $msg = "Berhasil Mengubah Data";
+        storeLogActivity(declarLog(2, 'Pemeliharaan Pekerjaan', $req->id_pek, 1 ));
+
         return redirect(route('getDataPekerjaan'))->with(compact('color', 'msg'));
     }
     public function materialData($id)
@@ -717,6 +754,7 @@ class PekerjaanController extends Controller
     
             $insert = $detail_adjustment->insert($data);
         }
+        storeLogActivity(declarLog(1, 'Detail Pemeliharaan Pekerjaan', $req->id_pek, 1 ));
 
         $color = "success";
         $msg = "Berhasil Menambah Data Bahan Material";
@@ -859,6 +897,8 @@ class PekerjaanController extends Controller
 
         $color = "success";
         $msg = "Berhasil Mengubah Data Material";
+        storeLogActivity(declarLog(2, 'Detail Pemeliharaan Pekerjaan', $req->id_pek, 1 ));
+
         return redirect(route('getDataPekerjaan'))->with(compact('color', 'msg'));
     }
     public function show($id)
@@ -872,6 +912,7 @@ class PekerjaanController extends Controller
 
         $pekerjaan = $pekerjaan->leftJoin('master_ruas_jalan', 'master_ruas_jalan.id_ruas_jalan', '=', 'kemandoran.ruas_jalan_id')->select('kemandoran.*', 'master_ruas_jalan.nama_ruas_jalan');
         // $pekerjaan = $pekerjaan->leftJoin('kemandoran_detail_status', 'kemandoran.id_pek', '=','kemandoran_detail_status.id_pek')->select('kemandoran.*', 'master_ruas_jalan.nama_ruas_jalan','kemandoran_detail_status.*');
+        
         if (Auth::user() && Auth::user()->internalRole->uptd) {
             $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
             $pekerjaan = $pekerjaan->where('kemandoran.uptd_id', $uptd_id);
@@ -881,8 +922,10 @@ class PekerjaanController extends Controller
                 $pekerjaan = $pekerjaan->where('kemandoran.sup_id',Auth::user()->sup_id);
         }
 
-        $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2021");
+        $pekerjaan = $pekerjaan->whereRaw("YEAR(tanggal) BETWEEN 2021 AND 2022");
         $pekerjaan = $pekerjaan->where('is_deleted', 0)->latest('tglreal')->get();
+        // dd($pekerjaan);
+
         foreach($pekerjaan as $no =>$data){
             // echo "$data->id_pek<br>";
             $data->status = "";
@@ -930,7 +973,6 @@ class PekerjaanController extends Controller
 
 
         $pekerjaan = $pekerjaan->first();
-        // dd($pekerjaan);
         // if($pekerjaan->keterangan_status_lap && $pekerjaan->status->adjustment_user_id != Auth::user()->id){
         //     return back()->with(compact('color', 'msg'));
         // }
@@ -951,7 +993,7 @@ class PekerjaanController extends Controller
             $jum_bahan = "jum_bahan$i";
             $nama_bahan = "nama_bahan$i";
             $satuan = "satuan$i";
-            if($material->$jum_bahan != null){
+            if(isset($material->$jum_bahan)){
                 $pekerjaan->nama_bahan[] = $material->$nama_bahan;
                 $pekerjaan->jum_bahan[] = $material->$jum_bahan;
                 $pekerjaan->satuan[] = $material->$satuan;
@@ -1118,11 +1160,15 @@ class PekerjaanController extends Controller
                 }
                 $color = "success";
                 $msg = "Data Berhasil Diupdate!";
+                storeLogActivity(declarLog(5, 'Pemeliharaan Pekerjaan', $id, 1 ));
+
                 return redirect(route('jugmentDataPekerjaan', $id))->with(compact('color','msg'));
             }else{
                 //redirect dengan pesan error
                 $color = "danger";
                 $msg = "Data Tidak ada yang Diupdate!";
+                storeLogActivity(declarLog(5, 'Pemeliharaan Pekerjaan', $id ));
+
                 return redirect(route('jugmentDataPekerjaan', $id))->with(compact('color', 'msg'));
             }
 
@@ -1132,15 +1178,38 @@ class PekerjaanController extends Controller
     public function deleteData($id)
     {
         // $temp = DB::table('kemandoran')->where('id',$id)->first();
-        $temp = DB::table('bahan_material')->where('id_pek', $id)->delete();
-        $param['is_deleted'] = 1;
-        $old = DB::table('kemandoran')->where('id_pek', $id)->update($param);
+      
+        $old = Pemeliharaan::firstOrNew(['id_pek'=> $id]);
+        // dd($old);
+        $old->is_deleted = 1;
+        $old->save();
+        storeLogActivity(declarLog(3, 'Pemeliharaan Pekerjaan', $old->id_pek, 1 ));
+        // dd($old->id_pek);
 
         $color = "success";
         $msg = "Berhasil Menghapus Data Pekerjaan";
         return redirect(route('getDataPekerjaan'))->with(compact('color', 'msg'));
     }
+    public function getPekerjaanTrash()
+    {
+        $pekerjaan = Pemeliharaan::where('is_deleted',1)->latest('tglreal')->paginate(700);
+        // dd($pekerjaan);
+        return view('admin.input.pekerjaan.trash', compact('pekerjaan'));
 
+    }
+    public function restoreData($id)
+    {
+        
+        $old = Pemeliharaan::firstOrNew(['id_pek'=> $id]);
+    //    dd($old);
+        $old->is_deleted = 0;
+        $old->save();
+        storeLogActivity(declarLog(4, 'Pemeliharaan Pekerjaan', $old->id_pek, 1 ));
+        
+        $color = "success";
+        $msg = "Berhasil Mengembalikan Data Pekerjaan";
+        return redirect(route('getPekerjaanTrash'))->with(compact('color', 'msg'));
+    }
     public function submitData($id)
     {
         // $temp = DB::table('kemandoran')->where('id',$id)->first();
@@ -1159,6 +1228,154 @@ class PekerjaanController extends Controller
             // dd($get_kd->kd_sup);
         }
         return view('admin.input.pekerjaan.laporan-pekerjaan');
+    }
+    public function laporanEntry(Request $request){
+        $data = UPTD::whereBetween('id',[1,6]);
+        $filter=[
+            'tanggal_awal' => $request->tanggal_awal,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'uptd_filter' => 'all'
+
+        ];
+        if($request->uptd_filter != null || Auth::user()->internalRole->uptd != null){
+            if(Auth::user()->internalRole->uptd != null){
+                $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
+                $data= $data->where('id', $uptd_id);
+                $filter['uptd_filter']= $uptd_id;
+
+            }else{
+                $data= $data->where('id', $request->uptd_filter);
+                $filter['uptd_filter']= $request->uptd_filter;
+
+            }
+        }
+        $data = $data->get();
+        // dd($data->library_sup->toArray());
+        
+        // dd($filter);
+        storeLogActivity(declarLog(6, 'Rekap Entry Pemeliharaan', $request->tanggal_awal.' s/d '.$request->tanggal_akhir , 1 ));
+
+        return view('pdf.laporan_summary_pekerjaan',compact('data','filter'));
+    }
+    public function laporanDetailEntry($filter_uptd,$tanggal_awal,$tanggal_akhir){
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $section = $phpWord->addSection();
+        $header = array('size' => 12, 'bold' => true);
+        $th = array('size' => 10, 'bold' => true, 'align' => 'center', 'alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $centered = array('valign' => 'center', 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'bgColor' => 'FFFF00');
+        $cols = 5;
+        $rows = 10;
+
+        if($filter_uptd == 'all'){
+            $data = UPTD::whereBetween('id',[1,6])->get();
+        }else{
+            $data = UPTD::find($filter_uptd);
+        }
+        // dd($data);
+        $pointer = 0;
+        // $section->addText('Basic table', $header);
+        $fancyTableStyle = array('borderSize' => 6, 'borderColor' => '999999');
+        
+
+
+        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
+        $cellRowContinue = array('vMerge' => 'continue');
+        $cellColSpan = array('gridSpan' => 2, 'valign' => 'center');
+        $cellHCentered = array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $cellVCentered = array('valign' => 'center');
+
+        foreach($data as $uptd){
+            if($uptd->id == 1){
+                $role = 'Mandor - UPTD 1';
+                $role_id = 52;
+                $text = "I";
+            }else if($uptd->id == 2){
+                $section->addPageBreak();
+                $role = 'Mandor - UPTD 2';
+                $role_id = 91;
+                $text = "II";
+            }else if($uptd->id == 3){
+                $section->addPageBreak();
+                $role = 'Mandor - UPTD 3';
+                $role_id = 61;
+                $text = "III";
+            }else if($uptd->id == 4){
+                $section->addPageBreak();
+                $role = 'Mandor - UPTD 4';
+                $role_id = 70;
+                $text = "IV";
+            }else if($uptd->id == 5){
+                $section->addPageBreak();
+                $role = 'Mandor - UPTD 5';
+                $role_id = 77;
+                $text = "V";
+            }else if($uptd->id == 6){
+                $section->addPageBreak();
+                $role = 'Mandor - UPTD 6';
+                $role_id = 84;
+                $text = "VI";
+            }
+            $temp[$pointer]['uptd'] = $uptd->id;
+            $pointer1 = 0;
+            // $section->addText('');
+            
+            $section->addText('Detail UPTD Pengelolaan Jalan dan Jembatan Wilayah Pelayanan - '. $text, $header);
+            $spanTableStyleName = 'Detail UPTD'. $uptd->id;
+
+            $phpWord->addTableStyle($spanTableStyleName, $fancyTableStyle);
+            $table = $section->addTable($spanTableStyleName);
+            $table->addRow();
+            $table->addCell(2400)->addTextRun($centered)->addText("SPPJJ",$th);
+            $table->addCell(null)->addTextRun($centered)->addText("MANDOR",$th);
+            $table->addCell(5000)->addTextRun($centered)->addText("RUAS",$th);
+            $table->addCell(null)->addTextRun($centered)->addText("ENTRY",$th);
+            $table->addCell(null)->addTextRun($centered)->addText("TOTAL",$th);
+            foreach($uptd->library_sup as $sup){
+                $table->addRow();
+               
+                $cell1 = $table->addCell(2400, $cellRowSpan);
+                $textrun1 = $cell1->addTextRun($cellHCentered);
+                $textrun1->addText($sup->name);
+
+                $cell5 = $table->addCell(null, $cellRowSpan);
+                $textrun5 = $cell5->addTextRun($cellHCentered);
+                $textrun5->addText(count($sup->library_user->where('internal_role_id',$role_id)));
+
+                $cell2 = $table->addCell(5000);
+                $textrun2 = $cell2->addTextRun();
+                $textrun2->addText( $sup->library_ruas[0]->nama_ruas_jalan );
+
+                $cell3 = $table->addCell(null);
+                $textrun3 = $cell3->addTextRun($cellHCentered);
+                $textrun3->addText( count($sup->library_ruas[0]->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ])) );
+                
+                $table->addCell(null, $cellRowSpan)->addText(count($sup->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ])), null, $cellHCentered);
+
+                
+                for ($m=1 ; $m < count($sup->library_ruas) ;$m++){
+                    $table->addRow();
+                    $table->addCell(null, $cellRowContinue);
+                    $table->addCell(null, $cellRowContinue);
+                    $table->addCell(null)->addText($sup->library_ruas[$m]->nama_ruas_jalan, null);
+                    $table->addCell(null, $cellVCentered)->addText(count($sup->library_ruas[$m]->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ])), null, $cellHCentered);
+                    $table->addCell(null, $cellRowContinue);
+                    
+                }
+                $temp[$pointer][$pointer1]['sppjj'] = $sup->name;
+                $temp[$pointer][$pointer1]['mandor'] = count($sup->library_user->where('internal_role_id',$role_id));
+                $temp[$pointer][$pointer1]['total'] = count($sup->library_pemeliharaan->whereBetween('tanggal', [$tanggal_awal , $tanggal_akhir ]));
+
+                $pointer1++;
+            }
+            $pointer++;
+        }
+        
+        $fileName = $tanggal_awal.'-'.$tanggal_akhir;
+        $phpWord->save($fileName.'.docx');
+
+        return response()->download($fileName.'.docx')->deleteFileAfterSend(true);
+
     }
     public function arrOne($var1,$var2,$var3){
         $arrOne = (object)[
@@ -1188,9 +1405,12 @@ class PekerjaanController extends Controller
         $kemandoran = DB::table('kemandoran')->where('ruas_jalan_id',$request->ruas_jalan);
         if($kemandoran->exists()){
             $kemandoran = $kemandoran->whereBetween('tanggal',[$request->start_date,$request->end_date])->get()->toArray();
-            if(count($kemandoran) == 0)
+            if(count($kemandoran) == 0){
+                storeLogActivity(declarLog(6, 'Pemeliharaan (BHS)', '' ));
                 return back()->with(compact('color', 'msg'));
+            }
         }else{
+            storeLogActivity(declarLog(6, 'Pemeliharaan (BHS)', '' ));
             return back()->with(compact('color', 'msg'));
         }
         $x = 0;
@@ -1313,7 +1533,7 @@ class PekerjaanController extends Controller
 
                 //gabungkan penghambat
                 if($laporan[$item][$item1]->penghambat){
-                    for($v = 0 ; $v < count($laporan[$item][$item1]->tenaga_kerja); $v++){
+                    for($v = 0 ; $v < count($laporan[$item][$item1]->penghambat); $v++){
                         $temppenghambat[$item]->jenis_gangguan[] =  $laporan[$item][$item1]->penghambat[$v]->jenis_gangguan;
                         $temppenghambat[$item]->start_time[] =  $laporan[$item][$item1]->penghambat[$v]->start_time;
                         $temppenghambat[$item]->end_time[] =  $laporan[$item][$item1]->penghambat[$v]->end_time;
@@ -1490,11 +1710,13 @@ class PekerjaanController extends Controller
 
 
         }
-        // dd($temporari);
+        
         // dd($laporan);
 
         // dd(count($laporan));
         // dd($ruas);
+        storeLogActivity(declarLog(6, 'Pemeliharaan (BHS)',  $sup.'/'.$kemandoran[0]->ruas_jalan, 1 ));
+
         return view('pdf.laporan_pekerjaan', compact('temporari'));
     }
     public function sqlreportrekap($id){
@@ -1522,7 +1744,7 @@ class PekerjaanController extends Controller
             'uptd6'=>$getuptd6
         ];
 
-        dd($report);
+        // dd($report);
     }
 
     public function json(Request $request)

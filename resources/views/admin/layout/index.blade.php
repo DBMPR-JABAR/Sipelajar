@@ -4,7 +4,7 @@
 <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
 <head>
-    <title>Temanjabar &middot; @yield('title')</title>
+    <title>SIPELAJAR &middot; @yield('title')</title>
 
     <!--[if lt IE 10]>
   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>

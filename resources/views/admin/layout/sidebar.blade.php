@@ -93,7 +93,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (hasAccess(Auth::user()->internal_role_id, 'Rawan Bencana', 'View'))
+                            {{-- @if (hasAccess(Auth::user()->internal_role_id, 'Rawan Bencana', 'View'))
                                 <li class="{{ Request::segment(3) == 'rawanbencana' ? 'active' : '' }}">
                                     <a href="{{ url('admin/master-data/rawanbencana') }}"
                                         class="waves-effect waves-dark">
@@ -107,14 +107,14 @@
                                         <span class="pcoded-mtext">CCTV</span>
                                     </a>
                                 </li>
-                            @endif
-                            @if (hasAccess(Auth::user()->internal_role_id, 'Icon Rawan Bencana', 'View'))
+                            @endif --}}
+                            {{-- @if (hasAccess(Auth::user()->internal_role_id, 'Icon Rawan Bencana', 'View'))
                                 <li class="{{ Request::segment(3) == 'icon' ? 'active' : '' }}">
                                     <a href="{{ url('admin/master-data/icon') }}" class="waves-effect waves-dark">
                                         <span class="pcoded-mtext">Icon Rawan Bencana</span>
                                     </a>
                                 </li>
-                            @endif
+                            @endif --}}
 
                             @if (hasAccess(Auth::user()->internal_role_id, 'UPTD', 'View'))
                                 <li class="{{ Request::segment(3) == 'uptd' ? 'active' : '' }}">
@@ -130,13 +130,13 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (hasAccess(Auth::user()->internal_role_id, 'Tipe Bangunan Atas', 'View'))
+                            {{-- @if (hasAccess(Auth::user()->internal_role_id, 'Tipe Bangunan Atas', 'View'))
                                 <li class="{{ Request::segment(3) == 'tipebangunanatas' ? 'active' : '' }}">
                                     <a href="{{ route('tipebangunanatas.index') }}" class="waves-effect waves-dark">
                                         <span class="pcoded-mtext">Tipe Bangunan Atas</span>
                                     </a>
                                 </li>
-                            @endif
+                            @endif --}}
                             @if (hasAccess(Auth::user()->internal_role_id, 'Jenis Laporan', 'View'))
                                 <li class="{{ Request::segment(3) == 'jenis_laporan' ? 'active' : '' }}">
                                     <a href="{{ url('admin/master-data/jenis_laporan') }}"
@@ -185,7 +185,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if (hasAccess(Auth::user()->internal_role_id, 'Rumija', 'View'))
+                            {{-- @if (hasAccess(Auth::user()->internal_role_id, 'Rumija', 'View'))
                             <li class="{{ Request::segment(3) == 'rumija' ? 'active' : '' }}">
                                 <a href="{{ url('admin/master-data/rumija') }}" class="waves-effect waves-dark">
                                     <span class="pcoded-mtext">Rumija</span>
@@ -208,7 +208,7 @@
                                                 </a>
                                             </li>
                                         @endif
-                                        {{-- @if (hasAccess(Auth::user()->internal_role_id, 'Metode Pengujian Labkon', 'View'))
+                                        @if (hasAccess(Auth::user()->internal_role_id, 'Metode Pengujian Labkon', 'View'))
                                         <li
                                             class="{{ Request::segment(4) == 'metode_pengujian_labkon' ? 'active' : '' }}">
                                             <a href="{{ url('admin/master-data/labkon/metode_pengujian_labkon') }}"
@@ -216,10 +216,10 @@
                                                 <span class="pcoded-mtext">Metode Pengujian</span>
                                             </a>
                                         </li>
-                                    @endif --}}
+                                    @endif
                                     </ul>
                                 </li>
-                            @endif
+                            @endif --}}
                         </ul>
                     </li>
                 </ul>

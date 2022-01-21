@@ -33,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
         date_default_timezone_set('Asia/Jakarta');
@@ -197,6 +198,67 @@ class AppServiceProvider extends ServiceProvider
                 
             }
             $view->with(['utils_notif'=> $utils_notif, 'jumlah_notif_internal'=>$jumlah_notif_internal, 'read_notif_internal'=>$read_notif_internal]);
+        });
+
+        View::composer('*', function ($view) {
+            if(Auth::user()){
+                $approve = 0;
+                $reject = 0;
+                $submit = 0;
+                $not_complete = 0;
+                // dd(Carbon::today());
+                $rekaps = DB::table('kemandoran')
+                ->where('kemandoran.is_deleted',0)
+                ->whereDate('kemandoran.tglreal',Carbon::today())
+                ->leftJoin('kemandoran_detail_status','kemandoran_detail_status.id_pek','=','kemandoran.id_pek')
+                ->select('kemandoran.*','kemandoran_detail_status.status',DB::raw('max(kemandoran_detail_status.id ) as status_s'), DB::raw('max(kemandoran_detail_status.id ) as status_s'))
+                ->groupBy('kemandoran.id_pek');
+                // ->where('kemandoran_detail_status.status','Approved')
+        
+                if (Auth::user() && Auth::user()->internalRole->uptd) {
+                    $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
+                    $rekaps = $rekaps->where('kemandoran.uptd_id', $uptd_id);
+                    if(str_contains(Auth::user()->internalRole->role,'Mandor')){
+                        $rekaps = $rekaps->where('kemandoran.user_id',Auth::user()->id);
+                    }else if(Auth::user()->sup_id)
+                        $rekaps = $rekaps->where('kemandoran.sup_id',Auth::user()->sup_id);
+                }
+        
+                $rekaps=$rekaps->get();
+                // dd($rekaps);
+                foreach($rekaps as $it){
+                            // echo $it->status.' | '.$it->id_pek.'<br>';
+        
+                    $it->status_material = DB::table('bahan_material')->where('id_pek', $it->id_pek)->exists();
+        
+                    $rekaplap = DB::table('kemandoran_detail_status')->where('id', $it->status_s)->pluck('status')->first();
+                    $it->status = $rekaplap;
+                    if(($it->status == "Approved"||$it->status == "Rejected" ||$it->status == "Edited") || $it->status_material){
+                        if($it->status == "Approved"){
+                            $approve+=1;
+                            // echo $it->status.' | '.$it->id_pek.'<br>';
+                        }else if($it->status == "Rejected" ||$it->status == "Edited"){
+                            $reject+=1;
+                            // echo $it->status.' | '.$it->id_pek.'<br>';
+                        }else
+                            $submit+=1;
+        
+                    }else
+                        $not_complete+=1;
+        
+                    // echo $it->id_pek.' | '.$it->status.'<br>';
+        
+                }
+                    // dd($rekaps);
+                $total_report =[
+                    "approve" => $approve,
+                    "reject" => $reject,
+                    "submit" => $submit,
+                    "not_complete" => $not_complete
+                ];
+                // dd($total_report);
+                $view->with('total_report', $total_report);
+            }
         });
         
 

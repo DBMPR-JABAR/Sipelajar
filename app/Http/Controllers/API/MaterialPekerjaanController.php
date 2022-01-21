@@ -149,6 +149,19 @@ class MaterialPekerjaanController extends Controller
                     $kemandoran = DB::table('kemandoran')->where('id_pek', $request->id_pek);
                     $kemandoranUpdate['mail'] = 1;
                     $kemandoran->update($kemandoranUpdate);
+                    // $this->user->name;
+
+                    $detail_adjustment =  DB::table('kemandoran_detail_status');
+                    $data['pointer'] = 0;
+                    $data['adjustment_user_id'] = $this->user->id;
+                    $data['status'] = "Submitted";
+                    $data['id_pek'] = $request->id_pek;
+                    $data['updated_at'] = Carbon::now();
+                    $data['created_at'] = Carbon::now();
+                    $data['created_by'] = $this->user->id;
+                    $insert = $detail_adjustment->insert($data);
+                    storeLogActivity(declarLog(1, 'Detail Pemeliharaan Pekerjaan', $request->id_pek, 1 ));
+                    
                     $this->response['status'] = 'success';
 
                     $this->response['data']['message'] = 'Berhasil Menambah Material Pekerjaan';

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+// ufSjz8hjzvtyKr_zBXsM
 
 Route::get('test', function () {
     return view('admin.layout.index');
@@ -91,6 +92,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::resource('/announcement', 'AnnouncementController');
 
     Route::get('profile/{id}', 'DetailUserController@show')->name('editProfile');
+    Route::get('activity/{id}', 'LandingController@getLogUser')->name('log.user.index');
+
     Route::get('edit/profile/{id}', 'DetailUserController@edit')->name('editDetailProfile');
     Route::put('edit/profile/{id}', 'DetailUserController@update');
     Route::post('user/account/{id}', 'DetailUserController@updateaccount');
@@ -257,8 +260,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             Route::post('update-menu/update', 'MasterData\UserController@updateMenu')->name('updateMenu');
             Route::get('destroy-menu/{id}', 'MasterData\UserController@destroyMenu')->name('deleteMenu');
 
-
-
             Route::get('role-akses', 'MasterData\UserController@getDaftarRoleAkses')->name('getRoleAkses');
             Route::get('role-akses/create', 'MasterData\UserController@createRoleAccess')->name('createRoleAccess');
             Route::post('role-akses/store', 'MasterData\UserController@storeRoleAccess')->name('storeRoleAccess');
@@ -387,6 +388,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::group(['prefix' => 'pekerjaan'], function () {
 
             Route::get('/', 'InputData\PekerjaanController@getData')->name('getDataPekerjaan');
+      
             Route::get('edit/{id}', 'InputData\PekerjaanController@editData')->name('editDataPekerjaan');
             Route::get('status/{id}', 'InputData\PekerjaanController@statusData')->name('detailStatusPekerjaan');
 
@@ -403,8 +405,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             Route::post('jugment/{id}', 'InputData\PekerjaanController@jugmentLaporan')->name('jugmentLaporanMandor');
 
             Route::get('laporan', 'InputData\PekerjaanController@laporanPekerjaan')->name('LaporanPekerjaan');
+            Route::post('laporan/entry', 'InputData\PekerjaanController@laporanEntry')->name('LaporanRekapEntry');
+            Route::get('laporan/entry/detail-uptd/{uptd}/{tanggal_awal}/{tanggal_akhir}', 'InputData\PekerjaanController@laporanDetailEntry')->name('LaporanRekapEntryDetail');
+            
             Route::post('laporan', 'InputData\PekerjaanController@generateLaporanPekerjaan')->name('generateLapPekerjaan');
-
 
             Route::get('json', 'InputData\PekerjaanController@json')->name('getJsonDataBencana');
         });
@@ -469,9 +473,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::prefix('bankeu')->group(function () {
             Route::get('delete/{id}', 'InputData\BantuanKeuanganController@destroy');
             Route::get('get_ruas_jalan_by_geo_id/{id}', 'InputData\BantuanKeuanganController@getRuasJalanByGeoId')->name('getRuasJalanByGeoId');
+            Route::prefix('progres')->group(function () {
+                Route::get('/', 'InputData\BantuanKeuanganController@progres_index')->name('bankeu.progres');
+                Route::get('/verifikasi/{id}/{target}', 'InputData\BantuanKeuanganController@progres_verifikasi')->name('bankeu.verifikasi');
+                Route::post('/verifikasi/{id}/{target}/edit', 'InputData\BantuanKeuanganController@progres_verifikasi_update')->name('bankeu.verifikasi.update');
+            });
         });
         Route::resource('bankeu', 'InputData\BantuanKeuanganController');
-
 
         Route::prefix('dpa')->group(function () {
             Route::get('delete/{id}', 'InputData\DPAController@destroy');
@@ -486,7 +494,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         // Route::get('/add', 'LaporController@create')->name('addLapor');
         // Route::get('edit/{id}', 'LaporController@edit')->name('editLapor');
         // Route::post('/create', 'LaporController@store')->name('createLapor');
-        // Route::post('update', 'LaporController@update')->name('updateLapor');
+        Route::get('update/{no_aduan}/{status}', 'LaporController@update_jqr')->name('updateLaporJQR');
         // Route::get('delete/{id}', 'LaporController@delete')->name('deleteLapor');
         Route::get('json', 'LaporController@json')->name('getJsonLapor');
 
@@ -499,7 +507,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::get('laporan-kerusakan', 'MonitoringController@getLaporan');
     });
 
-
 });
 Route::get('map/target-realisasi', 'ProyekController@getTargetRealisasiAPI')->name('api.targetrealisasi');
 Route::get('map/kendali-kontrak', 'ProyekController@getProyekKontrakAPI')->name('api.proyekkontrak');
@@ -510,7 +517,6 @@ Route::view('map/kemantapan-jalan', 'admin.map.map-kemantapan-jalan')->name('map
 Route::view('map/pemetaan_laporan_masyarakat', 'admin.map.pemetaan_laporan_masyarakat')->name('map.pemetaanLaporanMasyarakat');
 
 Route::post('getSupData', 'MonitoringController@getSupData')->name('getSupData.filter');
-
 
 Route::view('debug/mail/disposisi', 'mail.notifikasiDisposisi');
 Route::view('debug/mail/tindaklanjut', 'mail.notifikasiTindakLanjut');
@@ -527,7 +533,6 @@ Route::view('map-progress-mingguan', 'debug.map-progress-mingguan');
 Route::view('map-ruas-jalan', 'debug.map-ruas-jalan');
 
 Route::get('debug', 'Backup\DebugController@debug');
-
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('v1')->group(function () {
