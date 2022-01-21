@@ -97,7 +97,6 @@ class PekerjaanController extends Controller
        
         $filter['tanggal_awal']= Carbon::now()->subDays(14)->format('Y-m-d');
         $filter['tanggal_akhir']= Carbon::now()->format('Y-m-d');
-        // dd($tanggal_awal);
 
         if($request->tanggal_awal != null){
             $filter['tanggal_awal']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_awal)->format('Y-m-d');
@@ -118,6 +117,7 @@ class PekerjaanController extends Controller
 
             }
         }
+
         $nama_kegiatan_pekerjaan = DB::table('utils_nama_kegiatan_pekerjaan')->get();
         $pekerjaan = DB::table('kemandoran');
         
@@ -191,6 +191,7 @@ class PekerjaanController extends Controller
 
 
         }
+
         // dd(Carbon::now());
         // print_r(Auth::user()->internal_role_id);
         // dd($pekerjaan);
@@ -276,6 +277,7 @@ class PekerjaanController extends Controller
             }
 
         }
+
         // $kode_otp = rand(100000, 999999);
         // echo Auth::user()->internalRole->id;
         // echo Auth::user()->sup;
@@ -302,31 +304,31 @@ class PekerjaanController extends Controller
                 $rekaps = $rekaps->where('kemandoran.sup_id',Auth::user()->sup_id);
         }
 
-        $rekaps=$rekaps->get();
+        // $rekaps=$rekaps->get();
         
-        foreach($rekaps as $it){
-                    // echo $it->status.' | '.$it->id_pek.'<br>';
+        // foreach($rekaps as $it){
+        //             // echo $it->status.' | '.$it->id_pek.'<br>';
 
-            $it->status_material = DB::table('bahan_material')->where('id_pek', $it->id_pek)->exists();
+        //     $it->status_material = DB::table('bahan_material')->where('id_pek', $it->id_pek)->exists();
 
-            $rekaplap = DB::table('kemandoran_detail_status')->where('id', $it->status_s)->pluck('status')->first();
-            $it->status = $rekaplap;
-            if(($it->status == "Approved"||$it->status == "Rejected" ||$it->status == "Edited") || $it->status_material){
-                if($it->status == "Approved"){
-                    $approve+=1;
-                    // echo $it->status.' | '.$it->id_pek.'<br>';
-                }else if($it->status == "Rejected" ||$it->status == "Edited"){
-                    $reject+=1;
-                    // echo $it->status.' | '.$it->id_pek.'<br>';
-                }else
-                    $submit+=1;
+        //     $rekaplap = DB::table('kemandoran_detail_status')->where('id', $it->status_s)->pluck('status')->first();
+        //     $it->status = $rekaplap;
+        //     if(($it->status == "Approved"||$it->status == "Rejected" ||$it->status == "Edited") || $it->status_material){
+        //         if($it->status == "Approved"){
+        //             $approve+=1;
+        //             // echo $it->status.' | '.$it->id_pek.'<br>';
+        //         }else if($it->status == "Rejected" ||$it->status == "Edited"){
+        //             $reject+=1;
+        //             // echo $it->status.' | '.$it->id_pek.'<br>';
+        //         }else
+        //             $submit+=1;
 
-            }else
-                $not_complete+=1;
+        //     }else
+        //         $not_complete+=1;
 
-            // echo $it->id_pek.' | '.$it->status.'<br>';
+        //     // echo $it->id_pek.' | '.$it->status.'<br>';
 
-        }
+        // }
             // dd($rekaps);
         $sum_report =[
             "approve" => $approve,
@@ -335,6 +337,7 @@ class PekerjaanController extends Controller
             "not_complete" => $not_complete
 
         ];
+        
         $jenis_laporan_pekerjaan =DB::table('utils_jenis_laporan')->get();
         return view('admin.input.pekerjaan.index', compact('pekerjaan', 'ruas_jalan', 'sup', 'mandor',  'sum_report', 'nama_kegiatan_pekerjaan','jenis_laporan_pekerjaan','filter'));
     }
