@@ -97,7 +97,7 @@ class PekerjaanController extends Controller
        
         $filter['tanggal_awal']= Carbon::now()->subDays(14)->format('Y-m-d');
         $filter['tanggal_akhir']= Carbon::now()->format('Y-m-d');
-
+        $filter['uptd_filter']=null;
         if($request->tanggal_awal != null){
             $filter['tanggal_awal']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_awal)->format('Y-m-d');
         }
@@ -123,8 +123,10 @@ class PekerjaanController extends Controller
         $not_complete = 0;
 
         $pekerjaan = Pemeliharaan::where('is_deleted', 0)->latest('tglreal');
+        
         // $pekerjaan = $pekerjaan->where('id_pek','CK-014654');
         $pekerjaan = $pekerjaan->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ]);
+        
         if (Auth::user() && Auth::user()->internalRole->uptd) {
             $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
             $pekerjaan = $pekerjaan->where('uptd_id', $uptd_id);
@@ -137,6 +139,10 @@ class PekerjaanController extends Controller
                 }
                 
             }
+        }else if($request->uptd_filter != null){
+            // dd($request->uptd_filter);
+            $pekerjaan = $pekerjaan->where('uptd_id', $request->uptd_filter);
+            $filter['uptd_filter'] = $request->uptd_filter;
         }
         $pekerjaan = $pekerjaan->paginate(250);
         $kemandoran = DB::table('kemandoran')->whereBetween('tanggal', [$filter['tanggal_awal'], $filter['tanggal_akhir']]);
