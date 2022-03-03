@@ -19,4 +19,16 @@ class SUP extends Model
     {
         return $this->hasMany('App\Model\Transactional\RuasJalan', 'kd_sppjj','kd_sup');
     }
+    public function survei_lubang()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubang\Survei', 'sup_id');
+    }
+    public function penanganan_lubang()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubang\Penanganan', 'sup_id');
+    }
+    public function rencana_penanganan_lubang()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubang\RencanaPenanganan', 'sup_id');
+    }
 }

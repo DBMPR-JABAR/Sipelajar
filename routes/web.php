@@ -487,6 +487,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::resource('dpa', 'InputData\DPAController');
 
         Route::view('master_ruas_jalan', 'admin.input_data.master_ruas_jalan.index');
+        Route::prefix('sapu-lobang')->group(function () {
+            Route::get('/', 'InputData\SapuLobangController@index')->name('sapu-lobang.index');
+            Route::post('/rekapitulasi', 'InputData\SapuLobangController@rekapitulasi')->name('sapu-lobang.rekapitulasi');
+
+        });
+
     });
 
     Route::group(['prefix' => 'lapor'], function () {

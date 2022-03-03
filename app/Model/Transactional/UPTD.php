@@ -15,4 +15,8 @@ class UPTD extends Model
     {
         return $this->hasMany('App\Model\Transactional\PekerjaanPemeliharaan', 'uptd_id')->where('is_deleted', '!=', 1);
     }
+    public function library_ruas()
+    {
+        return $this->hasMany('App\Model\Transactional\RuasJalan', 'uptd_id');
+    }
 }

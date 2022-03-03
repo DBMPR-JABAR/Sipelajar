@@ -268,6 +268,14 @@
                                     </a>
                                 </li>
                             @endif
+                        
+                                <li class="{{ Request::segment(3) == 'sapu-lobang' ? 'active' : '' }}">
+                                    <a href="{{ route('sapu-lobang.index') }}"
+                                        class="waves-effect waves-dark">
+                                        <span class="pcoded-mtext">Sapu Lobang</span>
+                                    </a>
+                                </li>
+                          
                            
                         </ul>
                     </li>
