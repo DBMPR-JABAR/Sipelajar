@@ -55,9 +55,14 @@ class SapuLobangController extends Controller
             $filter['rencana_akhir1']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->addDays(7)->format('Y-m-d');
             $filter['rencana_awal']= Carbon::parse($filter['rencana_awal1'])->formatLocalized('%d-%b');
             $filter['rencana_akhir']=  Carbon::parse($filter['rencana_akhir1'])->formatLocalized('%d-%b');
+            $filter['tahap1_awal']=  Carbon::createFromFormat('Y-m-d', $filter['rencana_awal1'])->format('Y-m-d');
+            $filter['tahap1_akhir']=  Carbon::createFromFormat('Y-m-d', $filter['rencana_awal1'])->addDays(2)->format('Y-m-d');
+            $filter['tahap2_awal']=  Carbon::createFromFormat('Y-m-d', $filter['tahap1_akhir'])->addDays(1)->format('Y-m-d');
+            $filter['tahap2_akhir']=  Carbon::createFromFormat('Y-m-d', $filter['tahap1_akhir'])->addDays(2)->format('Y-m-d');
+            $filter['tahap3_awal']=  Carbon::createFromFormat('Y-m-d', $filter['tahap2_akhir'])->addDays(1)->format('Y-m-d');
+            $filter['tahap3_akhir']=  Carbon::createFromFormat('Y-m-d', $filter['tahap2_akhir'])->addDays(2)->format('Y-m-d');    
 
         }
-        
         if($request->uptd_filter == null){
             // dd('ok');
             if (Auth::user() && Auth::user()->internalRole->uptd) {
@@ -188,6 +193,10 @@ class SapuLobangController extends Controller
                 $lubang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal1'] , $filter['tanggal_akhir1'] ])->sum('jumlah');
                 $total = $sisa+$lubang_baru;
                 $rencana = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['rencana_awal1'] , $filter['rencana_akhir1'] ])->sum('jumlah');
+                $realisasi = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['rencana_awal1'] , $filter['rencana_akhir1'] ])->sum('jumlah');
+                $tahap1 = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['tahap1_awal'] , $filter['tahap1_akhir'] ])->sum('jumlah');
+                $tahap2 = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['tahap2_awal'] , $filter['tahap2_akhir'] ])->sum('jumlah');
+                $tahap3 = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['tahap3_awal'] , $filter['tahap3_akhir'] ])->sum('jumlah');
 
                 
                 $row = $table->addRow();
@@ -198,8 +207,12 @@ class SapuLobangController extends Controller
                 $row->addCell(null)->addTextRun($angka)->addText($sisa,$angka);
                 $row->addCell(null)->addTextRun($angka)->addText($lubang_baru,$angka);
                 $row->addCell(null)->addTextRun($angka)->addText($total,$angka);
-                $row->addCell(null, array('gridSpan' => 3, 'vMerge' => 'restart', 'valign' => 'center'))->addTextRun($angka)->addText($rencana,$angka);
-                $row->addCell(null)->addTextRun($angka)->addText(0,$angka);
+                $row->addCell(null)->addTextRun($angka)->addText($tahap1,$angka);
+                $row->addCell(null)->addTextRun($angka)->addText($tahap2,$angka);
+                $row->addCell(null)->addTextRun($angka)->addText($tahap3,$angka);
+
+                // $row->addCell(null, array('gridSpan' => 3, 'vMerge' => 'restart', 'valign' => 'center'))->addTextRun($angka)->addText($rencana,$angka);
+                $row->addCell(null)->addTextRun($angka)->addText($realisasi,$angka);
                 $row->addCell(null)->addTextRun($normal)->addText(' ',$normal);
 
 
