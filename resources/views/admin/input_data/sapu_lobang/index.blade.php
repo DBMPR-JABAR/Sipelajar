@@ -209,10 +209,10 @@
                                         <th style="vertical-align: top;text-align: center;">Ruas</th>
                                         <th style="vertical-align: top;text-align: center;">Panjang Ruas</th>
                                         <th style="vertical-align: top;text-align: center;">Jumlah Lubang<br>{{ $filter['tanggal_sebelum'] }}</th>
-                                        <th style="vertical-align: top;text-align: center;">Sudah Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
-                                        <th style="vertical-align: top;text-align: center;">Belum Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
                                         <th style="vertical-align: top;text-align: center;">Penambahan Lubang Baru<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
                                         <th style="vertical-align: top;text-align: center;">Total Lubang<br>{{ $filter['tanggal_akhir'] }}</th>  
+                                        <th style="vertical-align: top;text-align: center;">Sudah Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                        <th style="vertical-align: top;text-align: center;">Belum Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
                                     </tr>
                                 </thead>
                                 <tbody id="bodyJembatan">
@@ -226,6 +226,9 @@
                                             $sisa = $jumlah-$penanganan;
                                             $lubang_baru = $ruas->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
                                             $total = $sisa+$lubang_baru;
+
+                                            $total2 = $jumlah+$lubang_baru;
+                                            $sisa2 = $total2-$penanganan;
                                             
                                         @endphp
                                         <tr>
@@ -233,10 +236,10 @@
                                             <td>{{ $ruas->nama_ruas_jalan }}</td>
                                             <td>{{ round($ruas->panjang / 1000, 2) }}</td>
                                             <td>{{ $jumlah }}</td>
-                                            <td>{{ $penanganan }}</td>
-                                            <td>{{ $sisa }}</td>
                                             <td>{{ $lubang_baru }}</td>
-                                            <td>{{ $total }}</td>
+                                            <td>{{ $total2 }}</td>
+                                            <td>{{ $penanganan }}</td>
+                                            <td>{{ $sisa2 }}</td>
                                         </tr>    
                                     @endforeach
                                    
