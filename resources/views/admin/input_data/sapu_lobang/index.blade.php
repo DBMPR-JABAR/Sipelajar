@@ -126,14 +126,14 @@
                     <table id="dttable" class="table table-striped table-bordered able-responsive">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>SUP</th>
-                                <th>Panjang Ruas</th>
-                                <th>Jumlah Lubang</th>
-                                <th>Yang Sudah Ditangani</th>
-                                <th>Sisa Yang Belum Ditangani</th>
-                                <th>Penambahan Lubang Baru</th>
-                                <th>Total Lubang</th>
+                                <th></th>
+                                <th style="vertical-align: top;text-align: center;">SUP</th>
+                                <th style="vertical-align: top;text-align: center;">Panjang Ruas</th>
+                                <th style="vertical-align: top;text-align: center;">Jumlah Lubang<br>{{ $filter['tanggal_sebelum'] }}</th>
+                                <th style="vertical-align: top;text-align: center;">Yang Sudah Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                <th style="vertical-align: top;text-align: center;">Sisa Yang Belum Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                <th style="vertical-align: top;text-align: center;">Penambahan Lubang Baru<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                <th style="vertical-align: top;text-align: center;">Total Lubang<br>{{ $filter['tanggal_akhir'] }}</th>
                                
                             </tr>
                         </thead>
@@ -158,7 +158,13 @@
                                     
                                 @endphp
                                 <tr>
-                                    <td>{{ ++$no }}</td>
+                                    <td>    
+                                        <a data-toggle="modal" href="#addModal{{ ++$no }}">
+                                            <span class="pcoded-micon">
+                                                <i class="feather icon-search"></i>
+                                            </span>
+                                        </a>
+                                    </td>
                                     <td>{{ $sup->name }}</td>
                                     <td>{{ round($sup->library_ruas->sum('panjang')/1000,2) }}</td>
                                     <td>{{ $jumlah }}</td>
@@ -176,7 +182,78 @@
         </div>
     </div>
 </div>
+<div class="modal-only">
+    @php
+        $index =0;
+    @endphp
+    @foreach ($data as $uptd)
+        @foreach($uptd->library_sup as $sup)
+        
+        <div class="modal fade" id="addModal{{ ++$index }}" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+    
+                    <div class="modal-header">
+                        <h4 class="modal-title">Detail Lobang {{ $sup->name }}</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
 
+                    <div class="modal-body">
+                        <div class="dt-responsive table-responsive">
+                            <table id="dttable" class="table table-striped table-bordered able-responsive">
+                                <thead>
+                                    <tr >
+                                        
+                                        <th style="vertical-align: top;text-align: center;">Ruas</th>
+                                        <th style="vertical-align: top;text-align: center;">Panjang Ruas</th>
+                                        <th style="vertical-align: top;text-align: center;">Jumlah Lubang<br>{{ $filter['tanggal_sebelum'] }}</th>
+                                        <th style="vertical-align: top;text-align: center;">Sudah Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                        <th style="vertical-align: top;text-align: center;">Belum Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                        <th style="vertical-align: top;text-align: center;">Penambahan Lubang Baru<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                        <th style="vertical-align: top;text-align: center;">Total Lubang<br>{{ $filter['tanggal_akhir'] }}</th>  
+                                    </tr>
+                                </thead>
+                                <tbody id="bodyJembatan">
+                                    
+                                   
+                                    @foreach($sup->library_ruas as $ruas)
+                                        @php
+                                            $jumlah = $ruas->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $ruas->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
+                                            $penanganan = $ruas->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
+                                            
+                                            $sisa = $jumlah-$penanganan;
+                                            $lubang_baru = $ruas->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
+                                            $total = $sisa+$lubang_baru;
+                                            
+                                        @endphp
+                                        <tr>
+                                            
+                                            <td>{{ $ruas->nama_ruas_jalan }}</td>
+                                            <td>{{ round($ruas->panjang / 1000, 2) }}</td>
+                                            <td>{{ $jumlah }}</td>
+                                            <td>{{ $penanganan }}</td>
+                                            <td>{{ $sisa }}</td>
+                                            <td>{{ $lubang_baru }}</td>
+                                            <td>{{ $total }}</td>
+                                        </tr>    
+                                    @endforeach
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default waves-effect " data-dismiss="modal">Tutup</button>
+                        {{-- <button type="submit" class="btn btn-primary waves-effect waves-light ">Simpan</button> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    @endforeach
+</div>
 
 @endsection
 @section('script')
