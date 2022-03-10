@@ -15,6 +15,8 @@ use App\Http\Resources\GeneralResource;
 use App\Http\Resources\MapJembatanResource;
 use App\Model\DWH\KemantapanJalan;
 use App\Model\Transactional\LaporanMasyarakat;
+use App\Model\Transactional\MonitoringLubangSurveiDetail as SurveiLubangDetail;
+
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -82,6 +84,9 @@ class MapDashboardController extends Controller
             $this->response['data']['rehabilitasi'] = [];
             $this->response['data']['vehiclecounting'] = [];
             $this->response['data']['kemantapanjalan'] = [];
+            $this->response['data']['sapulobang'] = [];
+
+            $distanceThreshold = env("DISTANCE_THRESHOLD", 1000);
 
             if ($request->has('kegiatan')) {
                 if (in_array('jembatan', $request->kegiatan)) {
@@ -90,10 +95,18 @@ class MapDashboardController extends Controller
 
                     $this->response['data']['jembatan'] = $data;
                 }
+                if (in_array('sapulobang', $request->kegiatan)) {
+                    $data = SurveiLubangDetail::get();
+                    $this->response['data']['sapulobang'] = $data;
+                }
                 if (in_array('pemeliharaan', $request->kegiatan)) {
-                    $data = Kemandoran::whereIn('SUP', $request->sup);
+                    $data = DB::table('kemandoran')
+                              ->join('kemandoran_distance', 'kemandoran.id', '=', 'kemandoran_distance.kemandoran_id')
+                              ->select('kemandoran.*', 'kemandoran_distance.distance');
 
-                    $data = $data->whereBetween('TANGGAL', [$request->date_from, $request->date_to]);
+                    $data = $data->whereIn('sup', $request->sup);
+                    $data = $data->whereBetween('tanggal', [$request->date_from, $request->date_to]);
+                    $data = $data->where('distance', '<=', $distanceThreshold);
 
                     $data = $data->get();
                     $this->response['data']['pemeliharaan'] = $data;
@@ -125,9 +138,15 @@ class MapDashboardController extends Controller
                         ->whereIn('SUP', $request->sup)->get();
                     $this->response['data']['cctv'] = $data;
                 }
+
+                $uptd = [];
+                foreach ($request->uptd as $key => $value) {
+                    $uptd [] = str_replace('uptd','',$value);
+                }
+
                 if (in_array('laporanmasyarakat', $request->kegiatan)) {
                     $data = DB::table('monitoring_laporan_masyarakat')
-                        ->whereIn('uptd_id', $request->uptd)->get();
+                        ->whereIn('uptd_id', $uptd)->get();
                     $this->response['data']['laporanmasyarakat'] = $data;
                 }
             }
