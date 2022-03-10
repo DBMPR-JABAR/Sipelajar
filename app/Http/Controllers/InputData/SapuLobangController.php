@@ -148,9 +148,9 @@ class SapuLobangController extends Controller
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(2)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(3)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(4)",$th);
-        $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(5) = (3)-(4)",$th);
+        $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(5) = (3)+(4)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(6)",$th);
-        $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(7) = (5)+(6)",$th);
+        $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(7) = (5)-(6)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(8)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(9)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(10)",$th);
