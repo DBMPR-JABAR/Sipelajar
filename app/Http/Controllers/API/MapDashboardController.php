@@ -96,7 +96,7 @@ class MapDashboardController extends Controller
                     $this->response['data']['jembatan'] = $data;
                 }
                 if (in_array('sapulobang', $request->kegiatan)) {
-                    $data = SurveiLubangDetail::get();
+                    $data = SurveiLubangDetail::wherenull('status')->whereBetween('tanggal', [$request->date_from, $request->date_to])->latest('tanggal')->get();
                     $this->response['data']['sapulobang'] = $data;
                 }
                 if (in_array('pemeliharaan', $request->kegiatan)) {
