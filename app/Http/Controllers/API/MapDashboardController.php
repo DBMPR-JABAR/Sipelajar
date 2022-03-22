@@ -96,10 +96,28 @@ class MapDashboardController extends Controller
                     $this->response['data']['jembatan'] = $data;
                 }
                 if (in_array('sapulobang', $request->kegiatan)) {
+                    
                     $data = SurveiLubangDetail::wherenull('status')->whereBetween('tanggal', [$request->date_from, $request->date_to]);
                     $data = $data->whereIn('sup', $request->sup)->latest('tanggal');
                     $data = $data->get();
+                    $icon = SurveiLubangDetail::wherenull('status')->whereBetween('tanggal', [$request->date_from, $request->date_to]);
+                    $icon = $icon->whereIn('sup', $request->sup)->latest('tanggal')->groupBy('keterangan');
+                    $icon = $icon->get();
                     $this->response['data']['sapulobang'] = $data;
+                    $this->response['data']['iconsapulobang'] = $icon;
+                }
+                if (in_array('sapulobang_perencanaan', $request->kegiatan)) {
+                    $data = SurveiLubangDetail::where('status','Perencanaan')->whereBetween('tanggal', [$request->date_from, $request->date_to]);
+                    $data = $data->whereIn('sup', $request->sup)->latest('tanggal');
+                    $data = $data->get();
+                    $this->response['data']['sapulobang_perencanaan'] = $data;
+
+                }
+                if (in_array('sapulobang_penanganan', $request->kegiatan)) {  
+                    $data = SurveiLubangDetail::where('status','Selesai')->whereBetween('tanggal', [$request->date_from, $request->date_to]);
+                    $data = $data->whereIn('sup', $request->sup)->latest('tanggal');
+                    $data = $data->get();
+                    $this->response['data']['sapulobang_penanganan'] = $data;
                 }
                 if (in_array('pemeliharaan', $request->kegiatan)) {
                     $data = DB::table('kemandoran')

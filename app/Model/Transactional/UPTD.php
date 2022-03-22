@@ -19,4 +19,16 @@ class UPTD extends Model
     {
         return $this->hasMany('App\Model\Transactional\RuasJalan', 'uptd_id');
     }
+    public function survei_lubang()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubang\Survei', 'uptd_id');
+    }
+    public function penanganan_lubang()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubang\Penanganan', 'uptd_id');
+    }
+    public function rencana_penanganan_lubang()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubang\RencanaPenanganan', 'uptd_id');
+    }
 }
