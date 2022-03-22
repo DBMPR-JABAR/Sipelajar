@@ -151,19 +151,14 @@
                                 @php
                                     $jumlah = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
                                     $penanganan = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
-
-                                    $panjang_lama = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang') - $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang');
-                                    $panjang_ditangani = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
-                                    $panjang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
-                                    
                                     $sisa = $jumlah-$penanganan;
                                     $lubang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
                                     $total = $sisa+$lubang_baru;
-
+                                    
                                     $total2 = $jumlah+$lubang_baru;
                                     $sisa2 = $total2-$penanganan;
-                                    $panjang =  $panjang_lama + $panjang_baru;
-                                    $panjang =  $panjang - $panjang_ditangani;
+
+                          
 
                                 @endphp
                                 <tr>
@@ -180,7 +175,7 @@
                                     <td>{{ $total2 }}</td>
                                     <td>{{ $penanganan }}</td>
                                     <td>{{ $sisa2 }}</td>
-                                    <td>{{ round($panjang/1000,2) ." / ". round($sup->library_ruas->sum('panjang')/1000,2) }}</td>
+                                    <td>{{ round($sup->library_ruas->sum('panjang')/1000,2) }}</td>
                                 </tr>    
                                 @endforeach
                             @endforeach
