@@ -44,7 +44,7 @@
 @endsection
 
 @section('page-body')
-
+@dd($filter)
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
