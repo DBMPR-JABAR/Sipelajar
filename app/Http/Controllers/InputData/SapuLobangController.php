@@ -26,7 +26,7 @@ class SapuLobangController extends Controller
         }
         
         if($request->uptd_filter == null){
-            dd('ok');
+           
             if (Auth::user() && Auth::user()->internalRole->uptd) {
                 $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
                 $data = UPTD::where('id', $uptd_id)->get();
@@ -37,7 +37,7 @@ class SapuLobangController extends Controller
         }else{
             $data = UPTD::where('id',$request->uptd_filter)->get();
         }
-       
+        dd('ok');
         return view('admin.input_data.sapu_lobang.index',compact('filter','data'));
 
     }
