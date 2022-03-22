@@ -133,7 +133,7 @@
                                 <th style="vertical-align: top;text-align: center;">Total Lubang<br>{{ $filter['tanggal_akhir'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Yang Sudah Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Sisa Yang Belum Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
-                                <th style="vertical-align: top;text-align: center;">Panjang Ruas<br>{{ $filter['tanggal_akhir'] }}</th>
+                                <th style="vertical-align: top;text-align: center;">Panjang Ruas<br>Kerusakan / Total<br>{{ $filter['tanggal_akhir'] }}</th>
                                
                             </tr>
                         </thead>

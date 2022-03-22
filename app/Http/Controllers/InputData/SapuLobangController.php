@@ -112,7 +112,7 @@ class SapuLobangController extends Controller
         $table->addCell(null, $cellRowSpan)->addTextRun($centered)->addText("UPTD",$th);
         $table->addCell(null, array('gridSpan' => 8, 'vMerge' => 'restart', 'valign' => 'center'))->addTextRun($centered)->addText("Jumlah Lubang",$th);
         $table->addCell(1500, $cellRowSpan)->addTextRun($centered)->addText("Realisasi<w:br />Penutupan<w:br />Lubang",$th);
-        $table->addCell(null, $cellRowSpan)->addTextRun($centered)->addText("Panjang Ruas<w:br />(Km)",$th);
+        $table->addCell(null, $cellRowSpan)->addTextRun($centered)->addText("Panjang Ruas<w:br />Kerusakan / Total Ruas<w:br />(Km)",$th);
         $table->addCell(1700, $cellRowSpan)->addTextRun($centered)->addText("Keterangan",$th);
          
         $row = $table->addRow();
