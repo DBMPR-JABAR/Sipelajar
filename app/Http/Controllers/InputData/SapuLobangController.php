@@ -22,13 +22,11 @@ class SapuLobangController extends Controller
         if($request->tanggal_akhir != null){
             $filter['tanggal_sebelum']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->subDays(7)->format('Y-m-d');
             $filter['tanggal_awal']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->subDays(6)->format('Y-m-d');
-            $filter['tanggal_akhir']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->format('Y-m-d');
-
-            
+            $filter['tanggal_akhir']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->format('Y-m-d');    
         }
         
         if($request->uptd_filter == null){
-            // dd('ok');
+            dd('ok');
             if (Auth::user() && Auth::user()->internalRole->uptd) {
                 $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
                 $data = UPTD::where('id', $uptd_id)->get();
