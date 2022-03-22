@@ -37,7 +37,7 @@ class SapuLobangController extends Controller
         }else{
             $data = UPTD::where('id',$request->uptd_filter)->get();
         }
-        dd('ok');
+        // dd('ok');
         return view('admin.input_data.sapu_lobang.index',compact('filter','data'));
 
     }
