@@ -5,7 +5,7 @@ namespace App\Http\Controllers\InputData;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use App\Model\Transactional\MonitoringLubangPenanganan as Penanganan;
 use App\Model\Transactional\UPTD;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,26 +37,29 @@ class SapuLobangController extends Controller
         }else{
             $data = UPTD::where('id',$request->uptd_filter)->get();
         }
+        
         foreach($data as $no => $temp){
             $total = $temp->library_ruas->sum('panjang');
-
 
             $panjang_lama = $temp->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang') - $temp->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang');
             $panjang_ditangani = $temp->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
             $panjang_baru = $temp->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
             $panjang =  $panjang_lama + $panjang_baru;
             $panjang =  $panjang - $panjang_ditangani;
+            if($panjang <=0){
+                $panjang =0;
+            }
             $ditangani = $temp->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('panjang');
             $total = $total - $ditangani;
             $total = $total - $panjang;
             
             $temporai[] = [
+                'uptd' => $temp->id,
                 'kerusakan' => round($panjang/1000,3),
                 'penanganan'=> round($ditangani/1000,3),
                 'total'=> round($total/1000,3)
             ];
         }
-        // dd($temporai);
         return view('admin.input_data.sapu_lobang.index',compact('filter','data','temporai'));
 
     }

@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="{{ asset('assets/vendor/chosen_v1.8.7/chosen.css') }}">
 <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/themes/light/main.css">
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.1/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js"></script>
 <style>
 .chosen-container.chosen-container-single {
     width: 300px !important; /* or any value that fits your needs */
@@ -113,10 +115,13 @@
 		<div class="card">
 			<div class="card-body">
                 <div class="row">
-                @foreach ($temporai as $no => $temp)
+                    @foreach ($temporai as $no => $temp)
                     <div class="col-md-4 col-sm-6 justify-content-center">
-                        <h5 >UPTD - {{ $no + 1 }}</h5>
-                        <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 200px; height: 200px;"></div>
+                        <h5 >UPTD - {{ $temp['uptd'] }}</h5>
+                        <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 350px; height: 200px;"></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart has-fixed-height" id="piee_basic{{ $no }}" style="width: 350px; height: 200px;"></div>
                     </div>
                     @endforeach
                 </div>
@@ -333,6 +338,8 @@
     
     function myFunction(item, index) {
         var cek = "pie_basic"+index;
+        var ceke = "piee_basic"+index;
+
         console.log(cek)
 
         text = index + ": " + item.kerusakan + "<br>"; 
@@ -355,6 +362,98 @@
             var chart = new google.visualization.PieChart(document.getElementById(cek));
             chart.draw(data, options);
         }
+
+
+var chartDom = document.getElementById(ceke);
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: 'Nightingale Chart',
+    subtext: 'Fake Data',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item',
+    formatter: '{a} <br/>{b} : {c} ({d}%)'
+  },
+  legend: {
+    left: 'center',
+    top: 'bottom',
+    data: [
+      'rose1',
+      'rose2',
+      'rose3',
+      'rose4',
+      'rose5',
+      'rose6',
+      'rose7',
+      'rose8'
+    ]
+  },
+  toolbox: {
+    show: true,
+    feature: {
+      mark: { show: true },
+      dataView: { show: true, readOnly: false },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
+  series: [
+    {
+      name: 'Radius Mode',
+      type: 'pie',
+      radius: [20, 140],
+      center: ['25%', '50%'],
+      roseType: 'radius',
+      itemStyle: {
+        borderRadius: 5
+      },
+      label: {
+        show: false
+      },
+      emphasis: {
+        label: {
+          show: true
+        }
+      },
+      data: [
+        { value: 40, name: 'rose 1' },
+        { value: 33, name: 'rose 2' },
+        { value: 28, name: 'rose 3' },
+        { value: 22, name: 'rose 4' },
+        { value: 20, name: 'rose 5' },
+        { value: 15, name: 'rose 6' },
+        { value: 12, name: 'rose 7' },
+        { value: 10, name: 'rose 8' }
+      ]
+    },
+    {
+      name: 'Area Mode',
+      type: 'pie',
+      radius: [20, 140],
+      center: ['75%', '50%'],
+      roseType: 'area',
+      itemStyle: {
+        borderRadius: 5
+      },
+      data: [
+        { value: 30, name: 'rose 1' },
+        { value: 28, name: 'rose 2' },
+        { value: 26, name: 'rose 3' },
+        { value: 24, name: 'rose 4' },
+        { value: 22, name: 'rose 5' },
+        { value: 20, name: 'rose 6' },
+        { value: 18, name: 'rose 7' },
+        { value: 16, name: 'rose 8' }
+      ]
+    }
+  ]
+};
+
+option && myChart.setOption(option);
 
     }
 
