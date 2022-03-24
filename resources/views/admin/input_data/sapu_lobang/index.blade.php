@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendor/data-table/extensions/responsive/css/responsive.dataTables.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/vendor/chosen_v1.8.7/chosen.css') }}">
 <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/themes/light/main.css">
-
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <style>
 .chosen-container.chosen-container-single {
     width: 300px !important; /* or any value that fits your needs */
@@ -110,6 +110,20 @@
         </div>
     </div>
     <div class="col-sm-12">
+		<div class="card">
+			<div class="card-body">
+                <div class="row">
+                @foreach ($temporai as $no => $temp)
+                    <div class="col-md-4 col-sm-6 justify-content-center">
+                        <h5 >UPTD - {{ $no + 1 }}</h5>
+                        <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 200px; height: 200px;"></div>
+                    </div>
+                    @endforeach
+                </div>
+			</div>
+		</div>
+	</div>	
+    <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
                 <div class="card-header-right">
@@ -125,15 +139,22 @@
                     <table id="dttable" class="table table-striped table-bordered able-responsive">
                         <thead>
                             <tr>
-                                <th></th>
-                                <th style="vertical-align: top;text-align: center;">SUP</th>
-                                <th style="vertical-align: top;text-align: center;">Jumlah Lubang<br>{{ $filter['tanggal_sebelum'] }}</th>
+                                <th rowspan="2"></th>
+                                <th rowspan="2" style="vertical-align: top;text-align: center;">SUP</th>
+                                <th colspan="5" style="vertical-align: top;text-align: center;">Jumlah Lubang</th>   
+                                
+                                <th rowspan="2" style="vertical-align: top;text-align: center;">Panjang<br>Total Ruas</th>
+                                <th colspan="2" style="vertical-align: top;text-align: center;">Panjang </th>   
+                            </tr>
+                            <tr>
+                                <th style="vertical-align: top;text-align: center;">Lubang<br>{{ $filter['tanggal_sebelum'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Penambahan Lubang Baru<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Total Lubang<br>{{ $filter['tanggal_akhir'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Yang Sudah Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Sisa Yang Belum Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
-                                <th style="vertical-align: top;text-align: center;">Panjang Ruas<br>Kerusakan / Total<br>{{ $filter['tanggal_akhir'] }}</th>
-                               
+
+                                <th style="vertical-align: top;text-align: center;">Sisa Kerusakan</th>
+                                <th style="vertical-align: top;text-align: center;">Penanganan</th>
                             </tr>
                         </thead>
                         <tbody id="bodyJembatan">
@@ -143,7 +164,7 @@
                             @foreach ($data as $uptd)
                                 @if(@$filter['uptd_filter'] == null )
                                 <tr>
-                                    <td colspan="8">UPTD Pengelolaan Jalan dan Jembatan Wilayah Pelayanan - {{ $uptd->id }}</td>
+                                    <td colspan="10">UPTD Pengelolaan Jalan dan Jembatan Wilayah Pelayanan - {{ $uptd->id }}</td>
                                 </tr>
                                 @endif
                                 @foreach($uptd->library_sup as $sup)
@@ -162,6 +183,7 @@
                                     $panjang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
                                     $panjang =  $panjang_lama + $panjang_baru;
                                     $panjang =  $panjang - $panjang_ditangani;
+                                    $ditangani = $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('panjang');
 
                                 @endphp
                                 <tr>
@@ -178,7 +200,10 @@
                                     <td>{{ $total2 }}</td>
                                     <td>{{ $penanganan }}</td>
                                     <td>{{ $sisa2 }}</td>
-                                    <td>{{ round($panjang/1000,2) ." / ". round($sup->library_ruas->sum('panjang')/1000,2) }}</td>
+                                    <td>{{ round($sup->library_ruas->sum('panjang')/1000,3) }}</td>
+                                    <td>{{ round($panjang/1000,3)  }}</td>
+                                    <td>{{ round($ditangani/1000,3)  }}</td>
+
                                 </tr>    
                                 @endforeach
                             @endforeach
@@ -291,5 +316,47 @@
         });
 
     });
+</script>
+
+<script type="text/javascript">
+
+    var temp = {!! json_encode($temporai) !!};
+
+ 
+
+    console.log(temp);
+    let text = "";
+    const fruits = ["apple", "orange", "cherry"];
+    console.log(fruits)
+    temp.forEach(myFunction);
+    
+    
+    function myFunction(item, index) {
+        var cek = "pie_basic"+index;
+        console.log(cek)
+
+        text = index + ": " + item.kerusakan + "<br>"; 
+        document.getElementById(cek).innerHTML = text;
+
+        
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+             var data = google.visualization.arrayToDataTable([
+                ['Year', 'Products'],
+                ['Baik',  item.total],
+                ['Kerusakan',  item.kerusakan],
+                ['Penanganan',  item.penanganan]
+            ]);
+            var options = {                
+                curveType: 'function',
+                legend: { position: 'bottom' }
+            };
+            var chart = new google.visualization.PieChart(document.getElementById(cek));
+            chart.draw(data, options);
+        }
+
+    }
+
 </script>
 @endsection
