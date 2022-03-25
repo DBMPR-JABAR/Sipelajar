@@ -113,7 +113,15 @@
     </div>
     <div class="col-sm-12">
 		<div class="card">
-			<div class="card-body">
+            <div class="card-header">
+                <div class="card-header-right">
+                    <ul class="list-unstyled card-option">
+                        {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
+                        <li><i class="feather icon-minus minimize-card"></i></li>
+                    </ul>
+                </div>
+            </div>
+			<div class="card-block">
                 <div class="row">
                     @foreach ($temporai as $no => $temp)
                     <div class="col-md-6 col-sm-6  chart-container">

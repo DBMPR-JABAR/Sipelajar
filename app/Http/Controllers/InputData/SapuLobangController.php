@@ -99,16 +99,16 @@ class SapuLobangController extends Controller
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
         $section = $phpWord->addSection();
         $section->getStyle()
-            ->setPaperSize('Legal')
+            ->setPaperSize('A3')
             ->setLandscape()
         ;
         
 
         $header = array('bold' => true, "size"=>10,'lineHeight' => 1);
-        $th = array('size' => 8, 'bold' => true, 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
-        $th2 = array('size' => 8,'bgColor' => 'FFFF00', 'bold' => true, 'valign' => 'center','spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0));
-        $normal = array('size' => 8,'valign' => 'center','spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0));
-        $angka = array('size' => 8, 'valign' => 'center', 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER,'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0));
+        $th = array('size' => 10, 'bold' => true, 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER);
+        $th2 = array('size' => 10,'bgColor' => 'FFFF00', 'bold' => true, 'valign' => 'center','spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0));
+        $normal = array('size' => 10,'valign' => 'center','spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0));
+        $angka = array('size' => 10, 'valign' => 'center', 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER,'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0));
 
         $centered = array('valign' => 'center', 'align' => 'center','alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => \PhpOffice\PhpWord\Shared\Converter::pointToTwip(0));
         $cols = 5;
@@ -126,7 +126,7 @@ class SapuLobangController extends Controller
         $fancyTableStyle = array('borderSize' => 6, 'borderColor' => '999999');
         $firstRowStyle = array('bgColor' => 'B8CCE4');
         $cellRowContinue = array('vMerge' => 'continue');
-        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
+        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center','bgColor' => 'B8CCE4');
 
         $phpWord->addTableStyle('myTable', $fancyTableStyle, $firstRowStyle);
         $table = $section->addTable('myTable');
@@ -134,7 +134,8 @@ class SapuLobangController extends Controller
         $table->addCell(null, $cellRowSpan)->addTextRun($centered)->addText("UPTD",$th);
         $table->addCell(null, array('gridSpan' => 8, 'vMerge' => 'restart', 'valign' => 'center'))->addTextRun($centered)->addText("Jumlah Lubang",$th);
         $table->addCell(1500, $cellRowSpan)->addTextRun($centered)->addText("Realisasi<w:br />Penutupan<w:br />Lubang",$th);
-        $table->addCell(null, $cellRowSpan)->addTextRun($centered)->addText("Panjang Ruas<w:br />Kerusakan / Total Ruas<w:br />(Km)",$th);
+        $table->addCell(null, $cellRowSpan)->addTextRun($centered)->addText("Panjang<w:br />Total Ruas<w:br />(Km)",$th);
+        $table->addCell(null, array('gridSpan' => 2, 'vMerge' => 'restart', 'valign' => 'center'))->addTextRun($centered)->addText("Panjang Ruas (Km)",$th);
         $table->addCell(1700, $cellRowSpan)->addTextRun($centered)->addText("Keterangan",$th);
          
         $row = $table->addRow();
@@ -147,6 +148,8 @@ class SapuLobangController extends Controller
         $row->addCell(null, array('bgColor' => 'B8CCE4','valign' => 'center','gridSpan' => 3))->addTextRun($centered)->addText("Rencana Tindak Lanjut<w:br />".$filter['rencana_awal']." s.d ".$filter['rencana_akhir'],$th);
         $table->addCell(null, $cellRowContinue);
         $table->addCell(null, $cellRowContinue);
+        $row->addCell(null, $cellRowSpan)->addTextRun($centered)->addText("Penanganan",$th);
+        $row->addCell(null, array('bgColor' => 'B8CCE4','valign' => 'center'))->addTextRun($centered)->addText("Sisa Kerusakan",$th);
         $table->addCell(null, $cellRowContinue);
         
         $row = $table->addRow();
@@ -160,6 +163,8 @@ class SapuLobangController extends Controller
         $row->addCell(950, array('bgColor' => 'B8CCE4','valign' => 'center'))->addTextRun($centered)->addText("Tahap II<w:br />(2 Hari)",$th);
         $row->addCell(950, array('bgColor' => 'B8CCE4','valign' => 'center'))->addTextRun($centered)->addText("Tahap III<w:br />(2 Hari)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4','valign' => 'center'))->addTextRun($centered)->addText($filter['rencana_awal']."<w:br />s.d<w:br />".$filter['rencana_akhir'],$th);
+        $table->addCell(null, $cellRowContinue);
+        $table->addCell(null, $cellRowContinue);
         $row->addCell(null, array('bgColor' => 'B8CCE4','valign' => 'center'))->addTextRun($centered)->addText($filter['tanggal_akhir'],$th);
         $table->addCell(null, $cellRowContinue);
       
@@ -176,6 +181,9 @@ class SapuLobangController extends Controller
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(10)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(11)",$th);
         $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(12)",$th);
+        $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(13)",$th);
+        $row->addCell(null, array('bgColor' => 'B8CCE4'))->addTextRun($centered)->addText("(14)",$th);
+
 
         foreach($data as $uptd){
             if($uptd->id == 1){
@@ -198,7 +206,8 @@ class SapuLobangController extends Controller
             $panjang_baru = $uptd->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal1'] , $filter['tanggal_akhir1'] ])->sum('panjang');
             $panjang =  $panjang_lama + $panjang_baru;
             $panjang =  $panjang - $panjang_ditangani;
-
+            $ditangani = $uptd->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_akhir1'])->sum('panjang');
+            
             $row = $table->addRow();
             $row->addCell(null, $th2)->addTextRun($centered)->addText('UPTD Wilayah Pelayanan - '. $text.'  ',$th2);
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
@@ -210,7 +219,9 @@ class SapuLobangController extends Controller
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
-            $row->addCell(null, $th2)->addTextRun($angka)->addText(round($panjang/1000,2) ." / ".round($uptd->library_ruas->sum('panjang')/1000,2),$th2);
+            $row->addCell(null, $th2)->addTextRun($angka)->addText(round($uptd->library_ruas->sum('panjang')/1000,2),$th2);
+            $row->addCell(null, $th2)->addTextRun($centered)->addText(round($ditangani/1000,2),$th2);
+            $row->addCell(null, $th2)->addTextRun($centered)->addText(round($panjang/1000,2),$th2);
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
 
             foreach($uptd->library_sup as $sup){
@@ -228,6 +239,7 @@ class SapuLobangController extends Controller
                 $panjang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal1'] , $filter['tanggal_akhir1'] ])->sum('panjang');
                 $panjang =  $panjang_lama + $panjang_baru;
                 $panjang =  $panjang - $panjang_ditangani;                   
+                $ditangani = $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_akhir1'])->sum('panjang');
 
                 $rencana = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['rencana_awal1'] , $filter['rencana_akhir1'] ])->sum('jumlah');
                 $realisasi = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['rencana_awal1'] , $filter['rencana_akhir1'] ])->sum('jumlah');
@@ -249,7 +261,9 @@ class SapuLobangController extends Controller
                 
                 // $row->addCell(null, array('gridSpan' => 3, 'vMerge' => 'restart', 'valign' => 'center'))->addTextRun($angka)->addText($rencana,$angka);
                 $row->addCell(null)->addTextRun($angka)->addText($realisasi,$angka);
-                $row->addCell(null)->addTextRun($angka)->addText(round($panjang/1000,2) ." / ".round($sup->library_ruas->sum('panjang')/1000,2),$angka);
+                $row->addCell(null)->addTextRun($angka)->addText(round($sup->library_ruas->sum('panjang')/1000,2),$angka);
+                $row->addCell(null)->addTextRun($angka)->addText(round($ditangani/1000,2),$angka);
+                $row->addCell(null)->addTextRun($angka)->addText(round($panjang/1000,2),$angka);
                 $row->addCell(null)->addTextRun($normal)->addText(' ',$normal);
 
 
