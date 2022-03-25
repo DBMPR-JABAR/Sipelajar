@@ -116,13 +116,12 @@
 			<div class="card-body">
                 <div class="row">
                     @foreach ($temporai as $no => $temp)
-                    <div class="col-md-4 col-sm-6 justify-content-center">
-                        <h5 >UPTD - {{ $temp['uptd'] }}</h5>
-                        <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 350px; height: 200px;"></div>
+                    <div class="col-md-6 col-sm-6  chart-container">
+                        <h5 justify-content-center>UPTD - {{ $temp['uptd'] }}</h5>
+                        {{-- <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 350px; height: 200px;"></div> --}}
+                        <div class="chart has-fixed-height" id="piee_basic{{ $no }}" style="width: 500px; height: 400px;"></div>
                     </div>
-                    <div class="chart-container">
-                        <div class="chart has-fixed-height" id="piee_basic{{ $no }}" style="width: 350px; height: 200px;"></div>
-                    </div>
+                    
                     @endforeach
                 </div>
 			</div>
@@ -342,118 +341,86 @@
 
         console.log(cek)
 
-        text = index + ": " + item.kerusakan + "<br>"; 
-        document.getElementById(cek).innerHTML = text;
+        // text = index + ": " + item.kerusakan + "<br>"; 
+        // document.getElementById(cek).innerHTML = text;
 
         
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-        function drawChart() {
-             var data = google.visualization.arrayToDataTable([
-                ['Year', 'Products'],
-                ['Baik',  item.total],
-                ['Kerusakan',  item.kerusakan],
-                ['Penanganan',  item.penanganan]
-            ]);
-            var options = {                
-                curveType: 'function',
-                legend: { position: 'bottom' }
-            };
-            var chart = new google.visualization.PieChart(document.getElementById(cek));
-            chart.draw(data, options);
-        }
+        // google.charts.load('current', {'packages':['corechart']});
+        // google.charts.setOnLoadCallback(drawChart);
+        // function drawChart() {
+        //      var data = google.visualization.arrayToDataTable([
+        //         ['Year', 'Products'],
+        //         ['Baik',  item.total],
+        //         ['Kerusakan',  item.kerusakan],
+        //         ['Penanganan',  item.penanganan]
+        //     ]);
+        //     var options = {                
+        //         curveType: 'function',
+        //         legend: { position: 'bottom' }
+        //     };
+        //     var chart = new google.visualization.PieChart(document.getElementById(cek));
+        //     chart.draw(data, options);
+        // }
 
 
-var chartDom = document.getElementById(ceke);
-var myChart = echarts.init(chartDom);
-var option;
+        var chartDom = document.getElementById(ceke);
+        var myChart = echarts.init(chartDom);
+        var option;
 
-option = {
-  title: {
-    text: 'Nightingale Chart',
-    subtext: 'Fake Data',
-    left: 'center'
-  },
-  tooltip: {
-    trigger: 'item',
-    formatter: '{a} <br/>{b} : {c} ({d}%)'
-  },
-  legend: {
-    left: 'center',
-    top: 'bottom',
-    data: [
-      'rose1',
-      'rose2',
-      'rose3',
-      'rose4',
-      'rose5',
-      'rose6',
-      'rose7',
-      'rose8'
-    ]
-  },
-  toolbox: {
-    show: true,
-    feature: {
-      mark: { show: true },
-      dataView: { show: true, readOnly: false },
-      restore: { show: true },
-      saveAsImage: { show: true }
-    }
-  },
-  series: [
-    {
-      name: 'Radius Mode',
-      type: 'pie',
-      radius: [20, 140],
-      center: ['25%', '50%'],
-      roseType: 'radius',
-      itemStyle: {
-        borderRadius: 5
-      },
-      label: {
-        show: false
-      },
-      emphasis: {
-        label: {
-          show: true
-        }
-      },
-      data: [
-        { value: 40, name: 'rose 1' },
-        { value: 33, name: 'rose 2' },
-        { value: 28, name: 'rose 3' },
-        { value: 22, name: 'rose 4' },
-        { value: 20, name: 'rose 5' },
-        { value: 15, name: 'rose 6' },
-        { value: 12, name: 'rose 7' },
-        { value: 10, name: 'rose 8' }
-      ]
-    },
-    {
-      name: 'Area Mode',
-      type: 'pie',
-      radius: [20, 140],
-      center: ['75%', '50%'],
-      roseType: 'area',
-      itemStyle: {
-        borderRadius: 5
-      },
-      data: [
-        { value: 30, name: 'rose 1' },
-        { value: 28, name: 'rose 2' },
-        { value: 26, name: 'rose 3' },
-        { value: 24, name: 'rose 4' },
-        { value: 22, name: 'rose 5' },
-        { value: 20, name: 'rose 6' },
-        { value: 18, name: 'rose 7' },
-        { value: 16, name: 'rose 8' }
-      ]
-    }
-  ]
-};
+        option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} Km ({d}%)'
+            },
+            legend: {
+                top: '5%',
+                left: 'center'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                mark: { show: true },
+                dataView: { show: true, readOnly: false },
+                restore: { show: true },
+                saveAsImage: { show: true }
+                }
+            },
+            series: [
+                {
+                name: 'Sapu Lobang',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
 
-option && myChart.setOption(option);
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                    show: true,
+                    fontSize: '23',
+                    fontWeight: 'bold'
+                    }
+                },
+                labelLine: {
+                    show: false
+                },
+                data: [
+                    { value: item.total, name: 'Baik', itemStyle: {color: '#89f574'} },
+                    { value: item.penanganan, name: 'Penanganan', itemStyle: {color: '#fce97f'} },
+                    { value: item.kerusakan, name: 'Kerusakan',itemStyle: {color: '#ff8a8a'} }
+                    ]
+                }
+            ]
+        };
+
+        option && myChart.setOption(option);
 
     }
 
