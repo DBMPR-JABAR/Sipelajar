@@ -6,8 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Model\Transactional\MonitoringLubangPenanganan as Penanganan;
+use App\Model\Transactional\MonitoringLubangSurvei as Survei;
+
+use App\Model\Transactional\MonitoringLubangSurveiDetail as SurveiDetail;
+use App\Model\Transactional\RuasJalan;
+
 use App\Model\Transactional\UPTD;
 use Illuminate\Support\Facades\Auth;
+use App\Model\Transactional\Kota;
 
 
 class SapuLobangController extends Controller
@@ -18,7 +24,27 @@ class SapuLobangController extends Controller
         $filter['tanggal_awal']= Carbon::now()->subDays(6)->format('Y-m-d');
         $filter['tanggal_akhir']= Carbon::now()->format('Y-m-d');
         $filter['uptd_filter']=null;
-       
+        $kota = null;
+        $temporai_kota =[];
+
+        // $cek = SurveiDetail::all();
+        // foreach($cek as $ce){
+        //     $ruas = RuasJalan::where('id_ruas_jalan',$ce->ruas_jalan_id)->first();
+        //     $ce->kota_id = $ruas->kota_id;
+        //     $ce->save();
+        // }
+        // $cek = Survei::all();
+        // foreach($cek as $ce){
+        //     $ruas = RuasJalan::where('id_ruas_jalan',$ce->ruas_jalan_id)->first();
+        //     $ce->kota_id = $ruas->kota_id;
+        //     $ce->save();
+        // }
+        // $cek = Penanganan::all();
+        // foreach($cek as $ce){
+        //     $ruas = RuasJalan::where('id_ruas_jalan',$ce->ruas_jalan_id)->first();
+        //     $ce->kota_id = $ruas->kota_id;
+        //     $ce->save();
+        // }
         if($request->tanggal_akhir != null){
             $filter['tanggal_sebelum']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->subDays(7)->format('Y-m-d');
             $filter['tanggal_awal']=  Carbon::createFromFormat('Y-m-d', $request->tanggal_akhir)->subDays(6)->format('Y-m-d');
@@ -31,8 +57,32 @@ class SapuLobangController extends Controller
                 $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
                 $data = UPTD::where('id', $uptd_id)->get();
                 $filter['uptd_filter'] = $uptd_id;
-            }else
-            $data = UPTD::whereBetween('id',[1,6])->get();
+            }else{
+                $data = UPTD::whereBetween('id',[1,6])->get();
+                $kota = Kota::all();
+                foreach($kota as $no => $temp){
+                    $total = $temp->library_ruas->sum('panjang');
+        
+                    $panjang_lama = $temp->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang') - $temp->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang');
+                    $panjang_ditangani = $temp->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
+                    $panjang_baru = $temp->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
+                    $panjang =  $panjang_lama + $panjang_baru;
+                    $panjang =  $panjang - $panjang_ditangani;
+                    if($panjang <=0){
+                        $panjang =0;
+                    }
+                    $ditangani = $temp->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('panjang');
+                    $total = $total - $ditangani;
+                    $total = $total - $panjang;
+                    
+                    $temporai_kota[] = [
+                        'name' => $temp->name,
+                        'kerusakan' => round($panjang/1000,3),
+                        'penanganan'=> round($ditangani/1000,3),
+                        'total'=> round($total/1000,3)
+                    ];
+                }
+            }
         
         }else{
             $data = UPTD::where('id',$request->uptd_filter)->get();
@@ -60,7 +110,8 @@ class SapuLobangController extends Controller
                 'total'=> round($total/1000,3)
             ];
         }
-        return view('admin.input_data.sapu_lobang.index',compact('filter','data','temporai'));
+        // dd($temporai_kota);
+        return view('admin.input_data.sapu_lobang.index',compact('filter','data','temporai','temporai_kota'));
 
     }
     public function rekapitulasi(Request $request){

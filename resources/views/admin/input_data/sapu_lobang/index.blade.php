@@ -114,6 +114,7 @@
     <div class="col-sm-12">
 		<div class="card">
             <div class="card-header">
+                <h4>Diagram Sapu Lobang {{ @$filter['tanggal_awal'].' - '.@$filter['tanggal_akhir'] }} </h4>
                 <div class="card-header-right">
                     <ul class="list-unstyled card-option">
                         {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
@@ -138,6 +139,7 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
+                <h4>Tabel Sapu Lobang {{ @$filter['tanggal_awal'].' - '.@$filter['tanggal_akhir'] }} </h4>
                 <div class="card-header-right">
                     <ul class="list-unstyled card-option">
                         {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
@@ -148,7 +150,7 @@
             <div class="card-block">
                 {{-- <a data-toggle="modal" href="#addModal" class="btn btn-mat btn-primary mb-3">Cetak Rekapitulasi</a> --}}
                 <div class="dt-responsive table-responsive">
-                    <table id="dttable" class="table table-striped table-bordered able-responsive">
+                    <table id="dttable" class="table table-striped table-bordered table-responsive">
                         <thead>
                             <tr>
                                 <th rowspan="2"></th>
@@ -225,6 +227,35 @@
             </div>
         </div>
     </div>
+    @if (count($temporai_kota)>0)
+    <div class="col-sm-12">
+		<div class="card">
+            <div class="card-header">
+                <h4>Diagram Sapu Lobang Kota / Kabupaten{{ @$filter['tanggal_awal'].' - '.@$filter['tanggal_akhir'] }} </h4>
+                <div class="card-header-right">
+                    <ul class="list-unstyled card-option">
+                        {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
+                        <li><i class="feather icon-minus minimize-card"></i></li>
+                    </ul>
+                </div>
+            </div>
+			<div class="card-block">
+                <div class="row">
+                    @foreach ($temporai_kota as $num => $temp_kota)
+                    <div class="col-md-4 col-sm-4  chart-container">
+                        <h5 justify-content-center>{{ $temp_kota['name'] }}</h5>
+                        {{-- <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 350px; height: 200px;"></div> --}}
+                        <div class="chart has-fixed-height" id="pieee_basic{{ $num }}" style="width: 500px; height: 400px;"></div>
+                    </div>
+                    
+                    @endforeach
+                </div>
+			</div>
+		</div>
+	</div>
+        
+    @endif
+    
 </div>
 <div class="modal-only">
     @php
@@ -246,7 +277,7 @@
 
                     <div class="modal-body">
                         <div class="dt-responsive table-responsive">
-                            <table id="dttable" class="table table-striped table-bordered able-responsive">
+                            <table  class="table table-striped table-bordered table-responsive">
                                 <thead>
                                     <tr >
                                         
@@ -431,6 +462,74 @@
         option && myChart.setOption(option);
 
     }
+    var temp1 = {!! json_encode($temporai_kota) !!};
+    console.log(temp1);
+    temp1.forEach(myFunction1);
+    
+    
+    function myFunction1(item, index) {
+        var ceker = "pieee_basic"+index;
+        console.log(ceker)
 
+        var chartDom1 = document.getElementById(ceker);
+        var myChart1 = echarts.init(chartDom1);
+        var option1;
+
+        option1 = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} Km ({d}%)'
+            },
+            legend: {
+                top: '5%',
+                left: 'center'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                mark: { show: true },
+                dataView: { show: true, readOnly: false },
+                restore: { show: true },
+                saveAsImage: { show: true }
+                }
+            },
+            series: [
+                {
+                name: 'Sapu Lobang',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+
+                itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
+                label: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    label: {
+                    show: true,
+                    fontSize: '23',
+                    fontWeight: 'bold'
+                    }
+                },
+                labelLine: {
+                    show: false
+                },
+                data: [
+                    { value: item.total, name: 'Baik', itemStyle: {color: '#89f574'} },
+                    { value: item.penanganan, name: 'Penanganan', itemStyle: {color: '#fce97f'} },
+                    { value: item.kerusakan, name: 'Kerusakan',itemStyle: {color: '#ff8a8a'} }
+                    ]
+                }
+            ]
+        };
+
+        option1 && myChart1.setOption(option1);
+
+    }
 </script>
 @endsection
