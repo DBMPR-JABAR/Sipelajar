@@ -45,4 +45,8 @@ class UPTD extends Model
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'uptd_id')->where('status','Selesai');
     }
+    public function lubang_potensi()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringPotensiLubangSurveiDetail', 'uptd_id');
+    }
 }

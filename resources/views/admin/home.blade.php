@@ -765,9 +765,10 @@
     var data_sisa = {!! json_encode($data_sisa) !!};
     var data_perencanaan = {!! json_encode($data_perencanaan) !!};
     var data_penanganan = {!! json_encode($data_penanganan) !!};
+    var data_potensi = {!! json_encode($data_potensi) !!};
     
     var data_total_km = {!! json_encode($data_total_km) !!};
-
+    
     var chartDom = document.getElementById('pie_basic');
     var myChart = echarts.init(chartDom);
     var option;
@@ -817,32 +818,7 @@
                 type: 'bar',
                 id: 'sales',
                 itemStyle: {color: '#ffc107'},
-                data: [
-                    {
-                        value: 0,
-                        groupId: 'UPTD1'
-                    },
-                    {
-                        value: 0,
-                        groupId: 'UPTD2'
-                    },
-                    {
-                        value: 0,
-                        groupId: 'UPTD3'
-                    },
-                    {
-                        value: 0,
-                        groupId: 'UPTD4'
-                    },
-                    {
-                        value: 0,
-                        groupId: 'UPTD5'
-                    },
-                    {
-                        value: 0,
-                        groupId: 'UPTD6'
-                    }
-                ],
+                data: data_potensi,
                 universalTransition: {
                     enabled: true,
                     divideShape: 'clone'

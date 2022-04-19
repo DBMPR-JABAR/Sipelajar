@@ -80,9 +80,15 @@ class Home extends Controller
                 'groupId'=>$merge
             ];
             array_push($data_total_km,$total);
+
+            $potensi=[
+                'value'=> round($i->lubang_potensi->sum('panjang')/1000,3),
+                'groupId'=>$merge
+            ];
+            array_push($data_potensi,$potensi);
         }
-        // dd($data_total_km);
-        return view('admin.home',compact('temporari','library_uptd','data_sisa','data_perencanaan','data_penanganan','data_total_km'));
+        // dd($data_potensi);
+        return view('admin.home',compact('temporari','library_uptd','data_sisa','data_perencanaan','data_penanganan','data_total_km','data_potensi'));
     }
 
     public function downloadFile()
