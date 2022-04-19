@@ -767,66 +767,66 @@
 
 
             $('#mapLatLong').ready(() => {
-            require([
-            "esri/Map",
-            "esri/views/MapView",
-            "esri/Graphic"
-            ], function(Map, MapView, Graphic) {
+                require([
+                "esri/Map",
+                "esri/views/MapView",
+                "esri/Graphic"
+                ], function(Map, MapView, Graphic) {
 
-                const map = new Map({
-                    basemap: "osm"
-                });
-
-                const view = new MapView({
-                    container: "mapLatLong",
-                    map: map,
-                    center: [107.6191, -6.9175],
-                    zoom: 8,
-                });
-
-                let tempGraphic;
-                view.on("click", function(event){
-                    if($("#lat").val() != '' && $("#long").val() != ''){
-                        view.graphics.remove(tempGraphic);
-                    }
-                    var graphic = new Graphic({
-                        geometry: event.mapPoint,
-                        symbol: {
-                            type: "picture-marker", // autocasts as new SimpleMarkerSymbol()
-                            url: "http://esri.github.io/quickstart-map-js/images/blue-pin.png",
-                            width: "14px",
-                            height: "24px"
-                        }
+                    const map = new Map({
+                        basemap: "osm"
                     });
-                    tempGraphic = graphic;
-                    $("#lat").val(event.mapPoint.latitude);
-                    $("#long").val(event.mapPoint.longitude);
 
-                    view.graphics.add(graphic);
-                });
-                $("#lat, #long").keyup(function () {
-                    if($("#lat").val() != '' && $("#long").val() != ''){
-                        view.graphics.remove(tempGraphic);
-                    }
-                    var graphic = new Graphic({
-                        geometry: {
-                            type: "point",
-                            longitude: $("#long").val(),
-                            latitude: $("#lat").val()
-                        },
-                        symbol: {
-                            type: "picture-marker", // autocasts as new SimpleMarkerSymbol()
-                            url: "http://esri.github.io/quickstart-map-js/images/blue-pin.png",
-                            width: "14px",
-                            height: "24px"
-                        }
+                    const view = new MapView({
+                        container: "mapLatLong",
+                        map: map,
+                        center: [107.6191, -6.9175],
+                        zoom: 8,
                     });
-                    tempGraphic = graphic;
 
-                    view.graphics.add(graphic);
+                    let tempGraphic;
+                    view.on("click", function(event){
+                        if($("#lat").val() != '' && $("#long").val() != ''){
+                            view.graphics.remove(tempGraphic);
+                        }
+                        var graphic = new Graphic({
+                            geometry: event.mapPoint,
+                            symbol: {
+                                type: "picture-marker", // autocasts as new SimpleMarkerSymbol()
+                                url: "http://esri.github.io/quickstart-map-js/images/blue-pin.png",
+                                width: "14px",
+                                height: "24px"
+                            }
+                        });
+                        tempGraphic = graphic;
+                        $("#lat").val(event.mapPoint.latitude);
+                        $("#long").val(event.mapPoint.longitude);
+
+                        view.graphics.add(graphic);
+                    });
+                    $("#lat, #long").keyup(function () {
+                        if($("#lat").val() != '' && $("#long").val() != ''){
+                            view.graphics.remove(tempGraphic);
+                        }
+                        var graphic = new Graphic({
+                            geometry: {
+                                type: "point",
+                                longitude: $("#long").val(),
+                                latitude: $("#lat").val()
+                            },
+                            symbol: {
+                                type: "picture-marker", // autocasts as new SimpleMarkerSymbol()
+                                url: "http://esri.github.io/quickstart-map-js/images/blue-pin.png",
+                                width: "14px",
+                                height: "24px"
+                            }
+                        });
+                        tempGraphic = graphic;
+
+                        view.graphics.add(graphic);
+                    });
                 });
             });
-        });
         });
 
     // });

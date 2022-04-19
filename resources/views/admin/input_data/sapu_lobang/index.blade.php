@@ -114,7 +114,7 @@
     <div class="col-sm-12">
 		<div class="card">
             <div class="card-header">
-                <h4>Diagram Sapu Lobang {{ @$filter['tanggal_awal'].' - '.@$filter['tanggal_akhir'] }} </h4>
+                <h4>Diagram Sapu Lobang {{ @$filter['tanggal_akhir'] }} </h4>
                 <div class="card-header-right">
                     <ul class="list-unstyled card-option">
                         {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
@@ -369,8 +369,6 @@
 
     console.log(temp);
     let text = "";
-    const fruits = ["apple", "orange", "cherry"];
-    console.log(fruits)
     temp.forEach(myFunction);
     
     

@@ -26,6 +26,9 @@
 @endsection
 
 @section('page-body')
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.1/echarts.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js"></script>
+
 @php
   if (hasAccess(Auth::user()->internal_role_id, "User", "View")) {
      $number = 4;
@@ -194,6 +197,171 @@
             </div>
 
 
+        </div>
+    </div>
+</div>
+<div class="col-sm-12">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Monitoring Lubang</h4>
+            {{-- <span>lorem ipsum dolor sit amet, consectetur adipisicing elit</span> --}}
+            <div class="card-header-right">
+                <ul class="list-unstyled card-option">
+                    {{-- <li><i class="feather icon-maximize full-card"></i></li>
+                    <li><i class="feather icon-minus minimize-card"></i></li> --}}
+                </ul>
+            </div>
+        </div>
+        <div class="card-block align-items-center justify-content-center">
+            <div class="chart has-fixed-height" id="pie_basic" style="width: 800px; height: 600px;"></div>
+
+            <div class="card-deck col-md-12">
+                <div class="card w-100">
+                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h4 class="text-warning f-w-600">
+                                    0 Lubang
+                                </h4>
+                                <h6 class="text-muted m-b-0">0 Km</h6>
+                            </div>
+                            <div class="col-4 text-right">
+                                <i class="feather icon-arrow-down f-28"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- </a> --}}
+                    <div class="card-footer bg-warning">
+                        <div class="row align-items-center">
+                            <div class="col-9">
+                                <p class="text-white m-b-0">Potensi Lubang</p>
+                            </div>
+                            <div class="col-3 text-right">
+                                <i class="feather icon-trending-up text-white f-16"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card w-100">
+                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h4 class="text-c-yellow f-w-600">
+                                    {{ @$temporari['jumlah']['perencanaan'] }} Lubang
+                                </h4>
+                                <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['perencanaan'] }} Km</h6>
+                            </div>
+                            <div class="col-4 text-right">
+                                <i class="feather icon-arrow-down f-28"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- </a> --}}
+                    <div class="card-footer bg-c-yellow">
+                        <div class="row align-items-center">
+                            <div class="col-9">
+                                <p class="text-white m-b-0">Dalam Perencanaan</p>
+                            </div>
+                            <div class="col-3 text-right">
+                                <i class="feather icon-trending-up text-white f-16"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card w-100">
+                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h4 class="text-success f-w-600">
+                                    {{ @$temporari['jumlah']['penanganan'] }} Lubang
+                                </h4>
+                                <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['penanganan'] }} Km</h6>
+
+                            </div>
+                            <div class="col-4 text-right">
+                                <i class="feather icon-arrow-up f-28"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- </a> --}}
+                    <div class="card-footer bg-success">
+                        <div class="row align-items-center">
+                            <div class="col-9">
+                                <p class="text-white m-b-0">Sudah Ditangani</p>
+                            </div>
+                            <div class="col-3 text-right">
+                                <i class="feather icon-trending-up text-white f-16"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card w-100">
+                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h4 class="text-danger f-w-600">
+                                    {{ @$temporari['jumlah']['sisa'] }} Lubang
+
+                                </h4>
+                                <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['sisa'] }} Km</h6>
+
+                            </div>
+                            <div class="col-4 text-right">
+                                <i class="feather icon-clock f-28"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- </a> --}}
+                    <div class="card-footer bg-danger">
+                        <div class="row align-items-center">
+                            <div class="col-9">
+                                <p class="text-white m-b-0">Sisa</p>
+                            </div>
+                            <div class="col-3 text-right">
+                                <i class="feather icon-trending-up text-white f-16"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-deck col-md-12 mt-3">
+                <div class="card w-100">
+                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                    <div class="card-block">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h4 class=" f-w-600">
+                                    {{ array_sum($temporari['jumlah']) }} Lubang
+                                    
+                                </h4>
+                                <h6 class="text-muted m-b-0">{{ array_sum($temporari['panjang']) }} Km</h6>
+                            </div>
+                            <div class="col-4 text-right">
+                                {{-- <i class="feather-archive"></i> --}}
+                                <i class="feather icon-clipboard f-28"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- </a> --}}
+                    <div class="card-footer bg-default">
+                        <div class="row align-items-center">
+                            <div class="col-9">
+                                <p class=" m-b-0" style="color: black">Total</p>
+                            </div>
+                            <div class="col-3 text-right">
+                                <i class="feather icon-trending-up text-white f-16"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -591,4 +759,211 @@
         </div>
     </div>
 </div>
+
+<script>
+    var library_uptd = {!! json_encode($library_uptd) !!};
+    var data_sisa = {!! json_encode($data_sisa) !!};
+    var data_perencanaan = {!! json_encode($data_perencanaan) !!};
+    var data_penanganan = {!! json_encode($data_penanganan) !!};
+    
+    var data_total_km = {!! json_encode($data_total_km) !!};
+
+    var chartDom = document.getElementById('pie_basic');
+    var myChart = echarts.init(chartDom);
+    var option;
+    
+    option = {
+        xAxis: {
+            type: 'category',
+            data: library_uptd
+        },
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        dataGroupId: '',
+        animationDurationUpdate: 500,
+        tooltip: {
+            trigger: 'axis',
+            // formatter: '{b}<br />{a0}: {c0} Km<br />{a1}: {c1} Km<br />{a2}: {c2} Km<br />{a3}: {c3} Km<br />{a4}: {c4} Km'
+        },
+        legend: {
+            data: ['POTENSI', 'PERENCANAAN', 'DITANGANI', 'SISA','TOTAL KM'],
+            selected: {
+                
+                POTENSI: true,
+                PERENCANAAN: true,
+                DITANGANI: true,
+                SISA: true
+
+            }
+        },
+        toolbox: {
+            show: true,
+            feature: {
+            dataView: { show: false, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+            }
+        },
+        
+        calculable: true,
+
+        series: [
+            {
+                name: 'POTENSI',
+                type: 'bar',
+                id: 'sales',
+                itemStyle: {color: '#ffc107'},
+                data: [
+                    {
+                        value: 0,
+                        groupId: 'UPTD1'
+                    },
+                    {
+                        value: 0,
+                        groupId: 'UPTD2'
+                    },
+                    {
+                        value: 0,
+                        groupId: 'UPTD3'
+                    },
+                    {
+                        value: 0,
+                        groupId: 'UPTD4'
+                    },
+                    {
+                        value: 0,
+                        groupId: 'UPTD5'
+                    },
+                    {
+                        value: 0,
+                        groupId: 'UPTD6'
+                    }
+                ],
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            {
+                name: 'PERENCANAAN',
+                type: 'bar',
+                itemStyle: {color: '#ffb64d'},
+
+                data: data_perencanaan,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            {
+                name: 'DITANGANI',
+                type: 'bar',
+                itemStyle: {color: '#28a745'},
+
+                data: data_penanganan,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            {
+                name: 'SISA',
+                type: 'bar',
+                itemStyle: {color: '#dc3545'},
+
+                data: data_sisa,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            {
+                name: 'TOTAL KM',
+                type: 'bar',
+                
+                data: data_total_km,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            }
+        ]
+    };
+// const drilldownData = [
+//   {
+//     dataGroupId: 'UPTD1',
+//     data: [
+//       ['Cats', 4],
+//       ['Dogs', 2],
+//       ['Cows', 1],
+//       ['Sheep', 2],
+//       ['Pigs', 1]
+//     ]
+//   },
+//   {
+//     dataGroupId: 'UPTD2',
+//     data: [
+//       ['Apples', 4],
+//       ['Oranges', 2]
+//     ]
+//   },
+//   {
+//     dataGroupId: 'UPTD3',
+//     data: [
+//       ['Toyota', 4],
+//       ['Opel', 2],
+//       ['Volkswagen', 2]
+//     ]
+//   }
+// ];
+// myChart.on('click', function (event) {
+//   if (event.data) {
+//     var subData = drilldownData.find(function (data) {
+//       return data.dataGroupId === event.data.groupId;
+//     });
+//     if (!subData) {
+//       return;
+//     }
+//     myChart.setOption({
+//       xAxis: {
+//         data: subData.data.map(function (item) {
+//           return item[0];
+//         })
+//       },
+//       series: {
+//         type: 'bar',
+//         id: 'sales',
+//         dataGroupId: subData.dataGroupId,
+//         data: subData.data.map(function (item) {
+//           return item[1];
+//         }),
+//         universalTransition: {
+//           enabled: true,
+//           divideShape: 'clone'
+//         }
+//       },
+//       graphic: [
+//         {
+//           type: 'text',
+//           left: 50,
+//           top: 20,
+//           style: {
+//             text: 'Back',
+//             fontSize: 18
+//           },
+//           onclick: function () {
+//             myChart.setOption(option);
+//           }
+//         }
+//       ]
+//     });
+//   }
+// });
+
+option && myChart.setOption(option);
+</script>
 @endsection
