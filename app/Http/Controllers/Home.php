@@ -27,19 +27,20 @@ class Home extends Controller
             $data = $data->where('uptd_id', $uptd_id);
             $data1 = $data->where('uptd_id', $uptd_id);
             $data2 = $data->where('uptd_id', $uptd_id);
+          
             $data3 = $data3->where('uptd_id', $uptd_id);
 
             if (str_contains(Auth::user()->internalRole->role, 'Mandor')) {
                 $data = $data->where('created_by', Auth::user()->id);
                 $data1 = $data->where('created_by', Auth::user()->id);
                 $data2 = $data->where('created_by', Auth::user()->id);
-                $data3 = $dat3->where('created_by', Auth::user()->id);
+                $data3 = $data3->where('created_by', Auth::user()->id);
 
             } else if (Auth::user()->sup_id) {
                 $data = $data->where('sup_id', Auth::user()->sup_id);
                 $data1 = $data->where('sup_id', Auth::user()->sup_id);
                 $data2 = $data->where('sup_id', Auth::user()->sup_id);
-                $data3 = $dat3->where('sup_id', Auth::user()->sup_id);
+                $data3 = $data3->where('sup_id', Auth::user()->sup_id);
 
                 if (count(Auth::user()->ruas) > 0) {
                     $data = $data->whereIn('ruas_jalan_id', Auth::user());

@@ -214,152 +214,159 @@
         </div>
         <div class="card-block align-items-center justify-content-center">
             <div class="chart has-fixed-height" id="pie_basic" style="width: 800px; height: 600px;"></div>
-
-            <div class="card-deck col-md-12">
-                <div class="card w-100">
-                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
-                    <div class="card-block">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <h4 class="text-warning f-w-600">
-                                    {{ @$temporari1['jumlah']['potensi'] }} Lubang
-                                </h4>
-                                <h6 class="text-muted m-b-0">{{ @$temporari1['panjang']['potensi'] }} Lubang</h6>
-                            </div>
-                            <div class="col-4 text-right">
-                                <i class="feather icon-arrow-down f-28"></i>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- </a> --}}
-                    <div class="card-footer bg-warning">
-                        <div class="row align-items-center">
-                            <div class="col-9">
-                                <p class="text-white m-b-0">Potensi Lubang</p>
-                            </div>
-                            <div class="col-3 text-right">
-                                <i class="feather icon-trending-up text-white f-16"></i>
+            <div class="row">
+                <div class="col-md-3 align-items-center justify-content-center my-auto">
+                    <div class="card w-100 ">
+                        {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                        <div class="card-block">
+                            <div class="row align-items-center">
+                                <div class="col-8">
+                                    <h4 class="text-warning f-w-600">
+                                        {{ @$temporari1['jumlah']['potensi'] }} Lubang
+                                    </h4>
+                                    <h6 class="text-muted m-b-0">{{ @$temporari1['panjang']['potensi'] }} Lubang</h6>
+                                </div>
+                                <div class="col-4 text-right">
+                                    <i class="feather icon-arrow-down f-28"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="card w-100">
-                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
-                    <div class="card-block">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <h4 class="text-c-yellow f-w-600">
-                                    {{ @$temporari['jumlah']['perencanaan'] }} Lubang
-                                </h4>
-                                <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['perencanaan'] }} Km</h6>
-                            </div>
-                            <div class="col-4 text-right">
-                                <i class="feather icon-arrow-down f-28"></i>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- </a> --}}
-                    <div class="card-footer bg-c-yellow">
-                        <div class="row align-items-center">
-                            <div class="col-9">
-                                <p class="text-white m-b-0">Dalam Perencanaan</p>
-                            </div>
-                            <div class="col-3 text-right">
-                                <i class="feather icon-trending-up text-white f-16"></i>
+                        {{-- </a> --}}
+                        <div class="card-footer bg-warning">
+                            <div class="row align-items-center">
+                                <div class="col-9">
+                                    <p class="text-white m-b-0">Potensi Lubang</p>
+                                </div>
+                                <div class="col-3 text-right">
+                                    <i class="feather icon-trending-up text-white f-16"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-9">
+                    <div class="card-deck col-md-12">
+                        
+        
+                        <div class="card w-100">
+                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-c-yellow f-w-600">
+                                            {{ @$temporari['jumlah']['perencanaan'] }} Lubang
+                                        </h4>
+                                        <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['perencanaan'] }} Km</h6>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="feather icon-arrow-down f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- </a> --}}
+                            <div class="card-footer bg-c-yellow">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Perencanaan</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <i class="feather icon-trending-up text-white f-16"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="card w-100">
+                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-success f-w-600">
+                                            {{ @$temporari['jumlah']['penanganan'] }} Lubang
+                                        </h4>
+                                        <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['penanganan'] }} Km</h6>
+        
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="feather icon-arrow-up f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- </a> --}}
+                            <div class="card-footer bg-success">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Ditangani</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <i class="feather icon-trending-up text-white f-16"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <div class="card w-100">
+                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-danger f-w-600">
+                                            {{ @$temporari['jumlah']['sisa'] }} Lubang
+        
+                                        </h4>
+                                        <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['sisa'] }} Km</h6>
+        
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="feather icon-clock f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- </a> --}}
+                            <div class="card-footer bg-danger">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Sisa</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <i class="feather icon-trending-up text-white f-16"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-deck col-md-12 mt-3">
+                        <div class="card w-100">
+                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class=" f-w-600">
+                                            {{ array_sum($temporari['jumlah']) }} Lubang
+                                            
+                                        </h4>
+                                        <h6 class="text-muted m-b-0">{{ array_sum($temporari['panjang']) }} Km</h6>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        {{-- <i class="feather-archive"></i> --}}
+                                        <i class="feather icon-clipboard f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- </a> --}}
+                            <div class="card-footer bg-default">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class=" m-b-0" style="color: black">Total</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <i class="feather icon-trending-up text-white f-16"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="card w-100">
-                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
-                    <div class="card-block">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <h4 class="text-success f-w-600">
-                                    {{ @$temporari['jumlah']['penanganan'] }} Lubang
-                                </h4>
-                                <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['penanganan'] }} Km</h6>
-
-                            </div>
-                            <div class="col-4 text-right">
-                                <i class="feather icon-arrow-up f-28"></i>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- </a> --}}
-                    <div class="card-footer bg-success">
-                        <div class="row align-items-center">
-                            <div class="col-9">
-                                <p class="text-white m-b-0">Sudah Ditangani</p>
-                            </div>
-                            <div class="col-3 text-right">
-                                <i class="feather icon-trending-up text-white f-16"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card w-100">
-                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
-                    <div class="card-block">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <h4 class="text-danger f-w-600">
-                                    {{ @$temporari['jumlah']['sisa'] }} Lubang
-
-                                </h4>
-                                <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['sisa'] }} Km</h6>
-
-                            </div>
-                            <div class="col-4 text-right">
-                                <i class="feather icon-clock f-28"></i>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- </a> --}}
-                    <div class="card-footer bg-danger">
-                        <div class="row align-items-center">
-                            <div class="col-9">
-                                <p class="text-white m-b-0">Sisa</p>
-                            </div>
-                            <div class="col-3 text-right">
-                                <i class="feather icon-trending-up text-white f-16"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card-deck col-md-12 mt-3">
-                <div class="card w-100">
-                    {{-- <a href="{{ url('admin/lapor') }}"> --}}
-                    <div class="card-block">
-                        <div class="row align-items-center">
-                            <div class="col-8">
-                                <h4 class=" f-w-600">
-                                    {{ array_sum($temporari['jumlah']) }} Lubang
-                                    
-                                </h4>
-                                <h6 class="text-muted m-b-0">{{ array_sum($temporari['panjang']) }} Km</h6>
-                            </div>
-                            <div class="col-4 text-right">
-                                {{-- <i class="feather-archive"></i> --}}
-                                <i class="feather icon-clipboard f-28"></i>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- </a> --}}
-                    <div class="card-footer bg-default">
-                        <div class="row align-items-center">
-                            <div class="col-9">
-                                <p class=" m-b-0" style="color: black">Total</p>
-                            </div>
-                            <div class="col-3 text-right">
-                                <i class="feather icon-trending-up text-white f-16"></i>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
