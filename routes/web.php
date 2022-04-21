@@ -14,7 +14,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 */
 // ufSjz8hjzvtyKr_zBXsM
 Route::get('/map-dashboard/intervention-mage/{value}', function($value) {
-    $img = Image::make($value)->resize(300, 200);
+    $img = Image::make($value)->resize(100, 50);
     return $img->response('jpg');
 });
 
