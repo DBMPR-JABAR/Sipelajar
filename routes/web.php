@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Intervention\Image\ImageManagerStatic as Image;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // ufSjz8hjzvtyKr_zBXsM
+Route::get('/map-dashboard/intervention-mage/{value}', function($value) {
+    $img = Image::make($value)->resize(300, 200);
+    return $img->response('jpg');
+});
 
 Route::get('test', function () {
     return view('admin.layout.index');
