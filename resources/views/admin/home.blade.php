@@ -337,7 +337,8 @@
                     </div>
                     <div class="card-deck col-md-12 mt-3">
                         <div class="card w-100">
-                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <a href="{{ route('sapu-lobang.lubang') }}" target="_blank">
+
                             <div class="card-block">
                                 <div class="row align-items-center">
                                     <div class="col-8">
@@ -353,7 +354,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- </a> --}}
+                            </a>
                             <div class="card-footer bg-default">
                                 <div class="row align-items-center">
                                     <div class="col-9">
