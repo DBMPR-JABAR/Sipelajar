@@ -249,7 +249,7 @@
                         
         
                         <div class="card w-100">
-                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <a href="{{ url('admin/input-data/sapu-lobang/data-lubang?status_filter=Dalam+Perencanaan') }}" target="_blank">
                             <div class="card-block">
                                 <div class="row align-items-center">
                                     <div class="col-8">
@@ -263,7 +263,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- </a> --}}
+                            </a>
                             <div class="card-footer bg-c-yellow">
                                 <div class="row align-items-center">
                                     <div class="col-9">
@@ -277,7 +277,7 @@
                         </div>
         
                         <div class="card w-100">
-                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <a href="{{ url('admin/input-data/sapu-lobang/data-lubang?status_filter=Sudah+Ditangani') }}" target="_blank">
                             <div class="card-block">
                                 <div class="row align-items-center">
                                     <div class="col-8">
@@ -292,7 +292,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- </a> --}}
+                            </a>
                             <div class="card-footer bg-success">
                                 <div class="row align-items-center">
                                     <div class="col-9">
@@ -306,7 +306,7 @@
                         </div>
         
                         <div class="card w-100">
-                            {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                            <a href="{{ url('admin/input-data/sapu-lobang/data-lubang?status_filter=Belum+Ditangani') }}" target="_blank">
                             <div class="card-block">
                                 <div class="row align-items-center">
                                     <div class="col-8">
@@ -322,7 +322,7 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- </a> --}}
+                            </a>
                             <div class="card-footer bg-danger">
                                 <div class="row align-items-center">
                                     <div class="col-9">

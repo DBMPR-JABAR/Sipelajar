@@ -86,6 +86,8 @@ class SapuLobangController extends Controller
         
         }else{
             $data = UPTD::where('id',$request->uptd_filter)->get();
+            $filter['uptd_filter'] = $request->uptd_filter;
+
         }
         
         foreach($data as $no => $temp){
@@ -112,6 +114,37 @@ class SapuLobangController extends Controller
         }
         // dd($temporai_kota);
         return view('admin.input_data.sapu_lobang.index',compact('filter','data','temporai','temporai_kota'));
+
+    }
+    public function indexLubang(Request $request){
+        $filter['tanggal_awal'] = $request->tanggal_awal ? :Carbon::now()->subDays(365)->format('Y-m-d');
+        $filter['tanggal_akhir'] = $request->tanggal_akhir ? :Carbon::now()->format('Y-m-d');
+        $filter['uptd_filter']=null;
+        $filter['status_filter'] =null;
+        
+        $data = SurveiDetail::whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->latest('tanggal');
+        if($request->uptd_filter != null){
+            $data = $data->where('uptd_id',$request->uptd_filter);
+            $filter['uptd_filter'] = $request->uptd_filter;
+        }else{
+            if (Auth::user() && Auth::user()->internalRole->uptd) {
+                $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
+                $data = $data->where('uptd_id',$uptd_id);
+                $filter['uptd_filter'] = $uptd_id;
+            }
+        }
+        if($request->status_filter != null){
+            if($request->status_filter == "Belum Ditangani"){
+                $data = $data->whereNull('status');
+            }else if($request->status_filter == "Dalam Perencanaan"){
+                $data = $data->where('status','Perencanaan');
+            }else if($request->status_filter == "Sudah Ditangani"){
+                $data = $data->where('status','Selesai');
+            }
+            $filter['status_filter'] = $request->status_filter;
+        }
+        $data = $data->get();
+        return view('admin.input_data.sapu_lobang.index-lubang',compact('filter', 'data'));
 
     }
     public function rekapitulasi(Request $request){

@@ -269,11 +269,35 @@
                                 </li>
                             @endif
                         
-                                <li class="{{ Request::segment(3) == 'sapu-lobang' ? 'active' : '' }}">
+                                {{-- <li class="{{ Request::segment(3) == 'sapu-lobang' ? 'active' : '' }}">
                                     <a href="{{ route('sapu-lobang.index') }}"
                                         class="waves-effect waves-dark">
                                         <span class="pcoded-mtext">Sapu Lobang</span>
                                     </a>
+                                </li> --}}
+                                <li class=" pcoded-hasmenu  {{ Request::segment(3) == 'sapu-lobang' ? 'pcoded-trigger active' : '' }}">
+                                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                                        <span class="pcoded-mtext">Sapu Lobang</span>
+                                    </a>
+                                    <ul class="pcoded-submenu">
+                                        <li class="{{ Request::segment(4) == 'rekapitulasi' ? 'active' : '' }}">
+                                            <a href="{{ route('sapu-lobang.index') }}" class="waves-effect waves-dark">
+                                                <span class="pcoded-mtext">Rekapitulasi</span>
+                                            </a>
+                                        </li>
+                                        <li class="{{ Request::segment(4) == 'data-lubang' ? 'active' : '' }}">
+                                            <a href="{{ route('sapu-lobang.lubang') }}" class="waves-effect waves-dark">
+                                                <span class="pcoded-mtext">Data Lubang</span>
+                                            </a>
+                                        </li>
+                                        
+                                        <li class="{{ Request::segment(4) == 'data-potensi' ? 'active' : '' }}">
+                                            <a href="#" class="waves-effect waves-dark">
+                                                <span class="pcoded-mtext">Potensi Lubang</span>
+                                            </a>
+                                        </li>
+                                     
+                                    </ul>
                                 </li>
                           
                            

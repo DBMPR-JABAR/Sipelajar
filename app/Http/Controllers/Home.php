@@ -51,10 +51,10 @@ class Home extends Controller
                 }
             }
         }
-        $temporari['jumlah']['sisa'] = $data->whereNull('status')->get()->count();
-        $temporari['jumlah']['perencanaan'] = $data1->where('status','Perencanaan')->get()->count();
-        $temporari['jumlah']['penanganan'] = $data2->where('status','Selesai')->get()->count();
-        $temporari1['jumlah']['potensi'] = $data3->get()->count();
+        $temporari['jumlah']['sisa'] = $data->whereNull('status')->get()->sum('jumlah');
+        $temporari['jumlah']['perencanaan'] = $data1->where('status','Perencanaan')->get()->sum('jumlah');
+        $temporari['jumlah']['penanganan'] = $data2->where('status','Selesai')->get()->sum('jumlah');
+        $temporari1['jumlah']['potensi'] = $data3->get()->sum('jumlah');
 
         $temporari['panjang']['sisa'] =  round($data->whereNull('status')->get()->sum('panjang')/1000,3);
         $temporari['panjang']['perencanaan'] = round($data1->where('status','Perencanaan')->get()->sum('panjang')/1000,3);
