@@ -577,15 +577,15 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label">Koordinat X</label>
+                            <label class="col-md-2 col-form-label">Koordinat X ( latitude )</label>
                             <div class="col-md-10">
-                                <input id="lat" name="lat" type="text" class="form-control formatLatLong" required>
+                                <input id="lat" name="lat" type="text" class="form-control formatLatLong" required placeholder="-6.921272796096672">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label">Koordinat Y</label>
+                            <label class="col-md-2 col-form-label">Koordinat Y ( Longitude )</label>
                             <div class="col-md-10">
-                                <input id="long" name="lng" type="text" class="form-control formatLatLong" required>
+                                <input id="long" name="lng" type="text" class="form-control formatLatLong" required placeholder="107.61116564232853">
                             </div>
                         </div>
 
