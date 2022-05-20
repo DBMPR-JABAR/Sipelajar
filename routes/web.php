@@ -499,9 +499,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             Route::post('/rekapitulasi', 'InputData\SapuLobangController@rekapitulasi')->name('sapu-lobang.rekapitulasi');
             Route::get('/data-lubang', 'InputData\SapuLobangController@indexLubang')->name('sapu-lobang.lubang');
             Route::get('/data-potensi', 'InputData\SapuLobangController@indexPotensi')->name('sapu-lobang.potensi');
-
-
-
         });
 
     });

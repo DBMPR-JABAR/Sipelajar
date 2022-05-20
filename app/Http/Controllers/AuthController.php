@@ -31,13 +31,13 @@ class AuthController extends Controller
             Auth::logout();
             return back()->with(['msg' => 'Silahkan Login Di Smartphone Untuk Mengakses Fitur Masyarakat', 'color' => 'danger']);
         }
-        Log::create(['activity' => 'Login', 'description' => 'User ' . Auth::user()->name . ' Logged In To Web Teman-Jabar']);
+        Log::create(['activity' => 'Login SIPELAJAR', 'user_id' => Auth::user()->id, 'description' => 'User ' . Auth::user()->name . ' Logged In To Web SIPELAJAR', 'ip_address' => request()->ip()]);
         return redirect('admin');
     }
     public function logout()
     {
         if (Auth::check()) {
-            Log::create(['activity' => 'Logout', 'description' => 'User ' . Auth::user()->name . ' Logged Out From Web']);
+            Log::create(['activity' => 'Logout SIPELAJAR', 'user_id' => Auth::user()->id, 'description' => 'User ' . Auth::user()->name . ' Logged Out From Web SIPELAJAR', 'ip_address' => request()->ip()]);
         }
         Auth::logout();
 

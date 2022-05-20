@@ -104,7 +104,7 @@ class Home extends Controller
             ];
             array_push($data_potensi,$potensi);
         }
-        // dd($data_potensi);
+        // dd(Auth::user()->email_verified_at);
         return view('admin.home',compact('temporari','temporari1','library_uptd','data_sisa','data_perencanaan','data_penanganan','data_total_km','data_potensi'));
     }
 
