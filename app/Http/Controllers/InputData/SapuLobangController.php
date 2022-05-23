@@ -12,10 +12,13 @@ use App\Model\Transactional\MonitoringLubangSurveiDetail as SurveiDetail;
 use App\Model\Transactional\MonitoringLubangSurveiReject as SurveiReject;
 
 use App\Model\Transactional\RuasJalan;
+use App\Model\Transactional\Kota;
 
 use App\Model\Transactional\UPTD;
 use Illuminate\Support\Facades\Auth;
-use App\Model\Transactional\Kota;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 
 
 class SapuLobangController extends Controller
@@ -168,9 +171,46 @@ class SapuLobangController extends Controller
 
         $color = "success";
         $msg = "Data Berhasil di Reject";
+        return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg')); 
+    }
+    public function executionLubang(Request $request){
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+            'tanggal' => '',
+            'keterangan' => '',
+            'id_lubang' => 'required'
+        ]);
+        if ($validator->fails()) {   
+            storeLogActivity(declarLog(1, 'Eksekusi Data Survei Lubang', $validator->errors()));
+            $color = "danger";
+            $msg = $validator->errors();
+            return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg'));
+        }
+        $data = SurveiDetail::find($request->id_lubang);
+        dd($request->status);
+        if($request->status == "Accepted"){
+
+        }else{
+            $temporari = $data;
+            $temporari = $temporari->toarray();
+            unset($temporari['id'],$temporari['created_at'],$temporari['updated_at']);
+            $temporari['updated_by'] = Auth::user()->id;
+            $save = SurveiReject::create($temporari);
+
+            $survei = $data->SurveiLubang;
+            $survei->jumlah = $survei->jumlah - $data->jumlah;
+            $survei->panjang = $survei->panjang - $data->panjang;
+            
+            storeLogActivity(declarLog(1, 'Reject Data Lubang', $data->ruas->nama_ruas_jalan,1));
+            $data->delete();
+            $survei->save();
+
+            $color = "success";
+            $msg = "Data Berhasil di Reject";
+        }
         return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg'));
 
-        
+
     }
     public function rekapitulasi(Request $request){
         if($request->tanggal_akhir != null){

@@ -239,13 +239,13 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('store.user_admin') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('sapu-lobang.lubang.execution') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                 
-                        <div class="form-group">
+                        <div class="form-group" style="display: none">
                             <label for="recipient-name" class="col-form-label">Recipient:</label>
-                            <input type="text" name="id_lubang" class="form-control" id="recipient-name" readonly style="display: none">
+                            <input type="text" name="id_lubang" class="form-control" id="recipient-name" readonly  required>
                         </div>
                         
                         <div class="form-group">
@@ -263,7 +263,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label">Keterangan :</label>
-                                <textarea class="form-control" id="message-text" ></textarea>
+                                <textarea class="form-control" id="message-text" name="keterangan"></textarea>
                             </div>
                         </div>
                         <div id="Rejected" class="colors form-group" style="display:none"> 
