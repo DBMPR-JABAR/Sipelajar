@@ -9,6 +9,8 @@ use App\Model\Transactional\MonitoringLubangPenanganan as Penanganan;
 use App\Model\Transactional\MonitoringLubangSurvei as Survei;
 
 use App\Model\Transactional\MonitoringLubangSurveiDetail as SurveiDetail;
+use App\Model\Transactional\MonitoringLubangSurveiReject as SurveiReject;
+
 use App\Model\Transactional\RuasJalan;
 
 use App\Model\Transactional\UPTD;
@@ -146,6 +148,29 @@ class SapuLobangController extends Controller
         $data = $data->get();
         return view('admin.input_data.sapu_lobang.index-lubang',compact('filter', 'data'));
 
+    }
+    public function rejectLubang($id)
+    {
+        $data = SurveiDetail::find($id);
+        $temporari = $data;
+        $temporari = $temporari->toarray();
+        unset($temporari['id'],$temporari['created_at'],$temporari['updated_at']);
+        $temporari['updated_by'] = Auth::user()->id;
+        $save = SurveiReject::create($temporari);
+
+        $survei = $data->SurveiLubang;
+        $survei->jumlah = $survei->jumlah - $data->jumlah;
+        $survei->panjang = $survei->panjang - $data->panjang;
+        
+        storeLogActivity(declarLog(1, 'Reject Data Lubang', $data->ruas->nama_ruas_jalan,1));
+        $data->delete();
+        $survei->save();
+
+        $color = "success";
+        $msg = "Data Berhasil di Reject";
+        return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg'));
+
+        
     }
     public function rekapitulasi(Request $request){
         if($request->tanggal_akhir != null){

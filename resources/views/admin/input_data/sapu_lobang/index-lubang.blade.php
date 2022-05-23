@@ -201,7 +201,9 @@
                                 </td>
                                 <td class="text-center">
                                     @if ($item->status == null)
-                                    <a href="#"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Jadwalkan"><i class="icofont icofont-list"></i></button></a>
+                                    <a href="{{ route('sapu-lobang.lubang.reject',$item->id) }}"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Jadwalkan"><i class="icofont icofont-list"></i></button></a>
+                                    <button type="button" class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ $item->id }}" data-tanggal_min ="{{ $item->tanggal }}" title="Eksekusi"><i class="icofont icofont-list"></i></button>
+                                    
                                     @elseif($item->status == 'Perencanaan')
                                     <a href="#"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Proses"><i class="icofont icofont-list"></i></button></a>
                                     @endif
@@ -228,7 +230,57 @@
   
     
 </div>
-
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('store.user_admin') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Recipient:</label>
+                            <input type="text" name="id_lubang" class="form-control" id="recipient-name" readonly style="display: none">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Status Lubang</label>
+                            <Select class="form-control" id="colorselector" name="status" required>
+                                <option value="">Pilih Status</option>
+                                <option value="Accepted">Accepted</option>
+                                <option value="Rejected">Rejected</option>
+                            </Select>
+                        </div>
+                        <div id="Accepted" class="colors" style="display:none"> Jadwalkan kapan lubang ini akan di eksekusi 
+                            <div class="form-group">
+                                <label for="tanggal" class="col-form-label">Tanggal :</label>
+                                <input type="date" name="tanggal" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label">Keterangan :</label>
+                                <textarea class="form-control" id="message-text" ></textarea>
+                            </div>
+                        </div>
+                        <div id="Rejected" class="colors form-group" style="display:none"> 
+                            <span style="color: red">
+                                Data lubang ini akan di hapus 
+                            </span>
+                        </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @endsection
 @section('script')
@@ -241,6 +293,7 @@
 <script type="text/javascript" src="{{ asset('assets/vendor/chosen_v1.8.7/chosen.jquery.js') }}" type="text/javascript"></script>
 
 <script>
+
     $(document).ready(function() {
         $(".chosen-select").chosen( { width: '100%' } );
         $(".chosen-jenis-instruksi").chosen( { width: '100%' } );
@@ -255,6 +308,26 @@
             modal.find('.modal-footer #delHref').attr('href', url);
         });
 
+    });
+
+    $('#exampleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        var tanggal_min = button.data('tanggal_min') // Extract info from data-* attributes
+
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('Eksekusi Lubang ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+
+    })
+    
+    $(function() {
+        $('#colorselector').change(function(){
+            $('.colors').hide();
+            $('#' + $(this).val()).show();
+        });
     });
 </script>
 

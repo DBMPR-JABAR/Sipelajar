@@ -111,31 +111,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-12">
-		<div class="card">
-            <div class="card-header">
-                <h4>Diagram Sapu Lobang {{ @$filter['tanggal_akhir'] }} </h4>
-                <div class="card-header-right">
-                    <ul class="list-unstyled card-option">
-                        {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
-                        <li><i class="feather icon-minus minimize-card"></i></li>
-                    </ul>
-                </div>
-            </div>
-			<div class="card-block">
-                <div class="row">
-                    @foreach ($temporai as $no => $temp)
-                    <div class="col-md-6 col-sm-6  chart-container">
-                        <h5 justify-content-center>UPTD - {{ $temp['uptd'] }}</h5>
-                        {{-- <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 350px; height: 200px;"></div> --}}
-                        <div class="chart has-fixed-height" id="piee_basic{{ $no }}" style="width: 500px; height: 400px;"></div>
-                    </div>
-                    
-                    @endforeach
-                </div>
-			</div>
-		</div>
-	</div>	
+    
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
@@ -227,6 +203,31 @@
             </div>
         </div>
     </div>
+    <div class="col-sm-12">
+		<div class="card">
+            <div class="card-header">
+                <h4>Diagram Sapu Lobang {{ @$filter['tanggal_akhir'] }} </h4>
+                <div class="card-header-right">
+                    <ul class="list-unstyled card-option">
+                        {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
+                        <li><i class="feather icon-minus minimize-card"></i></li>
+                    </ul>
+                </div>
+            </div>
+			<div class="card-block">
+                <div class="row">
+                    @foreach ($temporai as $no => $temp)
+                    <div class="col-md-6 col-sm-6  chart-container">
+                        <h5 justify-content-center>UPTD - {{ $temp['uptd'] }}</h5>
+                        {{-- <div class="justify-content-center" id="pie_basic{{ $no }}" style="width: 350px; height: 200px;"></div> --}}
+                        <div class="chart has-fixed-height" id="piee_basic{{ $no }}" style="width: 500px; height: 400px;"></div>
+                    </div>
+                    
+                    @endforeach
+                </div>
+			</div>
+		</div>
+	</div>	
     @if (count($temporai_kota)>0)
     <div class="col-sm-12">
 		<div class="card">
