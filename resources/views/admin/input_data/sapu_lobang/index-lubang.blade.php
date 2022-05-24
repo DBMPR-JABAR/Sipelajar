@@ -209,7 +209,8 @@
                                     {{-- <a href="#"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Proses"><i class="icofont icofont-list"></i></button></a> --}}
                                     @endif
                                     <a href="{{ route('sapu-lobang.lubang.show',$item->id) }}"><button class="btn btn-success btn-mini waves-effect waves-light" data-toggle="tooltip" title="lihat"><i class="icofont icofont-search"></i></button></a>
-                                    <a href="#" data-id="{{$item->id}}" data-toggle="modal"><button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Hapus"><i class="icofont icofont-trash"></i></button></a>
+                                    <a href="{{ route('sapu-lobang.lubang.delete',$item->id) }}" class="btn btn-danger btn-mini waves-effect waves-light" onclick="return confirm('Hapus data?')"><i class="icofont icofont-trash"></i></a>
+                                    
                                     {{-- <a href="#delModal" data-id="{{$item->id}}" data-toggle="modal"><button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Hapus"><i class="icofont icofont-trash"></i></button></a> --}}
                                     
                                         {{-- <a type='button' href="{{ route('detailMasterUser',$item->id ) }}"  class='btn btn-primary btn-mini waves-effect waves-light'><i class='icofont icofont-check-circled'></i>Rincian</a> --}}

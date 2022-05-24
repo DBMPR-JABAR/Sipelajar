@@ -19,6 +19,7 @@ use App\Model\Transactional\UPTD;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -188,7 +189,10 @@ class SapuLobangController extends Controller
         storeLogActivity(declarLog(1, 'Delete Data Lubang', $data->ruas->nama_ruas_jalan,1));
         $data->delete();
         $survei->save();
-      
+
+        $color = "success";
+        $msg = "Data Berhasil di Hapus";
+        return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg')); 
        
     } 
     public function rejectLubang($id)
