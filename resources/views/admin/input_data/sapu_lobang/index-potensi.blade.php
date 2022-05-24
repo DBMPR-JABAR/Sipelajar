@@ -39,7 +39,7 @@
                     <a href="{{url('admin')}}"> <i class="feather icon-home"></i> </a>
                 </li>
                 <li class="breadcrumb-item"><a href="{{ route('sapu-lobang.index') }}">Sapu Lobang</a> </li>
-                <li class="breadcrumb-item"><a href="#!">Data Lubang</a> </li>
+                <li class="breadcrumb-item"><a href="#!">Data Potensi Lubang</a> </li>
 
             </ul>
         </div>
@@ -96,7 +96,7 @@
                                 <input required name="tanggal_akhir" type="date"
                                     class="form-control " style="width: 100%" value="{{ @$filter['tanggal_akhir'] }}">
                             </div>
-                            <div class="col-sm-12 col-xl-{{ $grid }} col-md-{{ $grid }} mb-3">
+                            <div class="col-sm-12 col-xl-{{ $grid }} col-md-{{ $grid }} mb-3" style="display: none">
                                 <h4 class="sub-title">Status</h4>
                                 <select class="form-control " style="width: 100%" name="status_filter">
                                     <option value="">Pilih Semua</option>
@@ -109,7 +109,7 @@
 
                             <div class="mt-3 col-sm-12 col-xl-2 mb-2">
                                 {{-- <button type="submit" class="mt-4 btn btn-primary waves-effect waves-light">Filter</button> --}}
-                                <button class="mt-4 btn btn-primary waves-effect waves-light" type="submit" formmethod="get" formaction="{{ route('sapu-lobang.lubang') }}">Filter</button>
+                                <button class="mt-4 btn btn-primary waves-effect waves-light" type="submit" formmethod="get" formaction="{{ route('sapu-lobang.potensi') }}">Filter</button>
                                 {{-- <button class="mt-4 btn btn-mat btn-success " formmethod="post" type="submit" formaction="{{ route('sapu-lobang.rekapitulasi') }}">Cetak Rekap Entry</button> --}}
                             </div>
                             
@@ -122,7 +122,7 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h4>Tabel Data Detail Lubang {{ @$filter['status_filter'] }} {{ '- '.$data->sum('jumlah') .' Lubang' }}</h4>
+                <h4>Tabel Data Detail Potensi Lubang {{ @$filter['status_filter'] }} {{ '- '.$data->sum('jumlah') .' Lubang' }}</h4>
                 <div class="card-header-right">
                     <ul class="list-unstyled card-option">
                         {{-- <li><i class="feather icon-maximize full-card"></i></li> --}}
@@ -168,7 +168,7 @@
                                 </td>
                                 <td class="text-center">
                                     
-                                    <button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Belum Ditangani">Belum Ditangani</button>
+                                    <button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Belum Ditangani">Potensi Lubang</button>
 
                                 </td>
                                 @elseif($item->status == 'Perencanaan')
@@ -208,13 +208,10 @@
                                     @elseif($item->status == 'Perencanaan')
                                     {{-- <a href="#"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Proses"><i class="icofont icofont-list"></i></button></a> --}}
                                     @endif
-                                    <a href="{{ route('sapu-lobang.lubang.show',$item->id) }}"><button class="btn btn-success btn-mini waves-effect waves-light" data-toggle="tooltip" title="lihat"><i class="icofont icofont-search"></i></button></a>
-                                    @if ($item->status != 'Selesai')
-                                    <a href="{{ route('sapu-lobang.lubang.delete',$item->id) }}" class="btn btn-danger btn-mini waves-effect waves-light" onclick="return confirm('Hapus data?')"><i class="icofont icofont-trash"></i></a>
-                                    @endif
+                                    <a href="{{ route('sapu-lobang.potensi.show',$item->id) }}"><button class="btn btn-success btn-mini waves-effect waves-light" data-toggle="tooltip" title="lihat"><i class="icofont icofont-search"></i></button></a>
+                                    {{-- <a href="{{ route('sapu-lobang.lubang.delete',$item->id) }}" class="btn btn-danger btn-mini waves-effect waves-light" onclick="return confirm('Hapus data?')"><i class="icofont icofont-trash"></i></a> --}}
                                     
-                                    {{-- <a href="#delModal" data-id="{{$item->id}}" data-toggle="modal"><button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Hapus"><i class="icofont icofont-trash"></i></button></a> --}}
-                                    
+                                  
                                 </td>
                             </tr>
                             @endforeach
@@ -238,7 +235,7 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('sapu-lobang.lubang.execution') }}" method="post" enctype="multipart/form-data">
+            <form action="{{ route('sapu-lobang.potensi.execution') }}" method="post" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                 
@@ -248,26 +245,21 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="message-text" class="col-form-label">Status Lubang</label>
+                            <label for="message-text" class="col-form-label">Status Potensi Lubang</label>
                             <Select class="form-control" id="colorselector" name="status" required>
                                 <option value="">Pilih Status</option>
-                                <option value="Accepted">Accepted</option>
+                                <option value="Accepted">Pindahkan ke Data Lubang</option>
                                 <option value="Rejected">Rejected</option>
                             </Select>
                         </div>
-                        <div id="Accepted" class="colors" style="display:none"> Jadwalkan kapan lubang ini akan di eksekusi 
-                            <div class="form-group">
-                                <label for="tanggal" class="col-form-label">Tanggal :</label>
-                                <input type="date" name="tanggal" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label">Keterangan :</label>
-                                <textarea class="form-control" id="message-text" name="keterangan"></textarea>
-                            </div>
+                        <div id="Accepted" class="colors" style="display:none"> 
+                            <span style="color: red">
+                                Data Potensi ini akan di <span style="text-decoration: underline;">Pindahkan</span> ke Data Lubang !!
+                            </span>
                         </div>
                         <div id="Rejected" class="colors form-group" style="display:none"> 
                             <span style="color: red">
-                                Data lubang ini akan di hapus 
+                                Data Potensi ini akan di <span style="text-decoration: underline;">Hapus !!</span>  
                             </span>
                         </div>
                     

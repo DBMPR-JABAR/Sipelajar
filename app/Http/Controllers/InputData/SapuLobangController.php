@@ -11,6 +11,7 @@ use App\Model\Transactional\MonitoringLubangSurvei as Survei;
 
 use App\Model\Transactional\MonitoringLubangSurveiDetail as SurveiDetail;
 use App\Model\Transactional\MonitoringLubangSurveiReject as SurveiReject;
+use App\Model\Transactional\MonitoringPotensiLubangSurveiDetail as PotensiDetail;
 
 use App\Model\Transactional\RuasJalan;
 use App\Model\Transactional\Kota;
@@ -186,7 +187,7 @@ class SapuLobangController extends Controller
         $survei->jumlah = $survei->jumlah - $data->jumlah;
         $survei->panjang = $survei->panjang - $data->panjang;
         Storage::delete('public/survei_lubang/'.$data->image);
-        storeLogActivity(declarLog(1, 'Delete Data Lubang', $data->ruas->nama_ruas_jalan,1));
+        storeLogActivity(declarLog(3, 'Delete Data Lubang', $data->ruas->nama_ruas_jalan,1));
         $data->delete();
         $survei->save();
 
@@ -216,7 +217,8 @@ class SapuLobangController extends Controller
         $msg = "Data Berhasil di Reject";
         return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg')); 
     }
-    public function executionLubang(Request $request){
+    public function executionLubang(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'status' => 'required',
             'tanggal' => '',
@@ -307,6 +309,105 @@ class SapuLobangController extends Controller
             $msg = "Data Berhasil di Reject";
         }
         return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg'));
+
+
+    }
+
+    public function indexPotensi(Request $request){
+        $filter['tanggal_awal'] = $request->tanggal_awal ? :Carbon::now()->subDays(365)->format('Y-m-d');
+        $filter['tanggal_akhir'] = $request->tanggal_akhir ? :Carbon::now()->format('Y-m-d');
+        $filter['uptd_filter']=null;
+        $filter['status_filter'] =null;
+        
+        $data = PotensiDetail::whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->whereNotNull('monitoring_lubang_survei_id')->latest('tanggal');
+        
+        if($request->uptd_filter != null){
+            $data = $data->where('uptd_id',$request->uptd_filter);
+            $filter['uptd_filter'] = $request->uptd_filter;
+        }else{
+            if (Auth::user() && Auth::user()->internalRole->uptd) {
+                $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
+                $data = $data->where('uptd_id',$uptd_id);
+                $filter['uptd_filter'] = $uptd_id;
+            }
+        }
+        if($request->status_filter != null){
+            if($request->status_filter == "Belum Ditangani"){
+                $data = $data->whereNull('status');
+            }else if($request->status_filter == "Dalam Perencanaan"){
+                $data = $data->where('status','Perencanaan');
+            }else if($request->status_filter == "Sudah Ditangani"){
+                $data = $data->where('status','Selesai');
+            }
+            $filter['status_filter'] = $request->status_filter;
+        }
+        $data = $data->get();
+        // dd($data);
+        return view('admin.input_data.sapu_lobang.index-potensi',compact('filter', 'data'));
+
+    }
+    public function showPotensi($id)
+    {
+    	$data = PotensiDetail::find($id);
+        return view('admin.input_data.sapu_lobang.show',compact('data'));
+
+    }
+    public function executionPotensi(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required',
+            'id_lubang' => 'required'
+        ]);
+        if ($validator->fails()) {   
+            storeLogActivity(declarLog(1, 'Eksekusi Potensi Lubang', $validator->errors()));
+            $color = "danger";
+            $msg = $validator->errors();
+            return redirect(route('sapu-lobang.potensi'))->with(compact('color', 'msg'));
+        }
+        $data = PotensiDetail::find($request->id_lubang);
+        $ruas = RuasJalan::where('id_ruas_jalan',$data->ruas_jalan_id)->first();
+        if($request->status == "Accepted"){
+            $temporari = $data;
+            $temporari = $temporari->toarray();
+            unset($temporari['id'],$temporari['monitoring_potensi_lubang_survei_id'],$temporari['created_at']);
+            $temporari['updated_by'] = Auth::user()->id;
+            $temporari['updated_at'] = Carbon::now()->toDateTimeString();
+
+            $survei = $data->SurveiLubang;
+            $survei->jumlah = $survei->jumlah + $data->jumlah;
+            $survei->panjang = $survei->panjang + $data->panjang;
+
+            $survei->save();
+            $save = SurveiDetail::create($temporari);
+
+            $potensi = $data->SurveiLubang;
+            $potensi->jumlah = $potensi->jumlah - $data->jumlah;
+            $potensi->panjang = $potensi->panjang - $data->panjang;
+            
+            storeLogActivity(declarLog(1, 'Data Lubang', 'Pindahkan Potensi Lubang ke Data Lubang : '.$data->ruas->nama_ruas_jalan,1));
+    
+            $data->delete();
+            $potensi->save();
+
+            $color = "success";
+            $msg = "Data Berhasil di Pindahkan";
+            
+        }else{
+            $potensi = $data->SurveiPotensiLubang;
+            // dd($potensi);
+            $potensi->jumlah = $potensi->jumlah - $data->jumlah;
+            $potensi->panjang = $potensi->panjang - $data->panjang;
+            
+            storeLogActivity(declarLog(3, 'Potensi Lubang', 'Hapus Potensi Lubang '.$data->ruas->nama_ruas_jalan,1));
+            Storage::delete('public/survei_lubang/'.$data->image);
+
+            $data->delete();
+            $potensi->save();
+
+            $color = "success";
+            $msg = "Data Berhasil di Hapus";
+        }
+        return redirect(route('sapu-lobang.potensi'))->with(compact('color', 'msg'));
 
 
     }

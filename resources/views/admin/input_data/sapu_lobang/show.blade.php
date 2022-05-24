@@ -36,14 +36,15 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 <h4>
                     Lubang UPTD {{ Str::upper(@$data->uptd_id) }} 
                     @if ($data->status == null)
-                    <button class="btn btn-danger  waves-effect waves-light" data-toggle="tooltip" title="Belum Ditangani">Belum Ditangani</button>
-
+                        @if (Request::segment(4) == 'data-potensi')
+                        <button class="btn btn-danger  waves-effect waves-light" data-toggle="tooltip" title="Belum Ditangani">Potensi Lubang</button>
+                        @else
+                        <button class="btn btn-danger  waves-effect waves-light" data-toggle="tooltip" title="Belum Ditangani">Belum Ditangani</button>
+                        @endif
                     @elseif($data->status == 'Perencanaan')
-                    <button class="btn btn-warning  waves-effect waves-light" data-toggle="tooltip" title="Dalam Perencanaan">Dalam Perencanaan</button>
-
+                        <button class="btn btn-warning  waves-effect waves-light" data-toggle="tooltip" title="Dalam Perencanaan">Dalam Perencanaan</button>
                     @elseif($data->status == 'Selesai')
-                    <button class="btn btn-success  waves-effect waves-light" data-toggle="tooltip" title="Sudah Ditangani">Sudah Ditangani</button>
-                    
+                        <button class="btn btn-success  waves-effect waves-light" data-toggle="tooltip" title="Sudah Ditangani">Sudah Ditangani</button>
                     @endif
 
                 </h4>
@@ -60,10 +61,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     </a>
                 </li>
                 <li class="breadcrumb-item"><a href="{{ route('sapu-lobang.index') }}">Sapu Lobang</a> </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ route('sapu-lobang.lubang') }}">Data Lubang</a> 
-                </li>
+                @if (Request::segment(4) == 'data-potensi')
+                <li class="breadcrumb-item"><a href="{{ route('sapu-lobang.potensi') }}">Data Potensi Lubang</a> </li>
+                <li class="breadcrumb-item"><a href="#!">Detail Potensi Lubang</a> </li>
+                @else
+                <li class="breadcrumb-item"><a href="{{ route('sapu-lobang.lubang') }}">Data Lubang</a> </li>
                 <li class="breadcrumb-item"><a href="#!">Detail Lubang</a> </li>
+                @endif
             </ul>
         </div>
     </div>
