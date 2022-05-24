@@ -213,10 +213,6 @@
                                     
                                     {{-- <a href="#delModal" data-id="{{$item->id}}" data-toggle="modal"><button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Hapus"><i class="icofont icofont-trash"></i></button></a> --}}
                                     
-                                        {{-- <a type='button' href="{{ route('detailMasterUser',$item->id ) }}"  class='btn btn-primary btn-mini waves-effect waves-light'><i class='icofont icofont-check-circled'></i>Rincian</a> --}}
-                                        {{-- <a type='button' href='{{route('editUser',$item->id)}}'  class='btn btn-primary btn-mini waves-effect waves-light'><i class='icofont icofont-check-circled'></i>Edit</a> --}}
-                                        {{-- <a type='button' href='#delModal'  data-toggle='modal' data-id='{{$item->id}}' class='btn btn-primary btn-mini waves-effect waves-light'><i class='icofont icofont-check-circled'></i>Hapus</a><br/> --}}
-
                                 </td>
                             </tr>
                             @endforeach
