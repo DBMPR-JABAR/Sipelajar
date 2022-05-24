@@ -201,14 +201,14 @@
                                 </td>
                                 <td class="text-center">
                                     @if ($item->status == null)
-                                    <a href="{{ route('sapu-lobang.lubang.reject',$item->id) }}"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Jadwalkan"><i class="icofont icofont-list"></i></button></a>
+                                    {{-- <a href="{{ route('sapu-lobang.lubang.reject',$item->id) }}"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Jadwalkan"><i class="icofont icofont-list"></i></button></a> --}}
                                     <button type="button" class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ $item->id }}" data-tanggal_min ="{{ $item->tanggal }}" title="Eksekusi"><i class="icofont icofont-list"></i></button>
+                                    {{-- <a href="#"><button class="btn btn-primary btn-mini waves-effect waves-light" data-toggle="tooltip" title="Edit"><i class="icofont icofont-pencil"></i></button></a> --}}
                                     
                                     @elseif($item->status == 'Perencanaan')
-                                    <a href="#"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Proses"><i class="icofont icofont-list"></i></button></a>
+                                    {{-- <a href="#"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Proses"><i class="icofont icofont-list"></i></button></a> --}}
                                     @endif
-                                    <a href="#"><button class="btn btn-success btn-mini waves-effect waves-light" data-toggle="tooltip" title="lihat"><i class="icofont icofont-search"></i></button></a>
-                                    <a href="#"><button class="btn btn-primary btn-mini waves-effect waves-light" data-toggle="tooltip" title="Edit"><i class="icofont icofont-pencil"></i></button></a>
+                                    <a href="{{ route('sapu-lobang.lubang.show',$item->id) }}"><button class="btn btn-success btn-mini waves-effect waves-light" data-toggle="tooltip" title="lihat"><i class="icofont icofont-search"></i></button></a>
                                     <a href="#" data-id="{{$item->id}}" data-toggle="modal"><button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Hapus"><i class="icofont icofont-trash"></i></button></a>
                                     {{-- <a href="#delModal" data-id="{{$item->id}}" data-toggle="modal"><button class="btn btn-danger btn-mini waves-effect waves-light" data-toggle="tooltip" title="Hapus"><i class="icofont icofont-trash"></i></button></a> --}}
                                     

@@ -1207,7 +1207,7 @@ class PekerjaanController extends Controller
         if($filter_uptd == 'all'){
             $data = UPTD::whereBetween('id',[1,6])->get();
         }else{
-            $data = UPTD::find($filter_uptd);
+            $data = UPTD::where('id',$filter_uptd)->get();
         }
         // dd($data);
         $pointer = 0;

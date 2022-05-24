@@ -35,4 +35,8 @@ class RuasJalan extends Model
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubang\RencanaPenanganan', 'ruas_jalan_id','id_ruas_jalan');
     }
+    public function data_sup()
+    {
+        return $this->belongsTo('App\Model\Transactional\SUP', 'kd_sppjj','kd_sup');
+    }
 }

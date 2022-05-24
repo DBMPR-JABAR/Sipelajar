@@ -5,6 +5,7 @@ namespace App\Http\Controllers\InputData;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Model\Transactional\MonitoringLubangRencanaPenanganan as RencanaPenanganan;
 use App\Model\Transactional\MonitoringLubangPenanganan as Penanganan;
 use App\Model\Transactional\MonitoringLubangSurvei as Survei;
 
@@ -152,6 +153,44 @@ class SapuLobangController extends Controller
         return view('admin.input_data.sapu_lobang.index-lubang',compact('filter', 'data'));
 
     }
+    public function showLubang($id)
+    {
+    	$data = SurveiDetail::find($id);
+        return view('admin.input_data.sapu_lobang.show',compact('data'));
+
+    }
+    public function destroyLubang($id)
+    {
+        $data = SurveiDetail::find($id);
+        if($data->status == "Perencanaan" || $data->status == "Selesai"){
+            if($data->status == "Selesai"){
+                //penanganan
+                $penanganan_detail = $data->DetailPenanganan;
+                $penanganan = $penanganan_detail->PenangananLubang;
+                $penanganan->jumlah = $penanganan->jumlah - $penanganan_detail->jumlah;
+                $penanganan->panjang = $penanganan->panjang - $penanganan_detail->panjang;
+                Storage::delete('public/survei_lubang/'.$data->image_penanganan);
+                $penanganan_detail->delete();
+                $penanganan->save();
+            }
+            //perencanaan
+            $rencana_detail = $data->DetailRencana;
+            $rencana = $rencana_detail->RencanaPenangananLubang;
+            $rencana->jumlah = $rencana->jumlah - $rencana_detail->jumlah;
+            $rencana->panjang = $rencana->panjang - $rencana_detail->panjang;
+            $rencana_detail->delete();
+            $rencana->save();
+        }
+        $survei = $data->SurveiLubang;
+        $survei->jumlah = $survei->jumlah - $data->jumlah;
+        $survei->panjang = $survei->panjang - $data->panjang;
+        Storage::delete('public/survei_lubang/'.$data->image);
+        storeLogActivity(declarLog(1, 'Delete Data Lubang', $data->ruas->nama_ruas_jalan,1));
+        $data->delete();
+        $survei->save();
+      
+       
+    } 
     public function rejectLubang($id)
     {
         $data = SurveiDetail::find($id);
@@ -187,9 +226,64 @@ class SapuLobangController extends Controller
             return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg'));
         }
         $data = SurveiDetail::find($request->id_lubang);
-        dd($request->status);
-        if($request->status == "Accepted"){
+        $ruas = RuasJalan::where('id_ruas_jalan',$data->ruas_jalan_id)->first();
 
+        if($request->status == "Accepted"){
+            if($data->tanggal < $request->tanggal ){
+                $temp = [
+                    "status"=>"Perencanaan",
+                    "updated_by"=>Auth::user()->id,
+                    'tanggal_rencana_penanganan'=> $request->tanggal,
+                    'icon' => "sapulobang/sapulobang_schedule.png",
+                    'keterangan' => 'Lubang Dalam Perencanaan'
+                ];
+                if($data){
+                    $data->update($temp);
+                    $temp = [
+                        'tanggal' => $request->tanggal,
+                        'lokasi_km' => $request->lokasi_km,
+                        'lokasi_m' => $request->lokasi_m,
+                        'ruas_jalan_id' => $data->ruas_jalan_id
+                    ];
+                    $rencana_penanganan = RencanaPenanganan::firstOrNew([
+                        'tanggal'=> $request->tanggal,
+                        'created_by' =>Auth::user()->id,
+                        'ruas_jalan_id'=>$data->ruas_jalan_id,
+                        'sup_id'=>$ruas->data_sup->id,
+                    ]);
+                    $rencana_penanganan->uptd_id=$ruas->uptd_id;
+                    if($rencana_penanganan->id){
+                        // $rencana_penanganan->jumlah=$rencana_penanganan->jumlah + 1;
+                        $rencana_penanganan->jumlah += $data->jumlah;
+                        $rencana_penanganan->panjang += $data->panjang;
+                    }else{
+                        $rencana_penanganan->jumlah= $data->jumlah;
+                        $rencana_penanganan->panjang= $data->panjang;
+                    }
+                    $rencana_penanganan->save();
+                    $rencana_penanganan->RencanaPenangananLubangDetail()->create([
+                        'tanggal'=> $request->tanggal,
+                        'created_by' =>Auth::user()->id,
+                        'ruas_jalan_id'=>$data->ruas_jalan_id,
+                        'sup_id'=>$ruas->data_sup->id,
+                        'uptd_id'=>$ruas->uptd_id,
+                        'monitoring_lubang_survei_detail_id'=>$data->id,
+                        'keterangan' => $request->keterangan,
+                        'kategori'=>$data->kategori,
+                        'jumlah'=>$data->jumlah,
+                        'panjang'=>$data->panjang,
+    
+                    ]);
+                    storeLogActivity(declarLog(2, 'Rencana Penanganan Lubang', $ruas->nama_ruas_jalan,1));
+                    $color = "success";
+                    $msg = "Data Lubang Berhasil di Rencanakan";
+                }
+            }else{
+                storeLogActivity(declarLog(1, 'Rencana Penanganan Lubang', 'Tanggal perencanaan kurang dari tanggal survei'));
+                $color = "danger";
+                $msg = "Tanggal perencanaan kurang dari tanggal survei";
+            }
+            
         }else{
             $temporari = $data;
             $temporari = $temporari->toarray();
