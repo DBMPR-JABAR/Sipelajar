@@ -497,13 +497,22 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::prefix('sapu-lobang')->group(function () {
             Route::get('/rekapitulasi', 'InputData\SapuLobangController@index')->name('sapu-lobang.index');
             Route::post('/rekapitulasi', 'InputData\SapuLobangController@rekapitulasi')->name('sapu-lobang.rekapitulasi');
-            Route::get('/data-lubang', 'InputData\SapuLobangController@indexLubang')->name('sapu-lobang.lubang');
-            Route::get('/data-lubang/{id}/show', 'InputData\SapuLobangController@showLubang')->name('sapu-lobang.lubang.show');
-            Route::get('/data-lubang/reject/{id}', 'InputData\SapuLobangController@rejectLubang')->name('sapu-lobang.lubang.reject');
-            Route::post('/data-lubang/execution', 'InputData\SapuLobangController@executionLubang')->name('sapu-lobang.lubang.execution');
-            Route::get('/data-lubang/{id}/delete', 'InputData\SapuLobangController@destroyLubang')->name('sapu-lobang.lubang.delete');
+            Route::prefix('data-lubang')->group(function () {
+                Route::get('/', 'InputData\SapuLobangController@indexLubang')->name('sapu-lobang.lubang');
+                Route::get('/{id}/show', 'InputData\SapuLobangController@showLubang')->name('sapu-lobang.lubang.show');
+                Route::get('/reject/{id}', 'InputData\SapuLobangController@rejectLubang')->name('sapu-lobang.lubang.reject');
+                Route::post('/execution', 'InputData\SapuLobangController@executionLubang')->name('sapu-lobang.lubang.execution');
+                Route::get('/{id}/delete', 'InputData\SapuLobangController@destroyLubang')->name('sapu-lobang.lubang.delete');
+            });
+            Route::prefix('data-potensi')->group(function () {
+                Route::get('/', 'InputData\SapuLobangController@indexPotensi')->name('sapu-lobang.potensi');
+                Route::get('/{id}/show', 'InputData\SapuLobangController@showPotensi')->name('sapu-lobang.potensi.show');
+                Route::post('/execution', 'InputData\SapuLobangController@executionPotensi')->name('sapu-lobang.potensi.execution');
 
-            Route::get('/data-potensi', 'InputData\SapuLobangController@indexPotensi')->name('sapu-lobang.potensi');
+
+            });
+            
+
         });
 
     });

@@ -292,7 +292,7 @@
                                         </li>
                                         
                                         <li class="{{ Request::segment(4) == 'data-potensi' ? 'active' : '' }}">
-                                            <a href="#" class="waves-effect waves-dark">
+                                            <a href="{{ route('sapu-lobang.potensi') }}" class="waves-effect waves-dark">
                                                 <span class="pcoded-mtext">Potensi Lubang</span>
                                             </a>
                                         </li>
