@@ -67,12 +67,10 @@
                                 <th>No</th>
                                 <th>Nama</th>
                                 <th>Email</th>
-                                <th>Email Verified At</th>
-                                <th>Kode OTP</th>
+                                <th>Email Verified</th>
                                 <th>Role</th>
-                                <th>Internal Role Id</th>
-                                <th>Created At</th>
-                                <th>Updated At</th>
+                                <th>SPPJJ</th>
+                                <th>UPTD</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -92,12 +90,11 @@
                                     <td>{{$loop->index + 1}}</td>
                                     <td>{{$data->name}}</td>
                                     <td>{{$data->email}}</td>
-                                    <td>{{$data->email_verified_at}}</td>
-                                    <td>{{$data->kode_otp}}</td>
-                                    <td>{{$data->role}}</td>
+                                    <td>{{@$data->email_verified_at}}</td>
+
                                     <td>{{$role->role ?? ''}}</td>
-                                    <td>{{$data->created_at}}</td>
-                                    <td>{{$data->updated_at}}</td>
+                                    <td>{{ @$data->data_sup->name }}</td>
+                                    <td>{{ str_replace('uptd', '', @$data->internalRole->uptd)}}</td>
                                     <td>
                                             <a type='button' href="{{ route('detailMasterUser',$data->id ) }}"  class='btn btn-primary btn-mini waves-effect waves-light'><i class='icofont icofont-check-circled'></i>Rincian</a>
                                             <a type='button' href='{{route('editUser',$data->id)}}'  class='btn btn-primary btn-mini waves-effect waves-light'><i class='icofont icofont-check-circled'></i>Edit</a>
