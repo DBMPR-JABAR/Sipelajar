@@ -10,6 +10,7 @@ use App\Model\Transactional\MonitoringPotensiLubangSurveiDetail as SurveiPotensi
 
 use Illuminate\Support\Facades\Auth;
 use App\Model\Transactional\UPTD;
+use Illuminate\Support\Facades\DB;
 
 class Home extends Controller
 {
@@ -64,15 +65,30 @@ class Home extends Controller
         // dd($temporari);
 
         $uptd = UPTD::where('id','!=', 11);
+        if (Auth::user() && Auth::user()->internalRole->uptd) {
+            $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
+            $uptd=$uptd->where('id',$uptd_id);
+        }
         $uptd=$uptd->get();
         $library_uptd=[];
-        $data_sisa =[];
-        $data_perencanaan =[];
-        $data_penanganan =[];
-        $data_potensi =[];
-        $data_total_km =[];
+        
+        $data_lubang_sisa =[];
+        $data_lubang_perencanaan =[];
+        $data_lubang_penanganan =[];
+        $data_lubang_potensi =[];
+        $data_lubang_total_km =[];
+
+        $data_pemeliharaan_not_complete =[];
+        $data_pemeliharaan_submit =[];
+        $data_pemeliharaan_approve =[];
+        $data_pemeliharaan_reject =[];
 
         foreach($uptd as $i){
+            $not_complete = 0;
+            $submit = 0;
+            $approve = 0;
+            $reject = 0;
+
             $merge = 'UPTD'.$i->id;
             array_push($library_uptd,$merge);   
 
@@ -81,33 +97,102 @@ class Home extends Controller
                 'value'=>  round($i->lubang_sisa->sum('panjang')/1000,3),
                 'groupId'=>$merge
             ];
-            array_push($data_sisa,$sisa);
+            array_push($data_lubang_sisa,$sisa);
             $perencanaan=[
                 'value'=> round($i->lubang_perencanaan->sum('panjang')/1000,3),
                 'groupId'=>$merge
             ];
-            array_push($data_perencanaan,$perencanaan);
+            array_push($data_lubang_perencanaan,$perencanaan);
             $penanganan=[
                 'value'=> round($i->lubang_penanganan->sum('panjang')/1000,3),
                 'groupId'=>$merge
             ];
-            array_push($data_penanganan,$penanganan);
+            array_push($data_lubang_penanganan,$penanganan);
             $total=[
                 'value'=> round($i->library_ruas->sum('panjang')/1000,3),
                 'groupId'=>$merge
             ];
-            array_push($data_total_km,$total);
+            array_push($data_lubang_total_km,$total);
 
             $potensi=[
                 'value'=> round($i->lubang_potensi->sum('panjang')/1000,3),
                 'groupId'=>$merge
             ];
-            array_push($data_potensi,$potensi);
-        }
-        // dd(Auth::user()->email_verified_at);
-        return view('admin.home',compact('temporari','temporari1','library_uptd','data_sisa','data_perencanaan','data_penanganan','data_total_km','data_potensi'));
-    }
+            array_push($data_lubang_potensi,$potensi);
 
+            $temporari_pemeliharaan = $this->chart_pemeliharaan($i->id);
+            $chart_pemeliharaan['not_complete'][]= [
+                'value'=> $temporari_pemeliharaan['not_complete'],
+                'groupId'=>$merge
+            ];
+            $chart_pemeliharaan['submit'][]= [
+                'value'=> $temporari_pemeliharaan['submit'],
+                'groupId'=>$merge
+            ];
+            $chart_pemeliharaan['approve'][]= [
+                'value'=> $temporari_pemeliharaan['approve'],
+                'groupId'=>$merge
+            ];
+            $chart_pemeliharaan['reject'][]= [
+                'value'=> $temporari_pemeliharaan['reject'],
+                'groupId'=>$merge
+            ];
+            
+        }
+        $chart_lubang=[
+            'potensi' => $data_lubang_potensi,
+            'perencanaan'=> $data_lubang_perencanaan,
+            'ditangani'=> $data_lubang_penanganan,
+            'sisa'=> $data_lubang_sisa,
+            'total_km'=> $data_lubang_total_km
+        ];
+        // dd($chart_pemeliharaan);
+        // dd(Auth::user()->email_verified_at);
+        return view('admin.home',compact('temporari','temporari1','library_uptd','chart_lubang','chart_pemeliharaan'));
+    }
+    public function chart_pemeliharaan($uptd)
+    {
+        $approve = 0;
+        $reject = 0;
+        $submit = 0;
+        $not_complete = 0;
+        
+        $rekaps = DB::table('kemandoran')
+        ->where('kemandoran.is_deleted',0)
+        ->whereDate('kemandoran.tglreal',Carbon::today())
+        ->leftJoin('kemandoran_detail_status','kemandoran_detail_status.id_pek','=','kemandoran.id_pek')
+        ->select('kemandoran.*','kemandoran_detail_status.status',DB::raw('max(kemandoran_detail_status.id ) as status_s'), DB::raw('max(kemandoran_detail_status.id ) as status_s'))
+        ->groupBy('kemandoran.id_pek');
+        // ->where('kemandoran_detail_status.status','Approved')
+        $rekaps = $rekaps->where('kemandoran.uptd_id', $uptd)->get();
+        
+        if($rekaps->count()>=1){
+            foreach($rekaps as $it){
+                // echo $it->status.' | '.$it->id_pek.'<br>';
+                $it->status_material = DB::table('bahan_material')->where('id_pek', $it->id_pek)->exists();
+                $rekaplap = DB::table('kemandoran_detail_status')->where('id', $it->status_s)->pluck('status')->first();
+                $it->status = $rekaplap;
+                if(($it->status == "Approved"||$it->status == "Rejected" ||$it->status == "Edited") || $it->status_material){
+                    if($it->status == "Approved"){
+                        $approve+=1;
+                        // echo $it->status.' | '.$it->id_pek.'<br>';
+                    }else if($it->status == "Rejected" ||$it->status == "Edited"){
+                        $reject+=1;
+                        // echo $it->status.' | '.$it->id_pek.'<br>';
+                    }else
+                        $submit+=1;
+                }else
+                    $not_complete+=1;
+            }
+
+        }
+        return $temporari=[
+            'not_complete' => $not_complete,
+            'submit'=> $submit,
+            'approve'=> $approve,
+            'reject'=> $reject
+        ];
+    }
     public function downloadFile()
     {
         $path = storage_path('app/public/Manual Book Teman Jabar DBMPR.pdf');

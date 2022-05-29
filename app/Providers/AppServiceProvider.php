@@ -161,23 +161,19 @@ class AppServiceProvider extends ServiceProvider
         });
         View::composer('*', function ($view) {
             if(Auth::user()){
-               
                 $profile_users = DB::table('user_pegawai')->where('user_id',Auth::user()->id)->first();
                 $view->with('profile_users', $profile_users);
             }
         });
         View::composer('*', function ($view) {
             $pengumuman_internal = "";
-            if(Auth::user()){
-               
+            if(Auth::user()){ 
                 $pengumuman_internal = Announcement::where('sent_to','internal')
                 ->leftJoin('users','announcements.created_by','=','users.id')->select('announcements.*', 'users.name as nama_user')
-                ->latest('announcements.created_at')->paginate(3);
-                
+                ->latest('announcements.created_at')->paginate(3);    
             }
             $pengumuman_masyarakat = Announcement::where('sent_to','masyarakat')
             ->leftJoin('users','announcements.created_by','=','users.id')->select('announcements.*', 'users.name as nama_user')
-            
             ->latest('announcements.created_at')->paginate(6);
             $view->with(['pengumuman_internal'=> $pengumuman_internal, 'pengumuman_masyarakat'=>$pengumuman_masyarakat]);
         });
@@ -189,13 +185,11 @@ class AppServiceProvider extends ServiceProvider
             $jumlah_notif_internal = count($utils_notif);
             $read_notif_internal = "";
             if(Auth::user()){
-                
                 $read_notif_internal = DB::table('utils_notifikasi')->where('utils_notifikasi.title','pengumuman')->where('utils_notifikasi.role','internal')
                 ->rightJoin('read_notifikasi','read_notifikasi.utils_notifikasi_id','=','utils_notifikasi.id')->where('read_notifikasi.user_id',Auth::user()->id)
                 ->get();
                 // dd($read_notif_internal);
                 $jumlah_notif_internal = $jumlah_notif_internal - count($read_notif_internal);
-                
             }
             $view->with(['utils_notif'=> $utils_notif, 'jumlah_notif_internal'=>$jumlah_notif_internal, 'read_notif_internal'=>$read_notif_internal]);
         });
@@ -214,7 +208,6 @@ class AppServiceProvider extends ServiceProvider
                 ->select('kemandoran.*','kemandoran_detail_status.status',DB::raw('max(kemandoran_detail_status.id ) as status_s'), DB::raw('max(kemandoran_detail_status.id ) as status_s'))
                 ->groupBy('kemandoran.id_pek');
                 // ->where('kemandoran_detail_status.status','Approved')
-        
                 if (Auth::user() && Auth::user()->internalRole->uptd) {
                     $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
                     $rekaps = $rekaps->where('kemandoran.uptd_id', $uptd_id);
@@ -223,12 +216,10 @@ class AppServiceProvider extends ServiceProvider
                     }else if(Auth::user()->sup_id)
                         $rekaps = $rekaps->where('kemandoran.sup_id',Auth::user()->sup_id);
                 }
-        
                 $rekaps=$rekaps->get();
                 // dd($rekaps);
                 foreach($rekaps as $it){
-                            // echo $it->status.' | '.$it->id_pek.'<br>';
-        
+                    // echo $it->status.' | '.$it->id_pek.'<br>';
                     $it->status_material = DB::table('bahan_material')->where('id_pek', $it->id_pek)->exists();
         
                     $rekaplap = DB::table('kemandoran_detail_status')->where('id', $it->status_s)->pluck('status')->first();
@@ -247,9 +238,8 @@ class AppServiceProvider extends ServiceProvider
                         $not_complete+=1;
         
                     // echo $it->id_pek.' | '.$it->status.'<br>';
-        
                 }
-                    // dd($rekaps);
+                // dd($rekaps);
                 $total_report =[
                     "approve" => $approve,
                     "reject" => $reject,

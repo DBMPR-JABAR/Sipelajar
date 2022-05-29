@@ -49,7 +49,8 @@
             </div>
         </div>
         <div class="card-block">
-
+            
+            <div class="chart has-fixed-height" id="chart_pemeliharaan" style="width: 800px; height: 600px;"></div>
             <div class="card-deck col-md-12">
                 <div class="card w-100">
                     {{-- <a href="{{ url('admin/lapor') }}"> --}}
@@ -586,15 +587,102 @@
         </div>
     </div>
 </div>
-
 <script>
     var library_uptd = {!! json_encode($library_uptd) !!};
-    var data_sisa = {!! json_encode($data_sisa) !!};
-    var data_perencanaan = {!! json_encode($data_perencanaan) !!};
-    var data_penanganan = {!! json_encode($data_penanganan) !!};
-    var data_potensi = {!! json_encode($data_potensi) !!};
-    
-    var data_total_km = {!! json_encode($data_total_km) !!};
+    var data_not_complete = {!! json_encode($chart_pemeliharaan['not_complete']) !!};
+    var data_submit = {!! json_encode($chart_pemeliharaan['submit']) !!};
+    var data_approve = {!! json_encode($chart_pemeliharaan['approve']) !!};
+    var data_reject = {!! json_encode($chart_pemeliharaan['reject']) !!};
+    var chartDom = document.getElementById('chart_pemeliharaan');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    option = {
+        xAxis: {
+            data: library_uptd
+        },
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        dataGroupId: '',
+        animationDurationUpdate: 500,
+        tooltip: {
+            trigger: 'axis',
+            // formatter: '{b}<br />{a0}: {c0} Km<br />{a1}: {c1} Km<br />{a2}: {c2} Km<br />{a3}: {c3} Km<br />{a4}: {c4} Km'
+        },
+        legend: {
+            data: ['NOT COMPLETE', 'SUBMIT', 'APPROVE', 'REJECT']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+            dataView: { show: false, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+            }
+        },
+        calculable: true,
+
+        series: [
+            {
+                name: 'NOT COMPLETE',
+                type: 'bar',
+                id: 'sales',
+                itemStyle: {color: '#ffc107'},
+                data: data_not_complete,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            {
+                name: 'SUBMIT',
+                type: 'bar',
+                itemStyle: {color: '#28a745'},
+
+                data: data_submit,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            {
+                name: 'APPROVE',
+                type: 'bar',
+
+                data: data_approve,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            {
+                name: 'REJECT',
+                type: 'bar',
+                itemStyle: {color: '#dc3545'},
+
+                data: data_reject,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            }
+        ]
+    };
+
+    option && myChart.setOption(option);
+
+</script>
+<script>
+    var library_uptd = {!! json_encode($library_uptd) !!};
+    var data_sisa = {!! json_encode($chart_lubang['sisa']) !!};
+    var data_perencanaan = {!! json_encode($chart_lubang['perencanaan']) !!};
+    var data_penanganan = {!! json_encode($chart_lubang['ditangani']) !!};
+    var data_potensi = {!! json_encode($chart_lubang['potensi']) !!};
+    var data_total_km = {!! json_encode($chart_lubang['total_km']) !!};
     
     var chartDom = document.getElementById('pie_basic');
     var myChart = echarts.init(chartDom);
