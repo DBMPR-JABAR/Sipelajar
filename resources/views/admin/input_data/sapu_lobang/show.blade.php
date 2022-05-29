@@ -80,9 +80,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
         
         <div class="card">
             <div class="card-header">
-                <h5>{{@$data->data_sup->name}}</h5>
+                <h5>{{@$data->data_sup->name}} : {{@$data->ruas->nama_ruas_jalan}} ({{ $data->lokasi_kode }} KM. {{ $data->lokasi_km }} + {{ $data->lokasi_m }})</h5>
                 <br>
-                <h5>{{@$data->ruas->nama_ruas_jalan}} ({{ $data->lokasi_kode }} KM. {{ $data->lokasi_km }} + {{ $data->lokasi_m }})</h5>
+                <h5>{{ @$data->user->name }} @if(@$data->internalRole->role) ({{ @$data->internalRole->role }}) @endif</h5>
                 <br>
                 @if ($data->status == null)
                     <h5>Tanggal Survei : {{ $data->tanggal }}</h5>
