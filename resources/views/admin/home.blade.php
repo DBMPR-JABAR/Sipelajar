@@ -218,7 +218,7 @@
             <div class="row">
                 <div class="col-md-3 align-items-center justify-content-center my-auto">
                     <div class="card w-100 ">
-                        {{-- <a href="{{ url('admin/lapor') }}"> --}}
+                        <a href="{{ route('sapu-lobang.potensi') }}" target="_blank">
                         <div class="card-block">
                             <div class="row align-items-center">
                                 <div class="col-8">
@@ -232,7 +232,7 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- </a> --}}
+                        </a>
                         <div class="card-footer bg-warning">
                             <div class="row align-items-center">
                                 <div class="col-9">
