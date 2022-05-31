@@ -3,7 +3,6 @@ $(document).ready(() => {
             const targetContainer = document.getElementById("target_container")
             const buktiNavContainer = document.getElementById("bukti_nav_container")
             const buktiContentContainer = document.getElementById("bukti_content_container")
-            console.log('test', pembagianProgres)
             const isVerifiedContainer = $('#isVerifiedOnly')
             isVerifiedContainer.hide()
             const isVerified = document.getElementById('gridRadios1')
@@ -11,10 +10,16 @@ $(document).ready(() => {
 
             if (access) {
                 isNoVerified.onchange = (event) => {
-                    if (event.target.checked) isVerifiedContainer.hide()
+                    if (event.target.checked) {
+                        isVerifiedContainer.hide()
+                        $("#ditunjukan_untuk").prop('required', false);
+                    }
                 }
                 isVerified.onchange = (event) => {
-                    if (event.target.checked) isVerifiedContainer.show()
+                    if (event.target.checked) {
+                        isVerifiedContainer.show()
+                        $("#ditunjukan_untuk").prop('required', true);
+                    }
 
                 }
             }
@@ -64,10 +69,10 @@ $(document).ready(() => {
                                                 <input id="dokumen_${ke}" name="dokumen_${ke}" type="file" accept="application/pdf"
                                                     class="form-control">
                                             </div>
-                                            ${data && data.dokumen && (action == 'update') && `<div class="col-md-3">
+                                            ${(data && data.dokumen && (action == 'update') && `<div class="col-md-3">
                                         <a href="${urlStorage}/${data.dokumen}" download><button type="button"
                                         class="btn btn-default waves-effect">Unduh</button></a>
-                                        </div>`}
+                                        </div>`)||""}
                                         </div>
                                 </div>`
 
@@ -174,10 +179,8 @@ $(document).ready(() => {
 
 
 
-   console.log(exitsData, exitsProgres)
     if (exitsData && exitsProgres) {
         if(exitsData.is_verified == "1") isVerifiedContainer.show()
-        console.log(access)
         let i = 1;
         const value = Number(exitsData.pembagian_progres);
         let htmlTarget = ""
@@ -429,7 +432,7 @@ $("#mapLatLong")
                         } else {
                             const paths = JSON.parse(exitsData.geo_json)
                             addPolyLine(paths)
-                            console.log(exitsData.nama_lokasi)
+                            geoJson.value = JSON.stringify(paths)
                             $("#nama_lokasi_value").val(exitsData.nama_lokasi)
                         }
                     } else {

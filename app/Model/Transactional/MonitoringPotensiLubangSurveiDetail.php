@@ -25,4 +25,8 @@ class MonitoringPotensiLubangSurveiDetail extends Model
     {
         return $this->belongsTo('App\Model\Transactional\SUP', 'sup_id');
     }
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'created_by');
+    }
 }
