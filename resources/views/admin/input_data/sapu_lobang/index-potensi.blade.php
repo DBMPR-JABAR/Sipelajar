@@ -202,7 +202,7 @@
                                 <td class="text-center">
                                     @if ($item->status == null)
                                     {{-- <a href="{{ route('sapu-lobang.lubang.reject',$item->id) }}"><button class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="tooltip" title="Jadwalkan"><i class="icofont icofont-list"></i></button></a> --}}
-                                    <button type="button" class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ $item->id }}" data-tanggal_min ="{{ $item->tanggal }}" title="Eksekusi"><i class="icofont icofont-list"></i></button>
+                                    <button type="button" class="btn btn-warning btn-mini waves-effect waves-light" data-toggle="modal" data-target="#exampleModal" data-whatever="{{ $item->id }}" data-tanggal_min ="{{ $item->tanggal }}" title="Proses"><i class="icofont icofont-list"></i></button>
                                     {{-- <a href="#"><button class="btn btn-primary btn-mini waves-effect waves-light" data-toggle="tooltip" title="Edit"><i class="icofont icofont-pencil"></i></button></a> --}}
                                     
                                     @elseif($item->status == 'Perencanaan')
