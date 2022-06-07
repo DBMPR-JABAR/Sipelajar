@@ -22,7 +22,6 @@ class Home extends Controller
         $data1 = SurveiLubangDetail::latest('tanggal');
         $data2 = SurveiLubangDetail::latest('tanggal');
         $data3 = SurveiPotensiLubangDetail::latest('tanggal');
-
         if (Auth::user() && Auth::user()->internalRole->uptd) {
             $uptd_id = str_replace('uptd', '', Auth::user()->internalRole->uptd);
             $data = $data->where('uptd_id', $uptd_id);
@@ -44,14 +43,15 @@ class Home extends Controller
                 $data3 = $data3->where('sup_id', Auth::user()->sup_id);
 
                 if (count(Auth::user()->ruas) > 0) {
-                    $data = $data->whereIn('ruas_jalan_id', Auth::user());
-                    $data1 = $data->whereIn('ruas_jalan_id', Auth::user());
-                    $data2 = $data->whereIn('ruas_jalan_id', Auth::user());
-                    $data3 = $data3->whereIn('ruas_jalan_id', Auth::user());
+                    $data = $data->whereIn('ruas_jalan_id', Auth::user()->ruas->pluck('id_ruas_jalan')->toArray());
+                    $data1 = $data->whereIn('ruas_jalan_id', Auth::user()->ruas->pluck('id_ruas_jalan')->toArray());
+                    $data2 = $data->whereIn('ruas_jalan_id', Auth::user()->ruas->pluck('id_ruas_jalan')->toArray());
+                    $data3 = $data3->whereIn('ruas_jalan_id', Auth::user()->ruas->pluck('id_ruas_jalan')->toArray());
 
                 }
             }
         }
+        
         $temporari['jumlah']['sisa'] = $data->whereNull('status')->get()->sum('jumlah');
         $temporari['jumlah']['perencanaan'] = $data1->where('status','Perencanaan')->get()->sum('jumlah');
         $temporari['jumlah']['penanganan'] = $data2->where('status','Selesai')->get()->sum('jumlah');
