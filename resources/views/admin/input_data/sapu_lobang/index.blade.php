@@ -99,6 +99,8 @@
                                                 {{-- <button type="submit" class="mt-4 btn btn-primary waves-effect waves-light">Filter</button> --}}
                                                 <button class="mt-4 btn btn-primary waves-effect waves-light" type="submit" formmethod="get" formaction="{{ route('sapu-lobang.index') }}">Filter</button>
                                                 <button class="mt-4 btn btn-mat btn-success " formmethod="post" type="submit" formaction="{{ route('sapu-lobang.rekapitulasi') }}">Cetak Rekap Entry</button>
+                                                <a href="{{ route('sapu-lobang.index.synchronize') }}" class="mt-4 btn btn-mat btn-danger waves-effect waves-light" onclick="return confirm('Singkronisasi Seluruh Data?')">Singkronisasi Data</a>
+
                                             </div>
                                             
                                         </div>

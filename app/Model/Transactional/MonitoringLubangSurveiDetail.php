@@ -25,4 +25,12 @@ class MonitoringLubangSurveiDetail extends Model
     {
         return $this->belongsTo('App\User', 'created_by');
     }
+    public function RencanaDetail()
+    {
+        return $this->hasOne('App\Model\Transactional\MonitoringLubangRencanaPenangananDetail','monitoring_lubang_survei_detail_id');
+    }
+    public function PenangananDetail()
+    {
+        return $this->hasOne('App\Model\Transactional\MonitoringLubangPenangananDetail','monitoring_lubang_survei_detail_id');
+    }
 }
