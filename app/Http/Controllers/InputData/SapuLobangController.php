@@ -11,6 +11,9 @@ use App\Model\Transactional\MonitoringLubangSurvei as Survei;
 use App\Model\Transactional\MonitoringPotensiLubangSurvei as Potensi;
 
 use App\Model\Transactional\MonitoringLubangSurveiDetail as SurveiDetail;
+use App\Model\Transactional\MonitoringLubangPenangananDetail as PenangananDetail;
+use App\Model\Transactional\MonitoringLubangRencanaPenangananDetail as RencanaPenangananDetail;
+
 use App\Model\Transactional\MonitoringLubangSurveiReject as SurveiReject;
 use App\Model\Transactional\MonitoringPotensiLubangSurveiDetail as PotensiDetail;
 
@@ -91,23 +94,56 @@ class SapuLobangController extends Controller
                         'panjang'=>$temp->panjang,
                     ]);   
                 }
-            }else if($temp->status == null){
-                if(!isset($temp->SurveiLubang)){
-                    $temp_move = $temp;
-                    $temp_move = $temp_move->toarray();
-                    unset($temp_move['id'],$temp_move['created_at'],$temp_move['updated_at']);
-                    $temp_move['updated_by'] = Auth::user()->id;
-                    $save = SurveiReject::create($temp_move);
-                    $temp->delete();
-                }else{
-                    $temp_lub = $temp->SurveiLubang;
-                    if($temp_lub->SurveiLubangDetail->count() >=1 ){
-                        $temp_lub->jumlah = $temp_lub->SurveiLubangDetail->sum('jumlah');
-                        $temp_lub->panjang = $temp_lub->SurveiLubangDetail->sum('panjang');
-                        $temp_lub->save();
-                    }
+            }
+            if(!isset($temp->SurveiLubang)){
+                $temp_move = $temp;
+                $temp_move = $temp_move->toarray();
+                unset($temp_move['id'],$temp_move['created_at'],$temp_move['updated_at']);
+                $temp_move['updated_by'] = Auth::user()->id;
+                $save = SurveiReject::create($temp_move);
+                $temp->delete();
+            }else{
+                $temp_lub = $temp->SurveiLubang;
+                if($temp_lub->SurveiLubangDetail->count() >=1 ){
+                    $temp_lub->jumlah = $temp_lub->SurveiLubangDetail->sum('jumlah');
+                    $temp_lub->panjang = $temp_lub->SurveiLubangDetail->sum('panjang');
+                    $temp_lub->save();
                 }
             }
+        }
+        $temp_rencana_detail = RencanaPenangananDetail::latest()->get();
+        foreach($temp_rencana_detail as $temp){
+            if(!isset($temp->SurveiDetail)){
+                $temp->delete();
+            }else{
+                
+                $temp->jumlah = $temp->SurveiDetail->jumlah;
+                $temp->panjang = $temp->SurveiDetail->panjang;
+                $temp->save();
+            }     
+        }
+        $temp_penanganan_detail = PenangananDetail::latest()->get();
+        foreach($temp_penanganan_detail as $temp){
+            if(!isset($temp->SurveiDetail)){
+                $temp->delete();
+            }else{
+               
+                $temp->jumlah = $temp->SurveiDetail->jumlah;
+                $temp->panjang = $temp->SurveiDetail->panjang;
+                $temp->save();
+            }       
+        }
+
+        $temp_potensi_detail = PotensiDetail::latest()->get();
+        foreach($temp_potensi_detail as $temp){
+            if(!isset($temp->SurveiDetail)){
+                $temp->delete();
+            }else{
+
+                $temp->jumlah = $temp->SurveiDetail->jumlah;
+                $temp->panjang = $temp->SurveiDetail->panjang;
+                $temp->save();
+            }       
         }
 
         $temp_survei = Survei::latest()->get();
@@ -160,11 +196,27 @@ class SapuLobangController extends Controller
     }
 
     public function index(Request $request){
+        // $temp_survei_detail1 = SurveiDetail::whereNull('status')->latest()->get();
+        // $temp_survei_detail = SurveiDetail::latest()->get();
+        // $temp_survei = Survei::latest()->get();
+        // echo $temp_survei_detail1->sum('jumlah').' | '.$temp_survei->sum('jumlah') .' | '. $temp_survei_detail->sum('jumlah');
+        // echo '<br>';
+        // $temp_survei_detail1 = SurveiDetail::where('status','Perencanaan')->latest()->get();
+        // $temp_survei_detail = RencanaPenangananDetail::latest()->get();
+        // $temp_survei = RencanaPenanganan::latest()->get();
+        // echo $temp_survei_detail1->sum('jumlah').' | '.$temp_survei->sum('jumlah') .' | '. $temp_survei_detail->sum('jumlah');
+        // echo '<br>';
+        // $temp_survei_detail1 = SurveiDetail::where('status','Selesai')->latest()->get();
+        // $temp_survei_detail = PenangananDetail::latest()->get();
+        // $temp_survei = Penanganan::latest()->get();
+        // echo $temp_survei_detail1->sum('jumlah').' | '.$temp_survei->sum('jumlah') .' | '. $temp_survei_detail->sum('jumlah');
+        // echo '<br>';
 
-        $temp_survei_detail = SurveiDetail::whereNull('status')->latest()->get();
-        $temp_survei = Survei::latest()->get();
-        // print_r($temp_survei->sum('jumlah'));
+        // $temp_survei_detail1 = SurveiDetail::where('status','!=','Selesai')->orWhere('status',null)->latest()->get();
+        // echo $temp_survei_detail1->sum('jumlah');
+
         // dd($temp_survei_detail->sum('jumlah'));
+        $temp_survei_detail = RencanaPenangananDetail::latest()->get();
 
         $filter['tanggal_sebelum']= Carbon::now()->subDays(7)->format('Y-m-d');
         $filter['tanggal_awal']= Carbon::now()->subDays(6)->format('Y-m-d');
@@ -711,9 +763,9 @@ class SapuLobangController extends Controller
 
                 $rencana = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['rencana_awal1'] , $filter['rencana_akhir1'] ])->sum('jumlah');
                 $realisasi = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['rencana_awal1'] , $filter['rencana_akhir1'] ])->sum('jumlah');
-                $tahap1 = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['tahap1_awal'] , $filter['tahap1_akhir'] ])->sum('jumlah');
-                $tahap2 = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['tahap2_awal'] , $filter['tahap2_akhir'] ])->sum('jumlah');
-                $tahap3 = $sup->rencana_penanganan_lubang()->whereBetween('tanggal', [$filter['tahap3_awal'] , $filter['tahap3_akhir'] ])->sum('jumlah');
+                $tahap1 = $sup->rencana_penanganan_lubang_s()->whereBetween('tanggal', [$filter['tahap1_awal'] , $filter['tahap1_akhir'] ])->sum('jumlah');
+                $tahap2 = $sup->rencana_penanganan_lubang_s()->whereBetween('tanggal', [$filter['tahap2_awal'] , $filter['tahap2_akhir'] ])->sum('jumlah');
+                $tahap3 = $sup->rencana_penanganan_lubang_s()->whereBetween('tanggal', [$filter['tahap3_awal'] , $filter['tahap3_akhir'] ])->sum('jumlah');
 
                 
                 $row = $table->addRow();

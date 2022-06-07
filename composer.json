@@ -8,15 +8,17 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.2.5 | ^8.0.12",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
-        "intervention/image": "dev-master",
-        "laravel/framework": "^7.30.1",
+        "intervention/image": "^2.7",
+        "laravel/framework": "^8.0",
         "laravel/tinker": "^2.0",
         "maatwebsite/excel": "^3.1",
         "phpoffice/phpword": "^0.18.2",
+        "rap2hpoutre/laravel-log-viewer": "^1.7",
+        "spatie/laravel-medialibrary": "^9.0.0",
         "tymon/jwt-auth": "^1.0",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
@@ -47,7 +49,7 @@
         ],
         "files": [
             "app/Helpers/logActivity.php"
-         ]
+        ]
     },
     "autoload-dev": {
         "psr-4": {

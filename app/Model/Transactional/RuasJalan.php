@@ -23,6 +23,7 @@ class RuasJalan extends Model
     {
         return $this->hasMany('App\Model\Transactional\PekerjaanPemeliharaan','ruas_jalan_id', 'id_ruas_jalan')->where('is_deleted', '!=', 1);
     }
+    
     public function survei_lubang()
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubang\Survei', 'ruas_jalan_id','id_ruas_jalan');
@@ -35,6 +36,7 @@ class RuasJalan extends Model
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubang\RencanaPenanganan', 'ruas_jalan_id','id_ruas_jalan');
     }
+
     public function data_sup()
     {
         return $this->belongsTo('App\Model\Transactional\SUP', 'kd_sppjj','kd_sup');

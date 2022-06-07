@@ -247,36 +247,6 @@
                 </div>
                 <div class="col-md-9">
                     <div class="card-deck col-md-12">
-                        
-        
-                        <div class="card w-100">
-                            <a href="{{ url('admin/input-data/sapu-lobang/data-lubang?status_filter=Dalam+Perencanaan') }}" target="_blank">
-                            <div class="card-block">
-                                <div class="row align-items-center">
-                                    <div class="col-8">
-                                        <h4 class="text-c-yellow f-w-600">
-                                            {{ @$temporari['jumlah']['perencanaan'] }} Lubang
-                                        </h4>
-                                        <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['perencanaan'] }} Km</h6>
-                                    </div>
-                                    <div class="col-4 text-right">
-                                        <i class="feather icon-arrow-down f-28"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            </a>
-                            <div class="card-footer bg-c-yellow">
-                                <div class="row align-items-center">
-                                    <div class="col-9">
-                                        <p class="text-white m-b-0">Perencanaan</p>
-                                    </div>
-                                    <div class="col-3 text-right">
-                                        <i class="feather icon-trending-up text-white f-16"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-        
                         <div class="card w-100">
                             <a href="{{ url('admin/input-data/sapu-lobang/data-lubang?status_filter=Sudah+Ditangani') }}" target="_blank">
                             <div class="card-block">
@@ -306,6 +276,33 @@
                             </div>
                         </div>
         
+                        <div class="card w-100">
+                            <a href="{{ url('admin/input-data/sapu-lobang/data-lubang?status_filter=Dalam+Perencanaan') }}" target="_blank">
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-c-yellow f-w-600">
+                                            {{ @$temporari['jumlah']['perencanaan'] }} Lubang
+                                        </h4>
+                                        <h6 class="text-muted m-b-0">{{ @$temporari['panjang']['perencanaan'] }} Km</h6>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="feather icon-arrow-down f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            </a>
+                            <div class="card-footer bg-c-yellow">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Perencanaan</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <i class="feather icon-trending-up text-white f-16"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card w-100">
                             <a href="{{ url('admin/input-data/sapu-lobang/data-lubang?status_filter=Belum+Ditangani') }}" target="_blank">
                             <div class="card-block">
@@ -705,12 +702,12 @@
             // formatter: '{b}<br />{a0}: {c0} Km<br />{a1}: {c1} Km<br />{a2}: {c2} Km<br />{a3}: {c3} Km<br />{a4}: {c4} Km'
         },
         legend: {
-            data: ['POTENSI', 'PERENCANAAN', 'DITANGANI', 'SISA','TOTAL KM'],
+            data: ['POTENSI', 'DITANGANI', 'PERENCANAAN', 'SISA','TOTAL KM'],
             selected: {
                 
                 POTENSI: true,
-                PERENCANAAN: true,
                 DITANGANI: true,
+                PERENCANAAN: true,
                 SISA: true
 
             }
@@ -740,17 +737,6 @@
                 }
             },
             {
-                name: 'PERENCANAAN',
-                type: 'bar',
-                itemStyle: {color: '#ffb64d'},
-
-                data: data_perencanaan,
-                universalTransition: {
-                    enabled: true,
-                    divideShape: 'clone'
-                }
-            },
-            {
                 name: 'DITANGANI',
                 type: 'bar',
                 itemStyle: {color: '#28a745'},
@@ -761,6 +747,18 @@
                     divideShape: 'clone'
                 }
             },
+            {
+                name: 'PERENCANAAN',
+                type: 'bar',
+                itemStyle: {color: '#ffb64d'},
+
+                data: data_perencanaan,
+                universalTransition: {
+                    enabled: true,
+                    divideShape: 'clone'
+                }
+            },
+            
             {
                 name: 'SISA',
                 type: 'bar',

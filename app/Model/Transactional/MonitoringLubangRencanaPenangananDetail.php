@@ -13,4 +13,8 @@ class MonitoringLubangRencanaPenangananDetail extends Model
     {
         return $this->belongsTo('App\Model\Transactional\MonitoringLubangRencanaPenanganan', 'monitoring_lubang_rencana_penanganan_id');
     }
+    public function SurveiDetail()
+    {
+        return $this->belongsTo('App\Model\Transactional\MonitoringLubangSurveiDetail','monitoring_lubang_survei_detail_id');
+    }
 }

@@ -71,7 +71,10 @@
                                                 $grid = 5;
                                             @endphp
                                             @if (Auth::user()->internalRole->uptd == null)
-                                            <div class="col-sm-12 col-xl-2">
+                                            @php
+                                                $grid = 3;
+                                            @endphp
+                                            <div class="col-sm-12 col-xl-{{ $grid }} col-md-{{ $grid }}">
                                                 <h4 class="sub-title">UPTD</h4>
                                                 <select class="form-control" style="width: 100%" name="uptd_filter">
                                                     <option value="">Pilih Semua</option>
@@ -83,9 +86,7 @@
                                                     <option value="6" @if(@$filter['uptd_filter'] == 6 ) selected @endif>UPTD 6</option>
                                                 </select>
                                             </div>
-                                            @php
-                                                $grid = 4;
-                                            @endphp
+                                            
                                             @endif
                                             <div class="col-sm-12 col-xl-{{ $grid }} col-md-{{ $grid }} ">
                                                 <h4 class="sub-title">Tanggal </h4>
@@ -95,9 +96,9 @@
                                             
                                             {{-- <input name="filter" value="true" style="display: none" /> --}}
 
-                                            <div class="mt-3 col-sm-12 col-xl-4">
+                                            <div class="mt-3 col-sm-12 col-xl col-md">
                                                 {{-- <button type="submit" class="mt-4 btn btn-primary waves-effect waves-light">Filter</button> --}}
-                                                <button class="mt-4 btn btn-primary waves-effect waves-light" type="submit" formmethod="get" formaction="{{ route('sapu-lobang.index') }}">Filter</button>
+                                                <button class="mt-4 btn btn-mat btn-primary waves-effect waves-light" type="submit" formmethod="get" formaction="{{ route('sapu-lobang.index') }}">Filter</button>
                                                 <button class="mt-4 btn btn-mat btn-success " formmethod="post" type="submit" formaction="{{ route('sapu-lobang.rekapitulasi') }}">Cetak Rekap Entry</button>
                                                 <a href="{{ route('sapu-lobang.index.synchronize') }}" class="mt-4 btn btn-mat btn-danger waves-effect waves-light" onclick="return confirm('Singkronisasi Seluruh Data?')">Singkronisasi Data</a>
 
