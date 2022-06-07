@@ -146,49 +146,49 @@ class SapuLobangController extends Controller
             }       
         }
 
-        $temp_survei = Survei::latest()->get();
-        foreach($temp_survei as $temp){  
-            if($temp->SurveiLubangDetail->count() >= 1){
-                $temp->jumlah = $temp->SurveiLubangDetail->sum('jumlah');
-                $temp->panjang = $temp->SurveiLubangDetail->sum('panjang');
-                $temp->save();
-            }else{
-                $temp->delete();
-            }    
-        }
-        $temp_perencanaan = RencanaPenanganan::latest()->get();
-        foreach($temp_perencanaan as $temp){  
-            if($temp->RencanaPenangananLubangDetail->count() >= 1){
-                $temp->jumlah = $temp->RencanaPenangananLubangDetail->sum('jumlah');
-                $temp->panjang = $temp->RencanaPenangananLubangDetail->sum('panjang');
-            }else{
-                $temp->jumlah = 0;
-                $temp->panjang = 0;
-            }    
-            $temp->save();
-        }
-        $temp_penanganan = Penanganan::latest()->get();
-        foreach($temp_penanganan as $temp){  
-            if($temp->PenangananLubangDetail->count() >= 1){
-                $temp->jumlah = $temp->PenangananLubangDetail->sum('jumlah');
-                $temp->panjang = $temp->PenangananLubangDetail->sum('panjang');
-            }else{
-                $temp->jumlah = 0;
-                $temp->panjang = 0;
-            }    
-            $temp->save();
-        }
-        $temp_potensi = Potensi::latest()->get();
-        foreach($temp_potensi as $temp){  
-            if($temp->SurveiPotensiLubangDetail->count() >= 1){
-                $temp->jumlah = $temp->SurveiPotensiLubangDetail->sum('jumlah');
-                $temp->panjang = $temp->SurveiPotensiLubangDetail->sum('panjang');
-            }else{
-                $temp->jumlah = 0;
-                $temp->panjang = 0;
-            }    
-            $temp->save();
-        }
+        // $temp_survei = Survei::latest()->get();
+        // foreach($temp_survei as $temp){  
+        //     if($temp->SurveiLubangDetail->count() >= 1){
+        //         $temp->jumlah = $temp->SurveiLubangDetail->sum('jumlah');
+        //         $temp->panjang = $temp->SurveiLubangDetail->sum('panjang');
+        //         $temp->save();
+        //     }else{
+        //         $temp->delete();
+        //     }    
+        // }
+        // $temp_perencanaan = RencanaPenanganan::latest()->get();
+        // foreach($temp_perencanaan as $temp){  
+        //     if($temp->RencanaPenangananLubangDetail->count() >= 1){
+        //         $temp->jumlah = $temp->RencanaPenangananLubangDetail->sum('jumlah');
+        //         $temp->panjang = $temp->RencanaPenangananLubangDetail->sum('panjang');
+        //     }else{
+        //         $temp->jumlah = 0;
+        //         $temp->panjang = 0;
+        //     }    
+        //     $temp->save();
+        // }
+        // $temp_penanganan = Penanganan::latest()->get();
+        // foreach($temp_penanganan as $temp){  
+        //     if($temp->PenangananLubangDetail->count() >= 1){
+        //         $temp->jumlah = $temp->PenangananLubangDetail->sum('jumlah');
+        //         $temp->panjang = $temp->PenangananLubangDetail->sum('panjang');
+        //     }else{
+        //         $temp->jumlah = 0;
+        //         $temp->panjang = 0;
+        //     }    
+        //     $temp->save();
+        // }
+        // $temp_potensi = Potensi::latest()->get();
+        // foreach($temp_potensi as $temp){  
+        //     if($temp->SurveiPotensiLubangDetail->count() >= 1){
+        //         $temp->jumlah = $temp->SurveiPotensiLubangDetail->sum('jumlah');
+        //         $temp->panjang = $temp->SurveiPotensiLubangDetail->sum('panjang');
+        //     }else{
+        //         $temp->jumlah = 0;
+        //         $temp->panjang = 0;
+        //     }    
+        //     $temp->save();
+        // }
         storeLogActivity(declarLog(1, 'Singkronisasi Data Lubang', 'Seluruh Data Lubang',1));
         $color = "success";
         $msg = "Singkronisasi Sudah Dilakukan !";
