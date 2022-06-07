@@ -33,162 +33,162 @@ class SapuLobangController extends Controller
     //
     
     public function synchronize(Request $request){
-        $temp_survei_detail = SurveiDetail::latest()->get();
-        foreach($temp_survei_detail as $temp){
-            if($temp->status == 'Perencanaan'){
-                if(!isset($temp->RencanaDetail)){
-                    $rencana_penanganan = RencanaPenanganan::firstOrNew([
-                        'tanggal'=> $temp->tanggal_rencana_penanganan,
-                        'ruas_jalan_id'=>$temp->ruas_jalan_id,
-                        'sup_id'=>$temp->data_sup->id,
-                    ]);
-                    $rencana_penanganan->uptd_id=$temp->uptd_id;
-                    if($rencana_penanganan->id){
-                        // $rencana_penanganan->jumlah=$rencana_penanganan->jumlah + 1;
-                        $rencana_penanganan->jumlah += $temp->jumlah;
-                        $rencana_penanganan->panjang += $temp->panjang;
-                    }else{
-                        $rencana_penanganan->jumlah= $temp->jumlah;
-                        $rencana_penanganan->panjang= $temp->panjang;
-                    }
-                    $rencana_penanganan->save();
-                    $rencana_penanganan->RencanaPenangananLubangDetail()->create([
-                        'tanggal'=> $temp->tanggal_rencana_penanganan,
-                        'created_by' =>Auth::user()->id,
-                        'ruas_jalan_id'=>$temp->ruas_jalan_id,
-                        'sup_id'=>$temp->data_sup->id,
-                        'uptd_id'=>$temp->uptd_id,
-                        'monitoring_lubang_survei_detail_id'=>$temp->id,
-                        'kategori'=>$temp->kategori,
-                        'keterangan'=>'synchronize',
-                        'jumlah'=>$temp->jumlah,
-                        'panjang'=>$temp->panjang,
-                    ]);  
-                }
-            }else if($temp->status == 'Selesai'){
-                if(!isset($temp->PenangananDetail)){
-                    $penanganan = Penanganan::firstOrNew([
-                        'tanggal'=> $temp->tanggal_penanganan,
-                        'ruas_jalan_id'=>$temp->ruas_jalan_id,
-                        'sup_id'=>$temp->data_sup->id,
-                    ]);
-                    $penanganan->uptd_id=$temp->uptd_id;
-                    if($penanganan->id){
-                        $penanganan->jumlah += $temp->jumlah;
-                        $penanganan->panjang += $temp->panjang;
-                    }else{
-                        $penanganan->jumlah= $temp->jumlah;
-                        $penanganan->panjang= $temp->panjang;
-                    }
-                    $penanganan->save();
-                    $penanganan->PenangananLubangDetail()->create([
-                        'tanggal'=> $temp->tanggal_penanganan,
-                        'created_by' =>Auth::user()->id,
-                        'ruas_jalan_id'=>$temp->ruas_jalan_id,
-                        'sup_id'=>$temp->data_sup->id,
-                        'uptd_id'=>$temp->uptd_id,
-                        'monitoring_lubang_survei_detail_id'=>$temp->id,
-                        'kategori'=>$temp->kategori,
-                        'keterangan'=>'synchronize',
-                        'jumlah'=>$temp->jumlah,
-                        'panjang'=>$temp->panjang,
-                    ]);   
-                }
-            }
-            if(!isset($temp->SurveiLubang)){
-                $temp_move = $temp;
-                $temp_move = $temp_move->toarray();
-                unset($temp_move['id'],$temp_move['created_at'],$temp_move['updated_at']);
-                $temp_move['updated_by'] = Auth::user()->id;
-                $save = SurveiReject::create($temp_move);
-                $temp->delete();
-            }else{
-                $temp_lub = $temp->SurveiLubang;
-                if($temp_lub->SurveiLubangDetail->count() >=1 ){
-                    $temp_lub->jumlah = $temp_lub->SurveiLubangDetail->sum('jumlah');
-                    $temp_lub->panjang = $temp_lub->SurveiLubangDetail->sum('panjang');
-                    $temp_lub->save();
-                }
-            }
-        }
-        $temp_rencana_detail = RencanaPenangananDetail::latest()->get();
-        foreach($temp_rencana_detail as $temp){
-            if(!isset($temp->SurveiDetail)){
-                $temp->delete();
-            }else{
-                
-                $temp->jumlah = $temp->SurveiDetail->jumlah;
-                $temp->panjang = $temp->SurveiDetail->panjang;
-                $temp->save();
-            }     
-        }
-        $temp_penanganan_detail = PenangananDetail::latest()->get();
-        foreach($temp_penanganan_detail as $temp){
-            if(!isset($temp->SurveiDetail)){
-                $temp->delete();
-            }else{
-               
-                $temp->jumlah = $temp->SurveiDetail->jumlah;
-                $temp->panjang = $temp->SurveiDetail->panjang;
-                $temp->save();
-            }       
-        }
-
-        $temp_potensi_detail = PotensiDetail::latest()->get();
-        foreach($temp_potensi_detail as $temp){
-            if(!isset($temp->SurveiDetail)){
-                $temp->delete();
-            }else{
-
-                $temp->jumlah = $temp->SurveiDetail->jumlah;
-                $temp->panjang = $temp->SurveiDetail->panjang;
-                $temp->save();
-            }       
-        }
-
-        // $temp_survei = Survei::latest()->get();
-        // foreach($temp_survei as $temp){  
-        //     if($temp->SurveiLubangDetail->count() >= 1){
-        //         $temp->jumlah = $temp->SurveiLubangDetail->sum('jumlah');
-        //         $temp->panjang = $temp->SurveiLubangDetail->sum('panjang');
-        //         $temp->save();
-        //     }else{
+        // $temp_survei_detail = SurveiDetail::latest()->get();
+        // foreach($temp_survei_detail as $temp){
+        //     if($temp->status == 'Perencanaan'){
+        //         if(!isset($temp->RencanaDetail)){
+        //             $rencana_penanganan = RencanaPenanganan::firstOrNew([
+        //                 'tanggal'=> $temp->tanggal_rencana_penanganan,
+        //                 'ruas_jalan_id'=>$temp->ruas_jalan_id,
+        //                 'sup_id'=>$temp->data_sup->id,
+        //             ]);
+        //             $rencana_penanganan->uptd_id=$temp->uptd_id;
+        //             if($rencana_penanganan->id){
+        //                 // $rencana_penanganan->jumlah=$rencana_penanganan->jumlah + 1;
+        //                 $rencana_penanganan->jumlah += $temp->jumlah;
+        //                 $rencana_penanganan->panjang += $temp->panjang;
+        //             }else{
+        //                 $rencana_penanganan->jumlah= $temp->jumlah;
+        //                 $rencana_penanganan->panjang= $temp->panjang;
+        //             }
+        //             $rencana_penanganan->save();
+        //             $rencana_penanganan->RencanaPenangananLubangDetail()->create([
+        //                 'tanggal'=> $temp->tanggal_rencana_penanganan,
+        //                 'created_by' =>Auth::user()->id,
+        //                 'ruas_jalan_id'=>$temp->ruas_jalan_id,
+        //                 'sup_id'=>$temp->data_sup->id,
+        //                 'uptd_id'=>$temp->uptd_id,
+        //                 'monitoring_lubang_survei_detail_id'=>$temp->id,
+        //                 'kategori'=>$temp->kategori,
+        //                 'keterangan'=>'synchronize',
+        //                 'jumlah'=>$temp->jumlah,
+        //                 'panjang'=>$temp->panjang,
+        //             ]);  
+        //         }
+        //     }else if($temp->status == 'Selesai'){
+        //         if(!isset($temp->PenangananDetail)){
+        //             $penanganan = Penanganan::firstOrNew([
+        //                 'tanggal'=> $temp->tanggal_penanganan,
+        //                 'ruas_jalan_id'=>$temp->ruas_jalan_id,
+        //                 'sup_id'=>$temp->data_sup->id,
+        //             ]);
+        //             $penanganan->uptd_id=$temp->uptd_id;
+        //             if($penanganan->id){
+        //                 $penanganan->jumlah += $temp->jumlah;
+        //                 $penanganan->panjang += $temp->panjang;
+        //             }else{
+        //                 $penanganan->jumlah= $temp->jumlah;
+        //                 $penanganan->panjang= $temp->panjang;
+        //             }
+        //             $penanganan->save();
+        //             $penanganan->PenangananLubangDetail()->create([
+        //                 'tanggal'=> $temp->tanggal_penanganan,
+        //                 'created_by' =>Auth::user()->id,
+        //                 'ruas_jalan_id'=>$temp->ruas_jalan_id,
+        //                 'sup_id'=>$temp->data_sup->id,
+        //                 'uptd_id'=>$temp->uptd_id,
+        //                 'monitoring_lubang_survei_detail_id'=>$temp->id,
+        //                 'kategori'=>$temp->kategori,
+        //                 'keterangan'=>'synchronize',
+        //                 'jumlah'=>$temp->jumlah,
+        //                 'panjang'=>$temp->panjang,
+        //             ]);   
+        //         }
+        //     }
+        //     if(!isset($temp->SurveiLubang)){
+        //         $temp_move = $temp;
+        //         $temp_move = $temp_move->toarray();
+        //         unset($temp_move['id'],$temp_move['created_at'],$temp_move['updated_at']);
+        //         $temp_move['updated_by'] = Auth::user()->id;
+        //         $save = SurveiReject::create($temp_move);
         //         $temp->delete();
-        //     }    
-        // }
-        // $temp_perencanaan = RencanaPenanganan::latest()->get();
-        // foreach($temp_perencanaan as $temp){  
-        //     if($temp->RencanaPenangananLubangDetail->count() >= 1){
-        //         $temp->jumlah = $temp->RencanaPenangananLubangDetail->sum('jumlah');
-        //         $temp->panjang = $temp->RencanaPenangananLubangDetail->sum('panjang');
         //     }else{
-        //         $temp->jumlah = 0;
-        //         $temp->panjang = 0;
-        //     }    
-        //     $temp->save();
+        //         $temp_lub = $temp->SurveiLubang;
+        //         if($temp_lub->SurveiLubangDetail->count() >=1 ){
+        //             $temp_lub->jumlah = $temp_lub->SurveiLubangDetail->sum('jumlah');
+        //             $temp_lub->panjang = $temp_lub->SurveiLubangDetail->sum('panjang');
+        //             $temp_lub->save();
+        //         }
+        //     }
         // }
-        // $temp_penanganan = Penanganan::latest()->get();
-        // foreach($temp_penanganan as $temp){  
-        //     if($temp->PenangananLubangDetail->count() >= 1){
-        //         $temp->jumlah = $temp->PenangananLubangDetail->sum('jumlah');
-        //         $temp->panjang = $temp->PenangananLubangDetail->sum('panjang');
+        // $temp_rencana_detail = RencanaPenangananDetail::latest()->get();
+        // foreach($temp_rencana_detail as $temp){
+        //     if(!isset($temp->SurveiDetail)){
+        //         $temp->delete();
         //     }else{
-        //         $temp->jumlah = 0;
-        //         $temp->panjang = 0;
-        //     }    
-        //     $temp->save();
+                
+        //         $temp->jumlah = $temp->SurveiDetail->jumlah;
+        //         $temp->panjang = $temp->SurveiDetail->panjang;
+        //         $temp->save();
+        //     }     
         // }
-        // $temp_potensi = Potensi::latest()->get();
-        // foreach($temp_potensi as $temp){  
-        //     if($temp->SurveiPotensiLubangDetail->count() >= 1){
-        //         $temp->jumlah = $temp->SurveiPotensiLubangDetail->sum('jumlah');
-        //         $temp->panjang = $temp->SurveiPotensiLubangDetail->sum('panjang');
+        // $temp_penanganan_detail = PenangananDetail::latest()->get();
+        // foreach($temp_penanganan_detail as $temp){
+        //     if(!isset($temp->SurveiDetail)){
+        //         $temp->delete();
         //     }else{
-        //         $temp->jumlah = 0;
-        //         $temp->panjang = 0;
-        //     }    
-        //     $temp->save();
+               
+        //         $temp->jumlah = $temp->SurveiDetail->jumlah;
+        //         $temp->panjang = $temp->SurveiDetail->panjang;
+        //         $temp->save();
+        //     }       
         // }
+
+        // $temp_potensi_detail = PotensiDetail::latest()->get();
+        // foreach($temp_potensi_detail as $temp){
+        //     if(!isset($temp->SurveiDetail)){
+        //         $temp->delete();
+        //     }else{
+
+        //         $temp->jumlah = $temp->SurveiDetail->jumlah;
+        //         $temp->panjang = $temp->SurveiDetail->panjang;
+        //         $temp->save();
+        //     }       
+        // }
+
+        $temp_survei = Survei::latest()->get();
+        foreach($temp_survei as $temp){  
+            if($temp->SurveiLubangDetail->count() >= 1){
+                $temp->jumlah = $temp->SurveiLubangDetail->sum('jumlah');
+                $temp->panjang = $temp->SurveiLubangDetail->sum('panjang');
+                $temp->save();
+            }else{
+                $temp->delete();
+            }    
+        }
+        $temp_perencanaan = RencanaPenanganan::latest()->get();
+        foreach($temp_perencanaan as $temp){  
+            if($temp->RencanaPenangananLubangDetail->count() >= 1){
+                $temp->jumlah = $temp->RencanaPenangananLubangDetail->sum('jumlah');
+                $temp->panjang = $temp->RencanaPenangananLubangDetail->sum('panjang');
+            }else{
+                $temp->jumlah = 0;
+                $temp->panjang = 0;
+            }    
+            $temp->save();
+        }
+        $temp_penanganan = Penanganan::latest()->get();
+        foreach($temp_penanganan as $temp){  
+            if($temp->PenangananLubangDetail->count() >= 1){
+                $temp->jumlah = $temp->PenangananLubangDetail->sum('jumlah');
+                $temp->panjang = $temp->PenangananLubangDetail->sum('panjang');
+            }else{
+                $temp->jumlah = 0;
+                $temp->panjang = 0;
+            }    
+            $temp->save();
+        }
+        $temp_potensi = Potensi::latest()->get();
+        foreach($temp_potensi as $temp){  
+            if($temp->SurveiPotensiLubangDetail->count() >= 1){
+                $temp->jumlah = $temp->SurveiPotensiLubangDetail->sum('jumlah');
+                $temp->panjang = $temp->SurveiPotensiLubangDetail->sum('panjang');
+            }else{
+                $temp->jumlah = 0;
+                $temp->panjang = 0;
+            }    
+            $temp->save();
+        }
         storeLogActivity(declarLog(1, 'Singkronisasi Data Lubang', 'Seluruh Data Lubang',1));
         $color = "success";
         $msg = "Singkronisasi Sudah Dilakukan !";
