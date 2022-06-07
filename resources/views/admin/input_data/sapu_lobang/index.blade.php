@@ -161,7 +161,7 @@
                                 @endif
                                 @foreach($uptd->library_sup as $sup)
                                 @php
-                                    $jumlah = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
+                                    $jumlah = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
                                     $penanganan = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
                                     $sisa = $jumlah-$penanganan;
                                     $lubang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');

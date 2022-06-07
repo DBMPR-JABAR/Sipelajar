@@ -101,9 +101,9 @@ class SapuLobangController extends Controller
                     $temp->delete();
                 }else{
                     $temp_lub = $temp->SurveiLubang;
-                    if($temp_lub->SurveiLubangDetailExecute->count() >=1 ){
-                        $temp_lub->jumlah = $temp_lub->SurveiLubangDetailExecute->sum('jumlah');
-                        $temp_lub->panjang = $temp_lub->SurveiLubangDetailExecute->sum('panjang');
+                    if($temp_lub->SurveiLubangDetail->count() >=1 ){
+                        $temp_lub->jumlah = $temp_lub->SurveiLubangDetail->sum('jumlah');
+                        $temp_lub->panjang = $temp_lub->SurveiLubangDetail->sum('panjang');
                         $temp_lub->save();
                     }
                 }
@@ -113,13 +113,8 @@ class SapuLobangController extends Controller
         $temp_survei = Survei::latest()->get();
         foreach($temp_survei as $temp){  
             if($temp->SurveiLubangDetail->count() >= 1){
-                if($temp->SurveiLubangDetailExecute->count() >=1 ){
-                    $temp->jumlah = $temp->SurveiLubangDetailExecute->sum('jumlah');
-                    $temp->panjang = $temp->SurveiLubangDetailExecute->sum('panjang');
-                }else{
-                    $temp->jumlah = 0;
-                    $temp->panjang = 0;
-                }
+                $temp->jumlah = $temp->SurveiLubangDetail->sum('jumlah');
+                $temp->panjang = $temp->SurveiLubangDetail->sum('panjang');
                 $temp->save();
             }else{
                 $temp->delete();
@@ -698,7 +693,7 @@ class SapuLobangController extends Controller
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
 
             foreach($uptd->library_sup as $sup){
-                $jumlah = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum1'])->sum('jumlah');
+                $jumlah = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum1'])->sum('jumlah') - $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum1'])->sum('jumlah');
                 $penanganan = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal1'] , $filter['tanggal_akhir1'] ])->sum('jumlah');
                 $sisa = $jumlah-$penanganan;
                 $lubang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal1'] , $filter['tanggal_akhir1'] ])->sum('jumlah');
