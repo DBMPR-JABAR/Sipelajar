@@ -134,17 +134,12 @@ class SapuLobangController extends Controller
         //     }       
         // }
 
-        // $temp_potensi_detail = PotensiDetail::latest()->get();
-        // foreach($temp_potensi_detail as $temp){
-        //     if(!isset($temp->SurveiDetail)){
-        //         $temp->delete();
-        //     }else{
-
-        //         $temp->jumlah = $temp->SurveiDetail->jumlah;
-        //         $temp->panjang = $temp->SurveiDetail->panjang;
-        //         $temp->save();
-        //     }       
-        // }
+        $temp_potensi_detail = PotensiDetail::latest()->get();
+        foreach($temp_potensi_detail as $temp){
+            if(!isset($temp->SurveiPotensiLubang) || !isset($temp->SurveiLubang)){
+                $temp->delete();
+            }     
+        }
 
         $temp_survei = Survei::latest()->get();
         foreach($temp_survei as $temp){  

@@ -172,7 +172,7 @@
                                     
                                     $total2 = $jumlah+$lubang_baru;
                                     $sisa2 = $total2-$penanganan;
-                                    
+
                                     $panjang_lama = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang') - $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang');
                                     $panjang_ditangani = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
                                     $panjang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');

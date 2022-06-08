@@ -32,14 +32,14 @@ class SUP extends Model
         return $this->hasMany('App\Model\Transactional\MonitoringLubang\RencanaPenanganan', 'sup_id');
     }
 
-    // public function survei_lubang()
-    // {
-    //     return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->whereNull('status');
-    // }
-    // public function penanganan_lubang()
-    // {
-    //     return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->where('status','Perencanaan');
-    // }
+    public function survei_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->whereNull('status');
+    }
+    public function penanganan_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->where('status','Perencanaan');
+    }
     public function rencana_penanganan_lubang_s()
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->where('status','Selesai');
