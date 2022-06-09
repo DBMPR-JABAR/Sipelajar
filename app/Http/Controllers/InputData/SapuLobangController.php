@@ -377,7 +377,7 @@ class SapuLobangController extends Controller
                                 if($data->image_penanganan)
                                 Storage::delete('public/survei_lubang/'.$data->image_penanganan);
     
-                                $penanganan_detail->delete();
+                                // $penanganan_detail->delete();
                             }
                         }
                         if($data->image)
