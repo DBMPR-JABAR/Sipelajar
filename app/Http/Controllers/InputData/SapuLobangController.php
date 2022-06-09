@@ -414,7 +414,7 @@ class SapuLobangController extends Controller
             foreach($forcedel_penanganan as $temp){  
                 if($temp->PenangananLubangDetail->count() >= 1){
                     foreach($temp->PenangananLubangDetail as $data){
-                        if($data->SurveiDetail->count() >= 1){
+                        if(isset($data->SurveiDetail)){
                             if($data->SurveiDetail->image_penanganan)
                             Storage::delete('public/survei_lubang/'.$data->SurveiDetail->image_penanganan);
                         }  
