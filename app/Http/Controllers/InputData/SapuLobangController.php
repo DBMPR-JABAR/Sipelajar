@@ -211,6 +211,7 @@ class SapuLobangController extends Controller
         // echo $temp_survei_detail1->sum('jumlah');
 
         // dd($temp_survei_detail->sum('jumlah'));
+        
         $temp_survei_detail = RencanaPenangananDetail::latest()->get();
 
         $filter['tanggal_sebelum']= Carbon::now()->subDays(7)->format('Y-m-d');
@@ -362,7 +363,111 @@ class SapuLobangController extends Controller
         $msg = "Data Berhasil di Hapus";
         return redirect(route('sapu-lobang.lubang'))->with(compact('color', 'msg')); 
        
-    } 
+    }
+    public function forceDestroy()
+    {
+        if(Auth::user()->id == 1){
+            $forcedel_survei = Survei::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_survei as $temp){  
+                if($temp->SurveiLubangDetail->count() >= 1){
+                    foreach($temp->SurveiLubangDetail as $data){  
+                        if($data->status == "Perencanaan" || $data->status == "Selesai"){
+                            if($data->status == "Selesai"){
+                                $penanganan_detail = $data->DetailPenanganan;
+                                if($data->image_penanganan)
+                                Storage::delete('public/survei_lubang/'.$data->image_penanganan);
+    
+                                $penanganan_detail->delete();
+                            }
+                        }
+                        if($data->image)
+                        Storage::delete('public/survei_lubang/'.$data->image);
+    
+                        $data->delete();
+                    }
+                }  
+                $temp->delete();
+            }
+            $forcedel_survei_detail = SurveiDetail::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_survei_detail as $data){
+                if($data->image)
+                Storage::delete('public/survei_lubang/'.$data->image);
+    
+                $data->delete();
+            }
+    
+            $forcedel_rencana = RencanaPenanganan::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_rencana as $temp){  
+                if($temp->RencanaPenangananLubangDetail->count() >= 1){
+                    foreach($temp->RencanaPenangananLubangDetail as $data){  
+                        $data->delete();
+                    }
+                }  
+                $temp->delete();
+            }
+            $forcedel_rencana_detail = RencanaPenangananDetail::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_rencana_detail as $data){
+                $data->delete();
+            }
+    
+            $forcedel_penanganan = Penanganan::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_penanganan as $temp){  
+                if($temp->PenangananLubangDetail->count() >= 1){
+                    foreach($temp->PenangananLubangDetail as $data){
+                        if($data->SurveiDetail->count() >= 1){
+                            if($data->SurveiDetail->image_penanganan)
+                            Storage::delete('public/survei_lubang/'.$data->SurveiDetail->image_penanganan);
+                        }  
+                        $data->delete();
+                    }
+                }  
+                $temp->delete();
+            }
+            $forcedel_penanganan_detail = PenangananDetail::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_penanganan_detail as $data){
+                if($data->SurveiDetail->count() >= 1){
+                    if($data->SurveiDetail->image_penanganan)
+                    Storage::delete('public/survei_lubang/'.$data->SurveiDetail->image_penanganan);
+                }  
+                $data->delete();
+            }
+    
+            $forcedel_potensi = Potensi::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_potensi as $temp){  
+                if($temp->SurveiPotensiLubangDetail->count() >= 1){
+                    foreach($temp->SurveiPotensiLubangDetail as $data){  
+                        if($data->image)
+                        Storage::delete('public/survei_lubang/'.$data->image);
+                        $data->delete();
+                    }
+                }  
+                $temp->delete();
+            }
+            $forcedel_potensi_detail = PotensiDetail::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_potensi_detail as $data){
+                if($data->image)
+                Storage::delete('public/survei_lubang/'.$data->image);
+                $data->delete();
+            }
+            $forcedel_reject = SurveiReject::where('uptd_id',3)->where('created_at','<=','2022-06-08 23:59:59')->get();
+            foreach($forcedel_reject as $data){
+                if($data->image)
+                Storage::delete('public/survei_lubang/'.$data->image);
+    
+                if($data->image_penanganan)
+                Storage::delete('public/survei_lubang/'.$data->image_penanganan);
+    
+                $data->delete();
+            }
+            $color = "success";
+            $msg = "force delete sukses !";
+        }else{
+            storeLogActivity(declarLog(3, 'Force Delete Lubang', Auth::user()->id.' : '.Auth::user()->name));
+            $color = "danger";
+            $msg = "Somethink went wrong !!";
+        } 
+        return back()->with(compact('color', 'msg'));
+    }  
     public function rejectLubang($id)
     {
         $data = SurveiDetail::find($id);

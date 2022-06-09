@@ -499,12 +499,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             Route::get('/rekapitulasi/synchronize', 'InputData\SapuLobangController@synchronize')->name('sapu-lobang.index.synchronize');
 
             Route::post('/rekapitulasi', 'InputData\SapuLobangController@rekapitulasi')->name('sapu-lobang.rekapitulasi');
+            Route::get('/force_delete', 'InputData\SapuLobangController@forceDestroy')->name('sapu-lobang.lubang.forceDestroy');
             Route::prefix('data-lubang')->group(function () {
                 Route::get('/', 'InputData\SapuLobangController@indexLubang')->name('sapu-lobang.lubang');
                 Route::get('/{id}/show', 'InputData\SapuLobangController@showLubang')->name('sapu-lobang.lubang.show');
                 Route::get('/reject/{id}', 'InputData\SapuLobangController@rejectLubang')->name('sapu-lobang.lubang.reject');
                 Route::post('/execution', 'InputData\SapuLobangController@executionLubang')->name('sapu-lobang.lubang.execution');
                 Route::get('/{id}/delete', 'InputData\SapuLobangController@destroyLubang')->name('sapu-lobang.lubang.delete');
+
             });
             Route::prefix('data-potensi')->group(function () {
                 Route::get('/', 'InputData\SapuLobangController@indexPotensi')->name('sapu-lobang.potensi');
