@@ -45,6 +45,24 @@ class UPTD extends Model
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'uptd_id')->where('status','Selesai');
     }
+
+    public function survei_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'uptd_id');
+    }
+    public function data_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'uptd_id')->whereNull('status');
+    }
+    public function rencana_penanganan_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'uptd_id')->where('status','Perencanaan');
+    }
+    public function penanganan_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'uptd_id')->where('status','Selesai');
+    }
+
     public function lubang_potensi()
     {
         return $this->hasMany('App\Model\Transactional\MonitoringPotensiLubangSurveiDetail', 'uptd_id');

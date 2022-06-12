@@ -19,6 +19,7 @@ class SUP extends Model
     {
         return $this->hasMany('App\Model\Transactional\RuasJalan', 'kd_sppjj','kd_sup');
     }
+
     public function survei_lubang()
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubang\Survei', 'sup_id');
@@ -34,13 +35,17 @@ class SUP extends Model
 
     public function survei_lubang_s()
     {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id');
+    }
+    public function data_lubang_s()
+    {
         return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->whereNull('status');
     }
-    public function penanganan_lubang_s()
+    public function rencana_penanganan_lubang_s()
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->where('status','Perencanaan');
     }
-    public function rencana_penanganan_lubang_s()
+    public function penanganan_lubang_s()
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->where('status','Selesai');
     }

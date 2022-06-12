@@ -164,23 +164,21 @@
                                 @endif
                                 @foreach($uptd->library_sup as $sup)
                                 @php
-                                    $lubang_lama = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $sup->penanganan_lubang_s()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
-                                    $lubang_baru = $sup->survei_lubang_s()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
-                                    $total2 = $lubang_lama+$lubang_baru;
+                                    $jumlah = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
+                                    $penanganan = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
+                                    $sisa = $jumlah-$penanganan;
+                                    $lubang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
+                                    $total = $sisa+$lubang_baru;
                                     
-                                    $penanganan = $sup->penanganan_lubang_s()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
-
+                                    $total2 = $jumlah+$lubang_baru;
                                     $sisa2 = $total2-$penanganan;
-                                    
-                                    $jumlah = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
-                                    
 
-                                    $panjang_lama =$sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang') - $sup->penanganan_lubang_s()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang');
-                                    $panjang_ditangani = $sup->penanganan_lubang_s()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
+                                    $panjang_lama = $sup->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang') - $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('panjang');
+                                    $panjang_ditangani = $sup->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
                                     $panjang_baru = $sup->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('panjang');
                                     $panjang =  $panjang_lama + $panjang_baru;
                                     $panjang =  $panjang - $panjang_ditangani;
-                                    $ditangani = $sup->penanganan_lubang_s()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('panjang');
+                                    $ditangani = $sup->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('panjang');
 
                                 @endphp
                                 <tr>
@@ -192,7 +190,7 @@
                                         </a>
                                     </td>
                                     <td>{{ $sup->name }}</td>
-                                    <td>{{ $lubang_lama }}</td>
+                                    <td>{{ $jumlah }}</td>
                                     <td>{{ $lubang_baru }}</td>
                                     <td>{{ $total2 }}</td>
                                     <td>{{ $penanganan }}</td>
@@ -303,33 +301,22 @@
                                    
                                     @foreach($sup->library_ruas as $ruas)
                                         @php
-                                            // $jumlah = $ruas->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $ruas->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
-                                            // $penanganan = $ruas->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
+                                            $jumlah = $ruas->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $ruas->penanganan_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
+                                            $penanganan = $ruas->penanganan_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
                                             
-                                            // $sisa = $jumlah-$penanganan;
-                                            // $lubang_baru = $ruas->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
-                                            // $total = $sisa+$lubang_baru;
+                                            $sisa = $jumlah-$penanganan;
+                                            $lubang_baru = $ruas->survei_lubang()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
+                                            $total = $sisa+$lubang_baru;
 
-                                            // $total2 = $jumlah+$lubang_baru;
-                                            // $sisa2 = $total2-$penanganan;
-
-                                            $lubang_lama = $ruas->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah') - $ruas->penanganan_lubang_s()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
-                                            $lubang_baru = $ruas->survei_lubang_s()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
-                                            $total2 = $lubang_lama+$lubang_baru;
-                                            
-                                            $penanganan = $ruas->penanganan_lubang_s()->whereBetween('tanggal', [$filter['tanggal_awal'] , $filter['tanggal_akhir'] ])->sum('jumlah');
-
+                                            $total2 = $jumlah+$lubang_baru;
                                             $sisa2 = $total2-$penanganan;
-                                            
-                                            $jumlah = $ruas->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum'])->sum('jumlah');
-                                            
                                             
                                         @endphp
                                         <tr>
                                             
                                             <td>{{ $ruas->nama_ruas_jalan }}</td>
                                             <td>{{ round($ruas->panjang / 1000, 2) }}</td>
-                                            <td>{{ $lubang_lama }}</td>
+                                            <td>{{ $jumlah }}</td>
                                             <td>{{ $lubang_baru }}</td>
                                             <td>{{ $total2 }}</td>
                                             <td>{{ $penanganan }}</td>

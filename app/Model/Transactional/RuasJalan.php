@@ -37,6 +37,23 @@ class RuasJalan extends Model
         return $this->hasMany('App\Model\Transactional\MonitoringLubang\RencanaPenanganan', 'ruas_jalan_id','id_ruas_jalan');
     }
 
+    public function survei_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'ruas_jalan_id','id_ruas_jalan');
+    }
+    public function data_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'ruas_jalan_id','id_ruas_jalan')->whereNull('status');
+    }
+    public function rencana_penanganan_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'ruas_jalan_id','id_ruas_jalan')->where('status','Perencanaan');
+    }
+    public function penanganan_lubang_s()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'ruas_jalan_id','id_ruas_jalan')->where('status','Selesai');
+    }
+
     public function data_sup()
     {
         return $this->belongsTo('App\Model\Transactional\SUP', 'kd_sppjj','kd_sup');
