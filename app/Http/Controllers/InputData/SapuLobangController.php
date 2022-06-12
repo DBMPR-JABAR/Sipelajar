@@ -829,13 +829,21 @@ class SapuLobangController extends Controller
             $panjang =  $panjang - $panjang_ditangani;
             $ditangani = $uptd->penanganan_lubang_s()->where('tanggal','<=',$filter['tanggal_akhir1'])->sum('panjang');
             
+            $lubang_lama = $uptd->survei_lubang()->where('tanggal','<=',$filter['tanggal_sebelum1'])->sum('jumlah') - $uptd->penanganan_lubang_s()->where('tanggal','<=',$filter['tanggal_sebelum1'])->sum('jumlah');
+            $lubang_baru = $uptd->survei_lubang_s()->whereBetween('tanggal', [$filter['tanggal_awal1'] , $filter['tanggal_akhir1'] ])->sum('jumlah');
+            $penanganan = $uptd->penanganan_lubang_s()->whereBetween('tanggal', [$filter['tanggal_awal1'] , $filter['tanggal_akhir1'] ])->sum('jumlah');
+            $total2 = $lubang_lama+$lubang_baru;
+            $sisa2 = $total2-$penanganan;
+            //plane B
+            $total2 = $lubang_lama+$lubang_baru;
+            $sisa2 = $total2-$penanganan;
             $row = $table->addRow();
             $row->addCell(null, $th2)->addTextRun($centered)->addText('UPTD Wilayah Pelayanan - '. $text.'  ',$th2);
-            $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
-            $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
-            $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
-            $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
-            $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
+            $row->addCell(null, $th2)->addTextRun($centered)->addText($lubang_lama,$th2);
+            $row->addCell(null, $th2)->addTextRun($centered)->addText($lubang_baru,$th2);
+            $row->addCell(null, $th2)->addTextRun($centered)->addText($total2,$th2);
+            $row->addCell(null, $th2)->addTextRun($centered)->addText($penanganan,$th2);
+            $row->addCell(null, $th2)->addTextRun($centered)->addText($sisa2,$th2);
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
             $row->addCell(null, $th2)->addTextRun($centered)->addText(" ",$th2);
