@@ -49,4 +49,9 @@ class SUP extends Model
     {
         return $this->hasMany('App\Model\Transactional\MonitoringLubangSurveiDetail', 'sup_id')->where('status','Selesai');
     }
+
+    public function lubang_potensi()
+    {
+        return $this->hasMany('App\Model\Transactional\MonitoringPotensiLubangSurveiDetail', 'sup_id');
+    }
 }
