@@ -151,17 +151,17 @@ class SapuLobangController extends Controller
                     $temp->delete();
                 }    
             }
-            $temp_perencanaan = RencanaPenanganan::latest()->get();
-            foreach($temp_perencanaan as $temp){  
-                if($temp->RencanaPenangananLubangDetail->count() >= 1){
-                    $temp->jumlah = $temp->RencanaPenangananLubangDetail->sum('jumlah');
-                    $temp->panjang = $temp->RencanaPenangananLubangDetail->sum('panjang');
-                }else{
-                    $temp->jumlah = 0;
-                    $temp->panjang = 0;
-                }    
-                $temp->save();
-            }
+            // $temp_perencanaan = RencanaPenanganan::latest()->get();
+            // foreach($temp_perencanaan as $temp){  
+            //     if($temp->RencanaPenangananLubangDetail->count() >= 1){
+            //         $temp->jumlah = $temp->RencanaPenangananLubangDetail->sum('jumlah');
+            //         $temp->panjang = $temp->RencanaPenangananLubangDetail->sum('panjang');
+            //     }else{
+            //         $temp->jumlah = 0;
+            //         $temp->panjang = 0;
+            //     }    
+            //     $temp->save();
+            // }
             $temp_penanganan = Penanganan::latest()->get();
             foreach($temp_penanganan as $temp){  
                 if($temp->PenangananLubangDetail->count() >= 1){
