@@ -162,7 +162,7 @@
                             @foreach ($data as $uptd)
                                 @if(@$filter['uptd_filter'] == null )
                                 <tr>
-                                    <td colspan="10">UPTD Pengelolaan Jalan dan Jembatan Wilayah Pelayanan - {{ $uptd->id }}</td>
+                                    <td colspan="12">UPTD Pengelolaan Jalan dan Jembatan Wilayah Pelayanan - {{ $uptd->id }}</td>
                                 </tr>
                                 @endif
                                 @foreach($uptd->library_sup as $sup)
