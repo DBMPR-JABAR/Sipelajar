@@ -136,10 +136,10 @@
                             <tr>
                                 <th rowspan="2"></th>
                                 <th rowspan="2" style="vertical-align: top;text-align: center;">SUP</th>
-                                <th colspan="5" style="vertical-align: top;text-align: center;">Jumlah Lubang</th>   
+                                <th colspan="6" style="vertical-align: top;text-align: center;">Jumlah Lubang</th>   
                                 
                                 <th rowspan="2" style="vertical-align: top;text-align: center;">Panjang<br>Total Ruas</th>
-                                <th colspan="2" style="vertical-align: top;text-align: center;">Panjang </th>   
+                                <th colspan="3" style="vertical-align: top;text-align: center;">Panjang </th>   
                             </tr>
                             <tr>
                                 <th style="vertical-align: top;text-align: center;">Lubang<br>{{ $filter['tanggal_sebelum'] }}</th>
@@ -147,9 +147,12 @@
                                 <th style="vertical-align: top;text-align: center;">Total Lubang<br>{{ $filter['tanggal_akhir'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Yang Sudah Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
                                 <th style="vertical-align: top;text-align: center;">Sisa Yang Belum Ditangani<br>{{ $filter['tanggal_awal'] }}<br>s.d<br>{{ $filter['tanggal_akhir'] }}</th>
+                                <th style="vertical-align: top;text-align: center;">Potensi</th>
 
                                 <th style="vertical-align: top;text-align: center;">Sisa Kerusakan</th>
                                 <th style="vertical-align: top;text-align: center;">Penanganan</th>
+                                <th style="vertical-align: top;text-align: center;">Potensi</th>
+
                             </tr>
                         </thead>
                         <tbody id="bodyJembatan">
@@ -182,6 +185,8 @@
                                     $panjang =  $panjang - $panjang_ditangani;
                                     $ditangani = $sup->penanganan_lubang_s()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('panjang');
 
+                                    $potensi = $sup->lubang_potensi()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('jumlah');
+                                    $potensi_panjang = $sup->lubang_potensi()->where('tanggal','<=',$filter['tanggal_akhir'])->sum('panjang');
                                 @endphp
                                 <tr>
                                     <td>    
@@ -197,9 +202,13 @@
                                     <td>{{ $total2 }}</td>
                                     <td>{{ $penanganan }}</td>
                                     <td>{{ $sisa2 }}</td>
+                                    <td>{{ $potensi }}</td>
+
                                     <td>{{ round($sup->library_ruas->sum('panjang')/1000,3) }}</td>
                                     <td>{{ round($panjang/1000,3)  }}</td>
                                     <td>{{ round($ditangani/1000,3)  }}</td>
+                                    <td>{{ round($potensi_panjang/1000,3)  }}</td>
+
 
                                 </tr>    
                                 @endforeach

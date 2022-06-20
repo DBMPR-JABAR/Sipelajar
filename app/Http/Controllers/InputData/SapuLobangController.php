@@ -848,8 +848,8 @@ class SapuLobangController extends Controller
             $total2 = $lubang_lama+$lubang_baru;
             $sisa2 = $total2-$penanganan;
 
-            $potensi = $uptd->lubang_potensi()->sum('jumlah');
-            $potensi_panjang = $uptd->lubang_potensi()->sum('panjang');
+            $potensi = $uptd->lubang_potensi()->where('tanggal','<=',$filter['tanggal_akhir1'])->sum('jumlah');
+            $potensi_panjang = $uptd->lubang_potensi()->where('tanggal','<=',$filter['tanggal_akhir1'])->sum('panjang');
 
             $row = $table->addRow();
             $row->addCell(null, $th2)->addTextRun($centered)->addText('UPTD Wilayah Pelayanan - '. $text.'  ',$th2);
@@ -891,8 +891,8 @@ class SapuLobangController extends Controller
                 $tahap2 = $sup->rencana_penanganan_lubang_s()->whereBetween('tanggal', [$filter['tahap2_awal'] , $filter['tahap2_akhir'] ])->sum('jumlah');
                 $tahap3 = $sup->rencana_penanganan_lubang_s()->whereBetween('tanggal', [$filter['tahap3_awal'] , $filter['tahap3_akhir'] ])->sum('jumlah');
 
-                $potensi = $sup->lubang_potensi()->sum('jumlah');
-                $potensi_panjang = $sup->lubang_potensi()->sum('panjang');
+                $potensi = $sup->lubang_potensi()->where('tanggal','<=',$filter['tanggal_akhir1'])->sum('jumlah');
+                $potensi_panjang = $sup->lubang_potensi()->where('tanggal','<=',$filter['tanggal_akhir1'])->sum('panjang');
                 
                 $row = $table->addRow();
                 $row->addCell(null)->addTextRun($normal)->addText($sup->name,$normal);
