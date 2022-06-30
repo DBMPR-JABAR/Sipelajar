@@ -137,6 +137,7 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Mandor</th>
                                 <th>Kedalaman</th>
                                 <th>Jumlah</th>
                                 <th>Panjang</th>
@@ -152,6 +153,9 @@
                             @foreach ($data as $no => $item)
                             <tr>
                                 <td>{{ ++$no }}</td>
+                                <td>
+                                    {{ @$item->user_create->name }}
+                                </td>
                                 <td>
                                     {{ $item->kategori_kedalaman }}
                                 </td>
