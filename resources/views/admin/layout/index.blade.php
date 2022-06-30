@@ -63,9 +63,8 @@
         
     </style>
     
-    <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
-    <script src="https://js.arcgis.com/4.24/"></script>
-    
+   
+
     @yield('head')
 </head>
 
