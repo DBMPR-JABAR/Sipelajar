@@ -55,7 +55,7 @@ class SapuLobangController extends Controller
                                 $temp_survei_detail = $data_old;
                                 // dd($temp_survei_detail);
 
-                                $temp_survei_detail()->save();
+                                $temp_survei_detail->save();
                                 // SurveiDetail_view::create($temp_survei_detail->toArray());
 
                             }
