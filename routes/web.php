@@ -497,6 +497,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::prefix('sapu-lobang')->group(function () {
             Route::get('/rekapitulasi', 'InputData\SapuLobangController@index')->name('sapu-lobang.index');
             Route::get('/rekapitulasi/synchronize', 'InputData\SapuLobangController@synchronize')->name('sapu-lobang.index.synchronize');
+            Route::get('/rekapitulasi/compare', 'InputData\SapuLobangController@compare')->name('sapu-lobang.index.compare');
 
             Route::post('/rekapitulasi', 'InputData\SapuLobangController@rekapitulasi')->name('sapu-lobang.rekapitulasi');
             Route::get('/force_delete', 'InputData\SapuLobangController@forceDestroy')->name('sapu-lobang.lubang.forceDestroy');

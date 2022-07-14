@@ -20,6 +20,10 @@ use App\Model\Transactional\MonitoringPotensiLubangSurveiDetail as PotensiDetail
 use App\Model\Transactional\RuasJalan;
 use App\Model\Transactional\Kota;
 
+use App\Model\Transactional\Ext\MonitoringLubangSurvei as Survei_old;
+use App\Model\Transactional\Ext\MonitoringLubangSurveiDetail as SurveiDetail_old;
+use App\Model\Transactional\Ext\MonitoringLubangSurveiView as Survei_view;
+use App\Model\Transactional\Ext\MonitoringLubangSurveiDetailView as SurveiDetail_view;
 use App\Model\Transactional\UPTD;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -31,7 +35,153 @@ use Illuminate\Support\Facades\Storage;
 class SapuLobangController extends Controller
 {
     //
-    
+    public function compare(){
+        if(Auth::user()->id == 1){
+            $temp_survei_detail_old = SurveiDetail_old::get();
+            // dd($temp_survei_detail_old);
+            foreach($temp_survei_detail_old as $data_old){
+                if($data_old->created_at < '2022-07-11'){
+                    $temp_survei_detail = SurveiDetail::find($data_old->id);
+                    if(isset($temp_survei_detail)){
+                        if($data_old->status == "Perencanaan"){
+                            if(!$temp_survei_detail->status){
+                                $temp_survei_detail = $data_old;
+                                $temp_survei_detail->save();
+                                // SurveiDetail_view::create($temp_survei_detail->toArray());
+
+                            }
+                        }else if($data_old->status == "Selesai"){
+                            if($temp_survei_detail->status != "Selesai"){
+                                $temp_survei_detail = $data_old;
+                                $temp_survei_detail->save();
+                                // SurveiDetail_view::create($temp_survei_detail->toArray());
+
+                            }
+                        }
+                    }
+                }else if($data_old->created_at >= '2022-07-11'){
+                    $temp_survei_detail = SurveiDetail::where('lokasi_kode',$data_old->lokasi_kode)
+                    ->where('kategori',$data_old->kategori)
+                    ->where('tanggal',$data_old->tanggal)
+                    ->where('lokasi_km',$data_old->lokasi_km)
+                    ->where('lokasi_m',$data_old->lokasi_m)
+                    ->where('ruas_jalan_id',$data_old->ruas_jalan_id)
+                    ->where('created_by',$data_old->created_by)->first();
+
+                    if(isset($temp_survei_detail)){
+                        if($data_old->status != $temp_survei_detail->status){
+                            if($temp_survei_detail->status != "Selesai" ){
+                                if($data_old->status == "Perencanaan"){
+                                    if(!$temp_survei_detail->status){
+                                        $temp_survei_detail = $data_old;
+                                        $temp_survei_detail->save();
+                                        // SurveiDetail_view::create($temp_survei_detail->toArray());
+
+                                    }
+                                }else if($data_old->status == "Selesai"){
+                                    if($temp_survei_detail->status != "Selesai"){
+                                        $temp_survei_detail = $data_old;
+                                        $temp_survei_detail->save();
+                                        // SurveiDetail_view::create($temp_survei_detail->toArray());
+
+                                    }
+                                }
+                            }
+
+                        }
+                        
+                    }else{
+                        $ruas = RuasJalan::where('id_ruas_jalan',$data_old->ruas_jalan_id)->first();
+
+                        if(!isset($ruas)){
+                            $this->response['data']['error'] = "Ruas Tidak Ditemukan";
+                            return response()->json($this->response, 200);
+                        }
+
+                        $find = [
+                            'tanggal'=> $data_old->tanggal,
+                            'created_by' =>$data_old->created_by,
+                            'ruas_jalan_id'=>$data_old->ruas_jalan_id,
+                            'sup_id'=>$ruas->data_sup->id,
+                            'kota_id'=>$ruas->kota_id
+                        ];
+
+                        $temporari =[
+                            'lat' => $data_old->lat,
+                            'long' => $data_old->long,
+                            'lokasi_kode' => Str::upper($data_old->lokasi_kode),
+                            'lokasi_km' => $data_old->lokasi_km,
+                            'lokasi_m' => $data_old->lokasi_m,
+                            'created_by' =>$data_old->created_by,
+                            'updated_by' =>$data_old->updated_by,
+                            'ruas_jalan_id'=>$data_old->ruas_jalan_id,
+                            'sup_id'=>$ruas->data_sup->id,
+                            'kota_id'=>$ruas->kota_id,
+                            'sup'=>$ruas->data_sup->name,
+                            'uptd_id'=>$ruas->uptd_id,
+                            'tanggal'=> $data_old->tanggal,
+                            'tanggal_rencana_penanganan'=> $data_old->tanggal_rencana_penanganan,
+                            'tanggal_penanganan'=> $data_old->tanggal_penanganan,
+                            'kategori'=> $data_old->kategori,
+                            'kategori_kedalaman'=> $data_old->kategori_kedalaman,
+                            'panjang'=> (float)$data_old->panjang,
+                            'description'=>$data_old->description,
+                            'lajur'=>$data_old->lajur,
+                            'potensi_lubang'=>$data_old->potensi_lubang,
+                            'created_at'=>$data_old->created_at,
+                            'updated_at'=>$data_old->updated_at,
+                        ];
+                        if($data_old->kategori == "Group"){
+                            $temporari['jumlah'] = (int)$data_old->jumlah;
+                            $temporari['icon'] = 'sapulobang/sapulobang.png';
+                            $temporari['keterangan'] = 'Lubang Group';
+
+                        }
+                        $temporari['image'] = $data_old->image;
+                        $temporari['image_penanganan'] = $data_old->image_penanganan;
+                        $temporari['status'] = $data_old->status;
+
+                        $survei = Survei::firstOrNew($find);
+                        if(!$survei->id){
+                            $survei->uptd_id=$ruas->uptd_id;
+                            $survei->lat = $data_old->lat;
+                            $survei->long = $data_old->long;
+                            $survei->lokasi_kode = Str::upper($data_old->lokasi_kode);
+                            $survei->created_by = $data_old->created_by;
+                            $survei->save();
+                        }
+
+                        if($survei->id){
+                            $survei->SurveiLubangDetail()->create($temporari);
+                            // $survei->jumlah = $survei->jumlah + 1;
+                            $survei->jumlah = $survei->SurveiLubangDetail->sum('jumlah');
+                            $survei->panjang = $survei->SurveiLubangDetail->sum('panjang');
+                        }
+                        
+                        if(!$survei->SurveiLubangDetail()->exists()){
+                            if($data_old->kategori == "Group"){
+                                $survei->jumlah = $data_old->jumlah;
+                            }else
+                                $survei->jumlah = 1;
+
+                            $survei->panjang = $data_old->panjang;
+                        }
+
+                        $survei->save();
+                        $survei->ruas = $survei->ruas()->select('id_ruas_jalan','nama_ruas_jalan')->get();
+                        // storeLogActivity(declarLog(1, 'Survei Lubang', $ruas->nama_ruas_jalan,1));
+                        if($survei->SurveiLubangDetail->count()==0){
+                            $survei->SurveiLubangDetail()->create($temporari);
+                        }
+                        
+                    }
+                }
+            }
+            dd($temp_survei_detail_old);
+
+        
+        }
+    }
     public function synchronize(){
         if(Auth::user()->id == 1){
             // $temp_survei_detail = SurveiDetail::latest()->get();
