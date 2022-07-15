@@ -36,6 +36,7 @@ class SapuLobangController extends Controller
 {
     //
     public function compare(){
+        
         if(Auth::user()->id == 1){
             $temp_survei_detail_old = SurveiDetail_old::get();
             // dd($temp_survei_detail_old);
@@ -45,23 +46,37 @@ class SapuLobangController extends Controller
                     if(isset($temp_survei_detail)){
                         if($data_old->status == "Perencanaan"){
                             if(!$temp_survei_detail->status){
-                                $temp_survei_detail = $data_old;
+                                // $temp_survei_detail = $data_old;
+                                $temp_survei_detail->tanggal_rencana_penanganan = $data_old->tanggal_rencana_penanganan;
+                                $temp_survei_detail->tanggal_penanganan= $data_old->tanggal_penanganan;
+                                $temp_survei_detail->image_penanganan= $data_old->image_penanganan;
+                                $temp_survei_detail->status= $data_old->status;
+                                $temp_survei_detail->keterangan= $data_old->keterangan;
+                                $temp_survei_detail->updated_by= $data_old->updated_by;
+                                $temp_survei_detail->updated_at= $data_old->updated_at;
                                 $temp_survei_detail->save();
                                 // SurveiDetail_view::create($temp_survei_detail->toArray());
 
                             }
                         }else if($data_old->status == "Selesai"){
                             if($temp_survei_detail->status != "Selesai"){
-                                $temp_survei_detail = $data_old;
+                                // $temp_survei_detail = $data_old;
                                 // dd($temp_survei_detail);
-
+                                $temp_survei_detail->tanggal_rencana_penanganan = $data_old->tanggal_rencana_penanganan;
+                                $temp_survei_detail->tanggal_penanganan= $data_old->tanggal_penanganan;
+                                $temp_survei_detail->image_penanganan= $data_old->image_penanganan;
+                                $temp_survei_detail->status= $data_old->status;
+                                $temp_survei_detail->keterangan= $data_old->keterangan;
+                                $temp_survei_detail->updated_by= $data_old->updated_by;
+                                $temp_survei_detail->updated_at= $data_old->updated_at;
                                 $temp_survei_detail->save();
                                 // SurveiDetail_view::create($temp_survei_detail->toArray());
 
                             }
                         }
                     }
-                }else if($data_old->created_at >= '2022-07-11'){
+                }
+                else if($data_old->created_at >= '2022-07-11'){
                     $temp_survei_detail = SurveiDetail::where('lokasi_kode',$data_old->lokasi_kode)
                     ->where('kategori',$data_old->kategori)
                     ->where('tanggal',$data_old->tanggal)
@@ -75,14 +90,26 @@ class SapuLobangController extends Controller
                             if($temp_survei_detail->status != "Selesai" ){
                                 if($data_old->status == "Perencanaan"){
                                     if(!$temp_survei_detail->status){
-                                        $temp_survei_detail = $data_old;
+                                        $temp_survei_detail->tanggal_rencana_penanganan = $data_old->tanggal_rencana_penanganan;
+                                        $temp_survei_detail->tanggal_penanganan= $data_old->tanggal_penanganan;
+                                        $temp_survei_detail->image_penanganan= $data_old->image_penanganan;
+                                        $temp_survei_detail->status= $data_old->status;
+                                        $temp_survei_detail->keterangan= $data_old->keterangan;
+                                        $temp_survei_detail->updated_by= $data_old->updated_by;
+                                        $temp_survei_detail->updated_at= $data_old->updated_at;
                                         $temp_survei_detail->save();
                                         // SurveiDetail_view::create($temp_survei_detail->toArray());
 
                                     }
                                 }else if($data_old->status == "Selesai"){
                                     if($temp_survei_detail->status != "Selesai"){
-                                        $temp_survei_detail = $data_old;
+                                        $temp_survei_detail->tanggal_rencana_penanganan = $data_old->tanggal_rencana_penanganan;
+                                        $temp_survei_detail->tanggal_penanganan= $data_old->tanggal_penanganan;
+                                        $temp_survei_detail->image_penanganan= $data_old->image_penanganan;
+                                        $temp_survei_detail->status= $data_old->status;
+                                        $temp_survei_detail->keterangan= $data_old->keterangan;
+                                        $temp_survei_detail->updated_by= $data_old->updated_by;
+                                        $temp_survei_detail->updated_at= $data_old->updated_at;
                                         $temp_survei_detail->save();
                                         // SurveiDetail_view::create($temp_survei_detail->toArray());
 
