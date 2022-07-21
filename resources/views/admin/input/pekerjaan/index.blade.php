@@ -579,13 +579,15 @@
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">Koordinat X ( latitude )</label>
                             <div class="col-md-10">
-                                <input id="lat" name="lat" type="text" class="form-control formatLatLong" required placeholder="-6.921272796096672">
+                                <input id="lat" name="lat"  type="text" class="form-control formatLatLong lat" required placeholder="-6.921272796096672">
                             </div>
                         </div>
+                        
+
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">Koordinat Y ( Longitude )</label>
                             <div class="col-md-10">
-                                <input id="long" name="lng" type="text" class="form-control formatLatLong" required placeholder="107.61116564232853">
+                                <input id="long" name="lng" type="text" class="form-control formatLatLong long" required placeholder="107.61116564232853">
                             </div>
                         </div>
 
@@ -721,6 +723,9 @@
             $('.formatRibuan').mask('000.000.000.000.000', {
                 reverse: true
             });
+
+            $('.lat').mask('-0.0000000000000000000000000000');
+            $('.long').mask('000.0000000000000000000000000000');
 
             // Format untuk lat long.
             $('.formatLatLong').keypress(function(evt) {
