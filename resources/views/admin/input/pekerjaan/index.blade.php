@@ -474,7 +474,21 @@
                                 <input name="sub_kegiatan" type="text" value="" placeholder="Entry Sub Kegiatan" class="form-control" required>
                             </div>
                         </div>
-
+                        @if (Auth::user()->internalRole->uptd)
+                        <input type="hidden" id="uptd" name="uptd_id" value="{{Auth::user()->internalRole->uptd}}">
+                        @else
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">UPTD</label>
+                            <div class="col-md-10">
+                                <select class="cold-md-12 form-control" id="uptd" name="uptd_id" onchange="ubahOption()" required>
+                                    <option>Pilih UPTD</option>
+                                    @foreach ($input_uptd_lists as $data)
+                                    <option value="{{$data->id}}">{{$data->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        @endif
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">Mandor </label>
                             @if(Auth::user()->internalRole->role != null && str_contains(Auth::user()->internalRole->role,'Mandor'))
@@ -501,7 +515,7 @@
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">Jenis Pekerjaan</label>
                             <div class="col-md-10">
-                                <select class="searchableModalField" name="jenis_pekerjaan" required>
+                                <select class="cold-md-12 form-control" name="jenis_pekerjaan" required>
                                     @foreach ($jenis_laporan_pekerjaan as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
@@ -520,32 +534,18 @@
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">Jenis Kegiatan</label>
                             <div class="col-md-10">
-                                <select class=" searchableModalField" id="paket" name="paket">
+                                <select class=" cold-md-12 form-control" id="paket" name="paket">
                                     @foreach ($nama_kegiatan_pekerjaan as $data)
                                     <option value="{{$data->name}}">{{$data->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                        @if (Auth::user()->internalRole->uptd)
-                        <input type="hidden" id="uptd" name="uptd_id" value="{{Auth::user()->internalRole->uptd}}">
-                        @else
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label">Uptd</label>
-                            <div class="col-md-10">
-                                <select class=" searchableModalField" id="uptd" name="uptd_id" onchange="ubahOption()" required>
-                                    <option>Pilih UPTD</option>
-                                    @foreach ($input_uptd_lists as $data)
-                                    <option value="{{$data->id}}">{{$data->nama}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        @endif
+                        
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">SUP</label>
                             <div class="col-md-10">
-                                <select class=" searchableModalField" id="sup" name="sup" onchange="ubahOption1()" required >
+                                <select class="cold-md-12 form-control" id="sup" name="sup" onchange="ubahOption1()" required >
                                     @if (Auth::user()->internalRole->uptd)
                                     @foreach ($sup as $data)
                                     <option value="{{$data->kd_sup}}" @if(Auth::user()->sup_id != null && Auth::user()->sup_id == $data->id) selected @endif>{{$data->name}}</option>
@@ -559,7 +559,7 @@
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">Ruas Jalan</label>
                             <div class="col-md-10">
-                                <select class=" searchableModalField" id="ruas_jalan" name="ruas_jalan" required>
+                                <select class="cold-md-12 form-control" id="ruas_jalan" name="ruas_jalan" required>
                                     @if (Auth::user()->internalRole->uptd)
                                         @foreach ($input_ruas_jalan as $data)
                                             <option value="{{$data->id_ruas_jalan}}">{{$data->nama_ruas_jalan}}</option>
