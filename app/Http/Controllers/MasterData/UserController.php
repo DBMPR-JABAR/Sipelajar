@@ -249,6 +249,16 @@ class UserController extends Controller
         // dd($roles);
         return view('admin.master.user.manajemen.index', compact('users', 'roles'));
     }
+    
+    public function getUserBySup(Request $req)
+    {
+        $sup = DB::table('utils_sup')->where('kd_sup', $req->id)->first();
+
+        $idSup = $sup->id;
+        $user = User::whereNotNull('internal_role_id')->where('sup_id',$idSup)->get();
+
+        return response()->json($user);
+    }
     public function getUserTrash()
     {
         $users = DB::table('users')->where('is_delete',1)->get();

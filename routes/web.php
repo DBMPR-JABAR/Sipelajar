@@ -297,6 +297,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             Route::post('/manajemen/create', 'MasterData\UserController@store')->name('createUser');
             Route::post('/manajemen/update', 'MasterData\UserController@update')->name('updateUser');
             Route::get('/manajemen/delete/{id}', 'MasterData\UserController@delete')->name('deleteUser');
+
+            Route::get('getUserBySup', 'MasterData\UserController@getUserBySup')->name('getUserBySup');
+
         });
 
         Route::group(['prefix' => 'rawanbencana'], function () {

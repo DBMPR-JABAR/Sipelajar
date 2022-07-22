@@ -490,6 +490,20 @@
                         </div>
                         @endif
                         <div class="form-group row">
+                            <label class="col-md-2 col-form-label">SUP</label>
+                            <div class="col-md-10">
+                                <select class="cold-md-12 form-control" id="sup" name="sup" onchange="ubahOption1()" required >
+                                    @if (Auth::user()->internalRole->uptd)
+                                    @foreach ($sup as $data)
+                                    <option value="{{$data->kd_sup}}" @if(Auth::user()->sup_id != null && Auth::user()->sup_id == $data->id) selected @endif>{{$data->name}}</option>
+                                    @endforeach
+                                    @else
+                                    <option>-</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-md-2 col-form-label">Mandor </label>
                             @if(Auth::user()->internalRole->role != null && str_contains(Auth::user()->internalRole->role,'Mandor'))
                                 <div class="col-md-10">
@@ -497,7 +511,7 @@
                                 </div>
                             @else
                                 <div class="col-md-10">
-                                    <select class=" searchableModalField" name="nama_mandor" required>
+                                    <select class=" searchableModalField" id="user_mandor" name="nama_mandor" required>
                                         @foreach ($mandor as $data)
                                             @if(str_contains(Auth::user()->internalRole->role,'Admin') && Auth::user()->internalRole->uptd)
                                                 @if( Auth::user()->internalRole->uptd == $data->internalRole->uptd)
@@ -542,20 +556,7 @@
                             </div>
                         </div>
                         
-                        <div class="form-group row">
-                            <label class="col-md-2 col-form-label">SUP</label>
-                            <div class="col-md-10">
-                                <select class="cold-md-12 form-control" id="sup" name="sup" onchange="ubahOption1()" required >
-                                    @if (Auth::user()->internalRole->uptd)
-                                    @foreach ($sup as $data)
-                                    <option value="{{$data->kd_sup}}" @if(Auth::user()->sup_id != null && Auth::user()->sup_id == $data->id) selected @endif>{{$data->name}}</option>
-                                    @endforeach
-                                    @else
-                                    <option>-</option>
-                                    @endif
-                                </select>
-                            </div>
-                        </div>
+                        
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label">Ruas Jalan</label>
                             <div class="col-md-10">
